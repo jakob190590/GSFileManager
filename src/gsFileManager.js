@@ -85,7 +85,7 @@ function gs_show_loading() {
 
 // wohl eher: get ItemPaths From Clipboard
 function gsGetSelectedItemsPath() {
-    var arr = new Array();
+    var arr = [];
     for (var x in gs_clipboard) {
         arr.push(gs_clipboard[x].path);
     }
@@ -93,7 +93,7 @@ function gsGetSelectedItemsPath() {
 }
 
 function gsGetSelectedItems() {
-    var arr = new Array();
+    var arr = [];
     jQuery('#gs_content_table div').filter('.rowSelected').each(function() {
         var filename = jQuery(this).text();
         arr.push(filename);
@@ -116,13 +116,12 @@ function gsCheckResponse(data) {
               alert('Error');
           }
         }
-        delete my_response;
     }
 
 }
 
 function gs_storeSelectedItems() {
-    gs_clipboard = new Array();
+    gs_clipboard = [];
     jQuery('#gs_content_table div.rowSelected').each(function(){
         var id = jQuery(this).attr('rel');
         if (typeof(gs_cur_items[id]) != 'undefined') {
@@ -162,8 +161,9 @@ function gs_makeUrl(root, params){
     }
 }
 
-var gs_filemanager_languages = new Array();
-gs_filemanager_languages['en'] = new Array();
+var gs_filemanager_languages = {};
+
+gs_filemanager_languages['en'] = [];
 gs_filemanager_languages['en'][1] = 'Current Dir';
 gs_filemanager_languages['en'][2] = 'Clipboard';
 gs_filemanager_languages['en'][3] = 'Upload';
@@ -209,7 +209,7 @@ gs_filemanager_languages['en'][42] = 'UnZip';
 gs_filemanager_languages['en'][43] = 'UnZip Name';
 gs_filemanager_languages['en'][44] = 'Lock sizes';
 
-gs_filemanager_languages['de'] = new Array();
+gs_filemanager_languages['de'] = [];
 gs_filemanager_languages['de'][1] = 'Aktuelles Verzeichnis';
 gs_filemanager_languages['de'][2] = 'Clipboard';
 gs_filemanager_languages['de'][3] = 'Hochladen';
@@ -265,9 +265,9 @@ function gs_getTranslation(lg, code){
     return result;
 }
 
-var gs_cur_items =  new Array();
+var gs_cur_items = [];
 
-var gs_clipboard = new Array();
+var gs_clipboard =[];
 
 var gs_ext_editables = {
     'txt':  null,
@@ -630,10 +630,10 @@ if (jQuery) (function(jQuery){
                             }
                             dirhtml += "</ul>";
                         } else {
-                            gsdirs = new Array();
+                            gsdirs = []; // global
                         }
                         if (typeof(gsfiles) == 'undefined') {
-                            gsfiles = new Array();
+                            gsfiles = []; // global
                         }
 
                         cObject.find('.start').html('');
