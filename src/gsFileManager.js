@@ -569,7 +569,9 @@ if (jQuery) (function(jQuery){
                        jQuery(el).doGSAction({action: action, script: o.script, type: 'file', lg: o.language});
                 },
                 manageGsMenu);
-
+                jQuery('table.dirs_files_table tr').find('div.gsItem.file').dblclick(function (e) {
+                    jQuery(this).doGSAction({action: 11, script: o.script, type: 'file', lg: o.language});
+                });
                 jQuery('table.dirs_files_table tr').find('div.gsItem').bind('click', function(e){
                     var cur_element = jQuery(this);
                     var rel = jQuery(this).attr('rel');
