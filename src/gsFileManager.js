@@ -72,7 +72,7 @@ function updateCoords(c){
 }
 
 function gs_get_cur_item(id){
-    result = null;
+    var result = null;
     if (typeof(gs_cur_items[id]) != 'undefined') {
         result = gs_cur_items[id];
     }
@@ -106,7 +106,7 @@ function gsCheckResponse(data) {
         return;
     }
     if (data.substr(0 , 9) == '{result: ') {
-        eval('var my_response = ' + data + ';');
+        var my_response = data;
         if (typeof(my_response.result != 'undefined')) {
           if (my_response.result == '1') {
               //alert('OK');
@@ -256,7 +256,7 @@ gs_filemanager_languages['de'][43] = 'UnZip-Dateiname';
 gs_filemanager_languages['de'][44] = 'Größe verriegeln';
 
 function gs_getTranslation(lg, code){
-    result = null;
+    var result = null;
     if (typeof(gs_filemanager_languages[lg]) != 'undefined') {
         if (typeof(gs_filemanager_languages[lg][code]) != 'undefined') {
             result = gs_filemanager_languages[lg][code];
@@ -452,8 +452,8 @@ if (jQuery) (function(jQuery){
 
                 success: function(responseText, statusText, xhr, form) {
                     gsCheckResponse(responseText);
-                    filenamea = jQuery('#gs_jcrop_filename').val();
-                    dira = escape(jQuery('#gs_jcrop_dir').val());
+                    var filenamea = jQuery('#gs_jcrop_filename').val();
+                    var dira = escape(jQuery('#gs_jcrop_dir').val());
                     var imageSrc = gs_makeUrl(o.script, "opt=15&filename=" + filenamea +"&dir=" + dira + "&time="+ new Date().getTime());
                     jQuery('#gs_jcrop_div_container').html('<img src="'+ imageSrc + '" id="gsjcrop_target"/>');
                     jQuery('#gsjcrop_target').load(function(){
@@ -539,8 +539,8 @@ if (jQuery) (function(jQuery){
                 if (srcElement.attr('rel') == 'up') {
                     return false;
                 }
-                gs_item = gs_cur_items[srcElement.attr('rel')];
-                type = gs_item.getType();
+                var gs_item = gs_cur_items[srcElement.attr('rel')];
+                var type = gs_item.getType();
                 if (gs_forbidden_ext_mapping.hasOwnProperty(type)) {
                     menu.disableContextMenuItems(gs_forbidden_ext_mapping[type]);
                 }
@@ -859,9 +859,9 @@ if (jQuery) (function(jQuery){
                                    click: function() {
                                            jQuery(this).find('textarea').hide();
                                            jQuery(this).append('<div class="loadingDiv">&nbsp;</div>');
-                                           texta = jQuery('#gsnotepadedit').find('textarea');
-                                           targetFile = texta.attr('rel');
-                                           content = texta.val();
+                                           var texta = jQuery('#gsnotepadedit').find('textarea');
+                                           var targetFile = texta.attr('rel');
+                                           var content = texta.val();
                                            dataForSend = {opt: 10, filename: targetFile, dir: curDir, filenContent: content};
                                            sendAndRefresh(o, dataForSend, true, function(data) {
                                                   jQuery('#gsnotepadedit').find('div.loadingDiv').remove();
