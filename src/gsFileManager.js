@@ -1178,13 +1178,9 @@ if (jQuery) (function() {
                         return false;
                     });
 
-                    // Hide bindings
-                    setTimeout(function() { // Delay for Mozilla
-                        jQuery(document).click(function() {
-                            jQuery(menu).fadeOut(o.outSpeed);
-                        });
-                    }, 0);
-
+                    jQuery(document).click(function() {
+                        menu.fadeOut(o.outSpeed);
+                    });
                 });
 
                 // Disable text selection
