@@ -231,27 +231,13 @@ class GSFileManager {
         }
         if (!isset($args['dir']) || empty($args['dir'])) {
             throw new Exception('IllegalArgumentException: dir can NOT be null', 4);
-        } else {
-            $args['dir'] = urldecode($args['dir']);
-            $args['dir'] = $this->fixString($args['dir']);
-            $args['dir'] = html_entity_decode($args['dir'], ENT_QUOTES, 'UTF-8');
         }
+        $this->checkPathName($args['dir']);
         if (isset($args['filename'])) {
-            $path_parts = split('/', urldecode($args['filename']));
-            $args['filename'] = end($path_parts);
-            $args['filename'] = $this->fixString($args['filename']);
-            $args['filename'] = html_entity_decode($args['filename'], ENT_QUOTES, 'UTF-8');
             $this->checkFileName($args['filename']);
         }
         if (isset($args['newfilename'])) {
-            $path_parts2 = split('/', urldecode($args['newfilename']));
-            $args['newfilename'] = end($path_parts2);
-            $args['newfilename'] = $this->fixString($args['newfilename']);
-            $args['newfilename'] = html_entity_decode($args['newfilename'], ENT_QUOTES, 'UTF-8');
             $this->checkFileName($args['newfilename']);
-        }
-        if (strpos($args['dir'], '..') !== false) {
-            throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
         }
         $response = '';
         $functionName = $this->getRequestFunction($args[$this->opt_param]);
@@ -577,13 +563,10 @@ class GSFileManager {
     public function moveItems($args) {
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['files'])) {
-            $files = split(',,,', urldecode($args['files']));
-            $dir = $args['dir'];
+            $dir   = $args['dir'];
+            $files = $args['files'];
             $response = '{result: \'0\'}';
             foreach ($files as $filename) {
-                $filename = urldecode($filename);
-                $filename = html_entity_decode($filename, ENT_QUOTES, 'UTF-8');
-                $filename = $this->fixString($filename);
                 if (strpos($filename, '..') !== false) {
                     throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
                 }
@@ -615,7 +598,6 @@ class GSFileManager {
             if (isset($args['newfilename'])) {
                 $newFileName = $args['newfilename'];
             }
-            $newFileName = $this->fixString($newFileName);
             if ($this->fileStorage->file_exists($root.$dir.$filename)) {
                 if (!$this->fileStorage->file_exists($root.$dir.$newFileName)) {
                     if ($this->fileStorage->renameItem($root.$dir.$filename, $root.$dir.$newFileName)) {
@@ -636,13 +618,10 @@ class GSFileManager {
     public function copyItem($args) {
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['files'])) {
-            $files = split(',,,', urldecode($args['files']));
-            $dir = $args['dir'];
+            $dir   = $args['dir'];
+            $files = $args['files'];
             $response = '{result: \'0\'}';
             foreach ($files as $filename) {
-                $filename = urldecode($filename);
-                $filename = html_entity_decode($filename, ENT_QUOTES, 'UTF-8');
-                $filename = $this->fixString($filename);
                 if (strpos($filename, '..') !== false) {
                     throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
                 }
@@ -672,14 +651,12 @@ class GSFileManager {
     public function deleteItem($args) {
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['files'])) {
-            $files = split(',,,', urldecode($args['files']));
-            $dir = $args['dir'];
-            $response = '{result: \'1\'}';
-            foreach ($files as $filename) {
-                $path_parts2 = split('/', $filename);
+            $dir       = $args['dir'];
+            $filenames = $args['files'];
+            $response  = '{result: \'1\'}';
+            foreach ($filenames as $filename) {
+                $path_parts2 = @split('/', $filename);
                 $filename = end($path_parts2);
-                $filename = html_entity_decode($filename, ENT_QUOTES, 'UTF-8');
-                $filename = $this->fixString($filename);
                 $this->checkFileName($filename);
                 if ($this->fileStorage->file_exists($root.$dir.$filename)) {
                     if ($this->fileStorage->is_dir($root.$dir.$filename)) {
@@ -743,7 +720,6 @@ class GSFileManager {
             $html = '';
             $html .= 'var gsdirs = new Array();';
             $html .= 'var gsfiles = new Array();';
-            $dirs = array();
             if( count($files) > 2 ) { /* The 2 accounts for . and .. */
                 foreach( $files as $file ) {
                     if ($file == '.' || $file == '..' || $file == '.htaccess') {
@@ -767,16 +743,32 @@ class GSFileManager {
         }
     }
 
-    public function checkFileName($filename){
+    public function checkFileName($filename) {
+        $this->checkPathName($filename); // filename koennte ja auch als teilpfad/filename missbraucht werden
         if ($filename == '.htaccess') {
             throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
         }
     }
 
-    function fixString($String){
-        if (get_magic_quotes_gpc() or get_magic_quotes_runtime()) {
-            return stripcslashes($String);
+    public function checkPathName($pathname) {
+        if ($pathname == '..' ||
+            $this->stringStartsWith($pathname, '../') ||
+            $this->stringEndsWith  ($pathname, '/..') ||
+            strpos($pathname, '/../') !== false
+        ) {
+            throw new Exception('IllegalArgumentException: Relative paths are not allowed.');
         }
-        return $String;
+    }
+
+    protected function stringStartsWith($haystack, $needle) {
+        return !strncmp($haystack, $needle, strlen($needle));
+    }
+
+    protected function stringEndsWith($haystack, $needle) {
+        $length = strlen($needle);
+        if ($length == 0) {
+            return true;
+        }
+        return (substr($haystack, -$length) === $needle);
     }
 }
