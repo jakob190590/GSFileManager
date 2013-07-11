@@ -9,6 +9,7 @@
  *
  * George Sarafov
  * http://freewebfilemanager.com
+ *
  */
 
 var gsItem = function(type, name, path, size, id, exta, lastMod) {
@@ -307,15 +308,15 @@ if (jQuery) (function(jQuery){
 
     jQuery.extend(jQuery.fn, {
         gsFileManager: function(o) {
-            if( !o ) var o = {};
-            if( o.root == undefined ) o.root = '/';
-            if( o.language == undefined ) o.language = 'en';
-            if( o.script == undefined ) o.script = 'jqueryFileTree.php';
-            if( o.expandSpeed == undefined ) o.expandSpeed= 500;
-            if( o.collapseSpeed == undefined ) o.collapseSpeed= 500;
-            if( o.expandEasing == undefined ) o.expandEasing = null;
-            if( o.collapseEasing == undefined ) o.collapseEasing = null;
-            if( o.loadMessage == undefined ) o.loadMessage = 'Loading...';
+            if (!o) var o = {};
+            if (o.root == undefined) o.root = '/';
+            if (o.language == undefined) o.language = 'en';
+            if (o.script == undefined) o.script = 'jqueryFileTree.php';
+            if (o.expandSpeed == undefined) o.expandSpeed= 500;
+            if (o.collapseSpeed == undefined) o.collapseSpeed= 500;
+            if (o.expandEasing == undefined) o.expandEasing = null;
+            if (o.collapseEasing == undefined) o.collapseEasing = null;
+            if (o.loadMessage == undefined) o.loadMessage = 'Loading...';
 
             var menuHtml = '<table class="gsHeadTable" cellpadding=0 cellspacing=0><tr><td><span class="gsHeadText"> ' + gs_getTranslation(o.language, 1)+ ': </span><span id=\'curDir\'></span></td><td><a href=\'javascript: void(0);\' onClick=\'return gs_showClipboardContent();\' class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 2)+ '&nbsp;</a><span id=\'gsClipBoard\'>0 items</span> </td></tr></table>';
             menuHtml += '<a id="gs_uploadbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 3)+ '&nbsp;</a>';
@@ -641,7 +642,7 @@ if (jQuery) (function(jQuery){
 
                         showContent(gsdirs, gsfiles, unescape(t));
 
-                        if( o.root == t ) {
+                        if (o.root == t) {
                             cObject.find('ul:hidden').show();
                         } else {
                             cObject.find('ul:hidden').slideDown({ duration: o.expandSpeed, easing: o.expandEasing });
@@ -659,7 +660,7 @@ if (jQuery) (function(jQuery){
                 });
                 jQuery(t).find('li > span').bind('click', function() {
                     var thisEl = jQuery(this);
-                    if( thisEl.parent().hasClass('collapsed') ) {
+                    if (thisEl.parent().hasClass('collapsed')) {
                         thisEl.parent().find('ul').slideDown({ duration: o.collapseSpeed, easing: o.collapseEasing });
                         var contenUL = thisEl.parent().find('ul');
                         if (contenUL.length < 1) {
@@ -708,10 +709,6 @@ if (jQuery) (function(jQuery){
             var curDir = jQuery('#curDir').text();
             var dataForSend = null;
             var gsitem = gs_get_cur_item(jQuery(this).attr('rel'));
-
-            if (gsitem == null) {
-                //alert('no gsitem');
-            }
 
             if (o.action == '23') { // zip
                 unZipItem(o, curDir, gsitem);
@@ -1077,20 +1074,20 @@ if (jQuery) (function(jQuery){
 // This plugin is dual-licensed under the GNU General Public License
 //   and the MIT License and is copyright A Beautiful Site, LLC.
 //
-if(jQuery)( function() {
+if(jQuery)(function() {
     jQuery.extend(jQuery.fn, {
 
         contextMenu: function(o, callback, onShowMenu) {
             // Defaults
-            if( o.menu == undefined ) return false;
-            if( o.inSpeed == undefined ) o.inSpeed = 150;
-            if( o.addSelectedClass == undefined ) o.addSelectedClass = true;
-            if( o.outSpeed == undefined ) o.outSpeed = 75;
+            if (o.menu == undefined) return false;
+            if (o.inSpeed == undefined) o.inSpeed = 150;
+            if (o.addSelectedClass == undefined) o.addSelectedClass = true;
+            if (o.outSpeed == undefined) o.outSpeed = 75;
             // 0 needs to be -1 for expected results (no fade)
-            if( o.inSpeed == 0 ) o.inSpeed = -1;
-            if( o.outSpeed == 0 ) o.outSpeed = -1;
+            if (o.inSpeed == 0) o.inSpeed = -1;
+            if (o.outSpeed == 0) o.outSpeed = -1;
             // Loop each context menu
-            jQuery(this).each( function() {
+            jQuery(this).each(function() {
                 var el = jQuery(this);
                 var offset = jQuery(el).offset();
                 // Add contextMenu class
@@ -1189,9 +1186,9 @@ if(jQuery)( function() {
 
                 // Disable text selection
                 // TODO (Jakob) jQuery.browser is deprecated since 1.3 and removed since 1.9 (we have 1.9)
-//                if( jQuery.browser.mozilla ) {
+//                if (jQuery.browser.mozilla) {
 //                    jQuery('#' + o.menu).each(function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
-//                } else if( jQuery.browser.msie ) {
+//                } else if (jQuery.browser.msie) {
 //                    jQuery('#' + o.menu).each(function() { jQuery(this).bind('selectstart.disableTextSelect', function() { return false; }); });
 //                } else {
                     jQuery('#' + o.menu).each(function() { jQuery(this).bind('mousedown.disableTextSelect', function() { return false; }); });
@@ -1205,7 +1202,8 @@ if(jQuery)( function() {
 
         // Disable context menu items on the fly
         disableContextMenuItems: function(o) {
-            if( o == undefined ) {
+            var element = jQuery(this);
+            if (o == undefined) {
                 // Disable all
                 jQuery(this).find('LI').addClass('disabled');
                 return( jQuery(this) );
@@ -1213,7 +1211,7 @@ if(jQuery)( function() {
             jQuery(this).each( function() {
                 if( o != undefined ) {
                     var d = o.split(',');
-                    for( var i = 0; i < d.length; i++ ) {
+                    for (var i = 0; i < d.length; i++) {
                         //alert(d[i]);
                         jQuery(this).find('a[rel="' + d[i] + '"]').parent().addClass('disabled');
                     }
@@ -1232,13 +1230,12 @@ if(jQuery)( function() {
             jQuery(this).each( function() {
                 if( o != undefined ) {
                     var d = o.split(',');
-                    for( var i = 0; i < d.length; i++ ) {
-                        jQuery(this).find('a[rel="' + d[i] + '"]').parent().removeClass('disabled');
-
+                    for (var i = 0; i < d.length; i++) {
+                        element.find('a[rel="' + d[i] + '"]').parent().removeClass('disabled');
                     }
-                }
-            });
-            return( jQuery(this) );
+                });
+            }
+            return element;
         },
 
         // Disable context menu(s)
