@@ -1269,13 +1269,14 @@ if(jQuery)( function() {
                 });
 
                 // Disable text selection
-                if( jQuery.browser.mozilla ) {
-                    jQuery('#' + o.menu).each( function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
-                } else if( jQuery.browser.msie ) {
-                    jQuery('#' + o.menu).each( function() { jQuery(this).bind('selectstart.disableTextSelect', function() { return false; }); });
-                } else {
+                // TODO (Jakob) jQuery.browser is deprecated since 1.3 and removed since 1.9 (we have 1.9)
+//                if( jQuery.browser.mozilla ) {
+//                    jQuery('#' + o.menu).each( function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
+//                } else if( jQuery.browser.msie ) {
+//                    jQuery('#' + o.menu).each( function() { jQuery(this).bind('selectstart.disableTextSelect', function() { return false; }); });
+//                } else {
                     jQuery('#' + o.menu).each(function() { jQuery(this).bind('mousedown.disableTextSelect', function() { return false; }); });
-                }
+//                }
                 // Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
                 jQuery(el).add(jQuery('UL.contextMenu')).bind('contextmenu', function() { return false; });
 
