@@ -206,11 +206,9 @@ class GSFileManager {
     }
 
     public function getOptionValue ($key, $default = null) {
-        $result = null;
+        $result = $default;
         if (isset($this->options[$key])) {
             $result = $this->options[$key];
-        } else if ($default === null) {
-            $result = $default;
         }
         return $result;
     }
