@@ -610,8 +610,8 @@ if (jQuery) (function(jQuery){
                     success: function(data) {
 
                         //remember current dir id
-                        jQuery("#curDir").html(decodeURIComponent(t));
-                        jQuery("#curDir").attr('rel', jQuery('a', cObject).attr('id'));
+                        jQuery('#curDir').text(t);
+                        jQuery('#curDir').attr('rel', jQuery('a', cObject).attr('id'));
 
                         gs_cur_items = new Array();
 
@@ -650,7 +650,7 @@ if (jQuery) (function(jQuery){
             function setHandlers(t) {
                 //jQuery(t).find('LI').droppable();
                 jQuery(t).find('LI > A').bind('click', function () {
-                    showTree (jQuery(this).parent(), encodeURIComponent(jQuery(this).attr('rel').match( /.*\// )));
+                    showTree(jQuery(this).parent(), jQuery(this).attr('rel'));
                     jQuery(this).parent().removeClass('collapsed').addClass('expanded');
                     jQuery(this).parent().find(' > span').removeClass('toggleplus').addClass('toggleminus');
                 });
@@ -674,7 +674,7 @@ if (jQuery) (function(jQuery){
             }
 
             function showRoot(){
-                showTree( jQuery('#gs_dir_list'), escape(o.root));
+                showTree(jQuery('#gs_dir_list'), o.root);
                 //jQuery(this).parent().parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
                 //jQuery(this).parent().parent().find('LI.directory').removeClass('expanded').addClass('collapsed');
             }
@@ -883,7 +883,7 @@ if (jQuery) (function(jQuery){
                              }]
                 });
                 jQuery('#gsnotepadedit').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 9, filename: encodeURIComponent(gsitem.name), dir: curDir};
+                dataForSend = {opt: 9, filename: gsitem.name, dir: curDir};
                 sendAndRefresh(o, dataForSend, false, function(data) {
                                jQuery('#gsnotepadedit').html('<textarea name="gsFileContent" rows="' + rows + '" cols="' + cols + '" rel="' + gsitem.name +'">' + data + '</textarea>');
                   });
@@ -989,7 +989,7 @@ if (jQuery) (function(jQuery){
             }
 
             function unZipItem(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + htmlspecialchars_decode(gsitem.name, 'ENT_QUOTES'));
+                var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + gsitem.name);
                 if (newName == null) {
                     return;
                 }
@@ -998,7 +998,7 @@ if (jQuery) (function(jQuery){
             }
 
             function zipItem(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', htmlspecialchars_decode(gsitem.name, 'ENT_QUOTES') + '.zip');
+                var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', gsitem.name + '.zip');
                 if (newName == null) {
                     return;
                 }
@@ -1007,7 +1007,7 @@ if (jQuery) (function(jQuery){
             }
 
             function renameItem(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 35) + ': ', htmlspecialchars_decode(gsitem.name, 'ENT_QUOTES'));
+                var newName = window.prompt(gs_getTranslation(o.lg, 35) + ': ', gsitem.name);
                 if (newName == null) {
                     return;
                 }
@@ -1052,7 +1052,7 @@ if (jQuery) (function(jQuery){
                 if (typeof(type) == 'undefined') {
                     type = 'text';
                 }
-                //dataForSend.dir = encodeURIComponent(dataForSend.dir);
+                dataForSend.dir = dataForSend.dir;
                 jQuery.ajax({
                         type: 'POST',
                       url: o.script,
