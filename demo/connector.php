@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/../src/connectors/GSFileManager.php';
 
 set_time_limit(0);
 error_reporting(E_ALL);
