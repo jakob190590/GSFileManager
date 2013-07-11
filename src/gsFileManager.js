@@ -267,40 +267,40 @@ var gs_cur_items =  new Array();
 var gs_clipboard = new Array();
 
 var gs_ext_editables = {
-    'txt'  = null,
-    'php'  = null,
-    'doc'  = null,
-    'js'   = null,
-    'html' = null,
-    'htm'  = null,
-    'rtf'  = null,
-    'css'  = null,
-    'java' = null,
-    'asp'  = null,
-    'xml'  = null,
-    'xls'  = null,
-    'sql'  = null,
-    'log'  = null
+    'txt':  null,
+    'php':  null,
+    'doc':  null,
+    'js' :  null,
+    'html': null,
+    'htm':  null,
+    'rtf':  null,
+    'css':  null,
+    'java': null,
+    'asp':  null,
+    'xml':  null,
+    'xls':  null,
+    'sql':  null,
+    'log':  null
 };
 
 var gs_ext_pictures = {
-    'png'  = null,
-    'jpg'  = null,
-    'jpeg' = null,
-    'gif'  = null,
-    'pdf'  = null,
-    'ico'  = null
+    'png':  null,
+    'jpg':  null,
+    'jpeg': null,
+    'gif':  null,
+    'pdf':  null,
+    'ico':  null
 };
 
 var gs_ext_arhives = {
-    'zip' = true
+    'zip': null
 };
 
 var gs_forbidden_ext_mapping = {
-    'editable' = '15,16,17,23';
-    'picture'  = '12,18,23';
-    'unknown'  = '12,15,16,17,18,23';
-    'archive'  = '12,15,16,17,18,19';
+    'editable': '15,16,17,23',
+    'picture':  '12,18,23',
+    'unknown':  '12,15,16,17,18,23',
+    'archive':  '12,15,16,17,18,19'
 };
 
 if (jQuery) (function(jQuery){
@@ -570,7 +570,7 @@ if (jQuery) (function(jQuery){
                     menu: 'gsFileMenu'
                 },
                     function(action, el, pos) {
-                       jQuery(el).doGSAction({action action, script: o.script, type: 'file', lg: o.language});
+                       jQuery(el).doGSAction({action: action, script: o.script, type: 'file', lg: o.language});
                 },
                 manageGsMenu);
                 jQuery('table.dirs_files_table tr').find('div.gsItem.file').dblclick(function(e) {
