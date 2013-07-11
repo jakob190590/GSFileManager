@@ -127,7 +127,7 @@ function gsCheckResponce (data) {
 
 function gs_storeSelectedItems(){
     gs_clipboard = new Array();
-    jQuery("#gs_content_table div.rowSelected").each(function(){
+    jQuery('#gs_content_table div.rowSelected').each(function(){
         var id = jQuery(this).attr('rel');
         if (typeof(gs_cur_items[id]) != 'undefined') {
             gs_clipboard.push(gs_cur_items[id]);
@@ -320,17 +320,17 @@ if (jQuery) (function(jQuery){
             if( o.collapseEasing == undefined ) o.collapseEasing = null;
             if( o.loadMessage == undefined ) o.loadMessage = 'Loading...';
 
-            var menuHtml = '<table class=\'gsHeadTable\' cellpadding=0 cellspacing=0><tr><td><span class=\'gsHeadText\'> ' + gs_getTranslation(o.language, 1)+ ': </span><span id=\'curDir\'></span></td><td><a href=\'javascript: void(0);\' onClick=\'return gs_showClipboardContent();\' class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 2)+ '&nbsp;</a><span id=\'gsClipBoard\'>0 items</span> </td></tr></table>';
-            menuHtml += '<a id="gs_uploadbutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 3)+ '&nbsp;</a>';
-            menuHtml += '<a id="gs_newfilebutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 4)+ '&nbsp;</a>';
-            menuHtml += '<a id="gs_newdirbutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 5)+ '&nbsp;</a>';
-            menuHtml += '<a id="gs_pastebutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 6)+ '&nbsp;</a>';
-            menuHtml += '<a id="gs_selectallbutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 23)+ '&nbsp;</a>';
-            menuHtml += '<a id="gs_deselectbutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 24)+ '&nbsp;</a>';
-            menuHtml += '<a id="gs_invertselectbutton" class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 25)+ '&nbsp;</a>';
-            var wrapperHtml = '<div id=\'gs_dir_list\' class=\'gs_dir_list\' onClick="jQuery(this).doGSAction({action: 21})"></div>';
-            wrapperHtml    += '<div class=\'gs_dir_content\' onClick="jQuery(this).doGSAction({action: 21})">'
-                                 + '<div class=\'gs_dir_content_menu\'>';
+            var menuHtml = '<table class="gsHeadTable" cellpadding=0 cellspacing=0><tr><td><span class="gsHeadText"> ' + gs_getTranslation(o.language, 1)+ ': </span><span id=\'curDir\'></span></td><td><a href=\'javascript: void(0);\' onClick=\'return gs_showClipboardContent();\' class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 2)+ '&nbsp;</a><span id=\'gsClipBoard\'>0 items</span> </td></tr></table>';
+            menuHtml += '<a id="gs_uploadbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 3)+ '&nbsp;</a>';
+            menuHtml += '<a id="gs_newfilebutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 4)+ '&nbsp;</a>';
+            menuHtml += '<a id="gs_newdirbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 5)+ '&nbsp;</a>';
+            menuHtml += '<a id="gs_pastebutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 6)+ '&nbsp;</a>';
+            menuHtml += '<a id="gs_selectallbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 23)+ '&nbsp;</a>';
+            menuHtml += '<a id="gs_deselectbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 24)+ '&nbsp;</a>';
+            menuHtml += '<a id="gs_invertselectbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 25)+ '&nbsp;</a>';
+            var wrapperHtml = '<div id="gs_dir_list" class="gs_dir_list" onClick="jQuery(this).doGSAction({action: 21})"></div>';
+            wrapperHtml    += '<div class="gs_dir_content" onClick="jQuery(this).doGSAction({action: 21})">'
+                                 + '<div class="gs_dir_content_menu">';
             wrapperHtml += menuHtml;
             wrapperHtml    += '     </div>';
             wrapperHtml    += '<div class=\'gs_delimiter\'>&nbsp;</div>';
@@ -382,16 +382,16 @@ if (jQuery) (function(jQuery){
 
             wrapperHtml    += contexMenus;
 
-            var hiddenElements = '<div id=\'gsclipboardContent\' style=\'display: none\'></div>';
-            hiddenElements += '<div id=\'gsnotepadedit\' style=\'display: none\'></div>';
-            hiddenElements += '<div id=\'gsckeditor\' style=\'display: none\'><div id="gs_ckeditor_content"></div></div>';
-            hiddenElements += '<div id=\'gsimageviewer\' style=\'display: none\'><div id="gsimageviewer_content"></div>' + gs_getTranslation(o.language, 26)+ ':&nbsp;&nbsp;<input type="text" name="gs_image_x" id="gs_image_x" value="" size="5" rel="0">px<br/>' + gs_getTranslation(o.language, 27)+ ': <input type="text" name="gs_image_y" id="gs_image_y" value="" size="5" rel="0">px'
+            var hiddenElements = '<div id="gsclipboardContent" style="display: none"></div>';
+            hiddenElements += '<div id="gsnotepadedit" style="display: none"></div>';
+            hiddenElements += '<div id="gsckeditor" style="display: none"><div id="gs_ckeditor_content"></div></div>';
+            hiddenElements += '<div id="gsimageviewer" style="display: none"><div id="gsimageviewer_content"></div>' + gs_getTranslation(o.language, 26)+ ':&nbsp;&nbsp;<input type="text" name="gs_image_x" id="gs_image_x" value="" size="5" rel="0">px<br/>' + gs_getTranslation(o.language, 27)+ ': <input type="text" name="gs_image_y" id="gs_image_y" value="" size="5" rel="0">px'
                                   + '<br/>' + gs_getTranslation(o.language, 44) + ': <input type="checkbox" name="lock_sizes" id="lock_sizes" checked=true></div>';
-            hiddenElements += '<div id=\'gsuploadfiles\' style=\'display: none; position: relative;\'>';
+            hiddenElements += '<div id="gsuploadfiles" style="display: none; position: relative;">';
             hiddenElements += '<form action="' + o.script +'" id="gsUploadForm" enctype="multipart/form-data"><input type="hidden" name="opt" value="11"><input type="hidden" name="dir" value="">';
             hiddenElements +=  '<div class="fileinputs"><input type="file" name="filename" size="30" id="gsUploadButton"></div></form>';
             hiddenElements += '</div>';
-            hiddenElements += '<div id=\'gs_jcrop_div\' style=\'display: none\'>';
+            hiddenElements += '<div id="gs_jcrop_div" style="display: none">';
             hiddenElements += '<form action="' + o.script +'" id="gs_jcrop_form" method="POST">';
             hiddenElements += '  <input type="hidden" name="gs_jcrop_x" id="gs_jcrop_x" value=""/><input type="hidden" name="opt" value="12"/><input type="hidden" name="dir" value="" id="gs_jcrop_dir"/><input type="hidden" name="filename" value="" id="gs_jcrop_filename"/><input type="hidden" name="gs_jcrop_y" id="gs_jcrop_y" value=""/><input type="hidden" name="gs_jcrop_w" id="gs_jcrop_w" value=""/><input type="hidden" name="gs_jcrop_h" id="gs_jcrop_h" value=""/>';
             hiddenElements += '</form><div id="gs_jcrop_div_container"></div>';
@@ -622,10 +622,10 @@ if (jQuery) (function(jQuery){
 
                         var dirhtml = '';
                         if (typeof(gsdirs) != 'undefined' && gsdirs.length > 0) {
-                            dirhtml += "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
+                            dirhtml += '<ul class="jqueryFileTree" style="display: none;">';
                             for (var num in gsdirs) {
                                  var curItem = gsdirs[num];
-                                 dirhtml += "<li class=\"directoryMeny collapsed\"><span class='dir_index toggleplus'>&nbsp;&nbsp;&nbsp;&nbsp;</span><a href=\"#\" rel=\"" + curItem.path + "/\" id=\"" + curItem.id + "\">" + curItem.name + "</a></li>";
+                                 dirhtml += '<li class="directoryMeny collapsed"><span class="dir_index toggleplus">&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="javascript:void(0)" rel="' + curItem.path + '/" id="' + curItem.id + '">' + curItem.name + '</a></li>';
                             }
                             dirhtml += "</ul>";
                         } else {
@@ -721,7 +721,7 @@ if (jQuery) (function(jQuery){
                 });
                 return false;
             }
-            var curDir = jQuery("#curDir").html();
+            var curDir = jQuery('#curDir').text();
             var dataForSend = null;
             var gsitem = gs_get_cur_item(jQuery(this).attr('rel'));
 
@@ -850,7 +850,7 @@ if (jQuery) (function(jQuery){
                 jQuery('#gs_ckeditor_content').html('<div class="loadingDiv">&nbsp;</div>');
                 dataForSend = {opt: 9, filename: gsitem.name, dir: curDir};
                 sendAndRefresh(o, dataForSend, false, function(data) {
-                               jQuery('#gs_ckeditor_content').html('<textarea id="gsFileContent" name=\'gsFileContent\' rel="' + gsitem.name +'">' + data + '</textarea>');
+                               jQuery('#gs_ckeditor_content').html('<textarea id="gsFileContent" name="gsFileContent" rel="' + gsitem.name +'">' + data + '</textarea>');
 
                                if (typeof(CKEDITOR.instances.gsFileContent) != 'undefined') {
                                    CKEDITOR.remove(CKEDITOR.instances['gsFileContent']);
@@ -890,7 +890,7 @@ if (jQuery) (function(jQuery){
                 jQuery('#gsnotepadedit').html('<div class="loadingDiv">&nbsp;</div>');
                 dataForSend = {opt: 9, filename: encodeURIComponent(gsitem.name), dir: curDir};
                 sendAndRefresh(o, dataForSend, false, function(data) {
-                               jQuery('#gsnotepadedit').html('<textarea name=\'gsFileContent\' rows="' + rows + '" cols="' + cols + '" rel="' + gsitem.name +'">' + data + '</textarea>');
+                               jQuery('#gsnotepadedit').html('<textarea name="gsFileContent" rows="' + rows + '" cols="' + cols + '" rel="' + gsitem.name +'">' + data + '</textarea>');
                   });
             }
 
@@ -978,7 +978,7 @@ if (jQuery) (function(jQuery){
                 if (opt == 7) {
                     for (var xx in gs_clipboard) {
                          if (gs_clipboard[xx].getExt() == 'dir') {
-                             jQuery("#" + gs_clipboard[xx].id).parent().remove();
+                             jQuery('#' + gs_clipboard[xx].id).parent().remove();
                          }
                     }
                 }
