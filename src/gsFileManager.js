@@ -980,7 +980,7 @@ if (jQuery) (function(jQuery){
             }
 
             function copyAs(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 34) + ': ', htmlspecialchars_decode(gsitem.name, 'ENT_QUOTES'));
+                var newName = window.prompt(gs_getTranslation(o.lg, 34) + ': ', gsitem.name);
                 if (newName == null) {
                     return;
                 }
@@ -1034,14 +1034,11 @@ if (jQuery) (function(jQuery){
             }
 
             function deleteItem(o, curDir, gsitem){
-                if(!window.confirm(gs_getTranslation(o.lg, 38))){
+                var selectedFiles = gsGetSelectedItems();
+                if (selectedFiles.length == 0 || !window.confirm(gs_getTranslation(o.lg, 38))) {
                     return;
                 }
-                var selectedFiles = gsGetSelectedItems();
-                //alert('sel ' + selectedFiles);
-                if (selectedFiles != null) {
-                    dataForSend = {opt: 4, files: encodeURIComponent(selectedFiles), dir: curDir};
-                }
+                dataForSend = {opt: 4, files: selectedFiles, dir: curDir};
                 sendAndRefresh(o, dataForSend, true);
             }
 
