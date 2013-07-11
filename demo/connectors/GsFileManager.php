@@ -10,39 +10,62 @@
  *
  * George Sarafov
  * http://freewebfilemanager.com
+ *
  */
 
+// Alle Methoden in GSFileSystemFileStorage verwenden ausschliesslich die
+// "low-level" PHP Filesystem Functions innerhalb.  Sie rufen sich nicht
+// gegenseitig oder selbst auf.  Wenn man sich darueber hinwegsetzt hat man
+// schnell Encoding-Probleme!
+// Ausnahmen: deleteDirectory, copyDirectory (wegen Rekursion)
 class GSFileSystemFileStorage {
 
+    static private function toCP1252($string) { // from UTF-8
+        return iconv('UTF-8', 'CP1252', $string);
+    }
+
+    static private function toUTF8($string) { // from CP1252
+        return iconv('CP1252', 'UTF-8', $string);
+    }
+
     public function is_dir($file) {
+        $file = self::toCP1252($file);
         return @is_dir($file);
     }
 
     public function file_exists($file) {
+        $file = self::toCP1252($file);
         return @file_exists($file);
     }
 
     public function scandir($file) {
-        return @scandir($file);
+        $file = self::toCP1252($file);
+        $result = @scandir($file); // returns array with filenames
+        return array_map(array(__CLASS__, 'toUTF8'), $result);
     }
 
     public function filesize($file) {
+        $file = self::toCP1252($file);
         return @filesize($file);
     }
 
-    public function deleteFile($file){
+    public function deleteFile($file) {
+        $file = self::toCP1252($file);
         return @unlink($file);
     }
 
-    public function deleteDirectory($dirname){
+    public function deleteDirectory($dirname) {
+        $dirname_utf8 = $dirname;
+        $dirname = self::toCP1252($dirname);
         $files = scandir($dirname);
         if (count($files) > 2) {
             foreach( $files as $file ) {
                 if ($file == '.' || $file == '..') {
                     continue;
                 }
+                $file_utf8 = self::toUTF8($file);
                 if (is_dir($dirname.'/'.$file)) {
-                    $this->deleteDirectory($dirname.'/'.$file);
+                    $this->deleteDirectory($dirname_utf8.'/'.$file_utf8);
                 } else {
                     @unlink($dirname.'/'.$file);
                 }
@@ -51,56 +74,70 @@ class GSFileSystemFileStorage {
         return rmdir($dirname);
     }
 
-    public function makeDirectory($dirname){
+    public function makeDirectory($dirname) {
+        $dirname = self::toCP1252($dirname);
         return @mkdir($dirname);
     }
 
-    public function makeFile($filename){
-        if ($handle = fopen($filename, 'w')) {
+    public function makeFile($filename) {
+        $filename = self::toCP1252($filename);
+        if (($handle = fopen($filename, 'w'))) {
             fclose($handle);
             return true;
         }
         return false;
     }
 
-    public function filemtime ($filename) {
+    public function filemtime($filename) {
+        $filename = self::toCP1252($filename);
         return @filemtime($filename);
     }
 
-    public function copyFile ($from, $to) {
+    public function copyFile($from, $to) {
+        $from = self::toCP1252($from);
+        $to   = self::toCP1252($to);
         return @copy($from, $to);
     }
 
-    public function copyDir ($src, $dst) {
+    public function copyDir($src, $dst) {
+        $src = self::toCP1252($src);
+        $dst = self::toCP1252($dst);
         $dir = opendir($src);
         $result = @mkdir($dst);
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir($src . '/' . $file) ) {
-                    $this->copyDir($src . '/' . $file, $dst . '/' . $file);
-                }
-                else {
-                    copy($src . '/' . $file,$dst . '/' . $file);
-                }
+        while (($file = readdir($dir)) !== false) {
+            if ($file == '.' || $file == '..' ) {
+                continue;
+            }
+            if (is_dir($src . '/' . $file)) {
+                $this->copyDir($src . '/' . $file, $dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
             }
         }
         closedir($dir);
         return $result;
     }
 
-    public function renameItem ($from, $to) {
+    public function renameItem($from, $to) {
+        $from = self::toCP1252($from);
+        $to   = self::toCP1252($to);
         return @rename($from, $to);
     }
 
-    public function readFile($filename){
+    public function readFile($filename) {
+        $filename = self::toCP1252($filename);
         return file_get_contents($filename);
     }
 
-    public function writefile($filename, $content){
+    public function writeFile($filename, $content) {
+        $filename = self::toCP1252($filename);
         return @file_put_contents($filename, $content);
     }
 
     public function move_uploaded_file ($from, $to) {
+        $from = self::toCP1252($from);
+        $to   = self::toCP1252($to);
         return @move_uploaded_file($from, $to);
     }
 
