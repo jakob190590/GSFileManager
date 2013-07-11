@@ -606,7 +606,10 @@ if (jQuery) (function(jQuery){
                     url: o.script,
                     data: { dir: t },
                     dataType: 'script',
-                    contentType : 'application/x-www-form-urlencoded; charset=utf-8',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('Accept', "text/html; charset=UTF-8");
+                    },
                     success: function(data) {
 
                         //remember current dir id
