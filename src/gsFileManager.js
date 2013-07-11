@@ -38,7 +38,7 @@ var gsItem = function(type, name, path, size, id, exta, lastMod) {
     };
 
     this.isPicture = function(){
-        return s_ext_pictures.hasOwnProperty(this.exta);
+        return gs_ext_pictures.hasOwnProperty(this.exta);
     };
 
     this.isEditable = function(){
@@ -1089,98 +1089,100 @@ if(jQuery)(function() {
             // Loop each context menu
             jQuery(this).each(function() {
                 var el = jQuery(this);
-                var offset = jQuery(el).offset();
+                var offset = el.offset();
                 // Add contextMenu class
                 jQuery('#' + o.menu).addClass('contextMenu');
-                // Simulate a true right click
-                jQuery(this).mousedown( function(e) {
-                    var evt = e;
-                    evt.stopPropagation();
-                    jQuery(this).mouseup( function(e) {
-                        e.stopPropagation();
-                        var srcElement = jQuery(this);
+
+                // Bei rechte Maustaste down: auf rechte Maustaste up reagieren
+                el.mousedown(function(eventMouseDown) {
+                    if (eventMouseDown.which != 3) return;
+                    eventMouseDown.stopPropagation();
+                    var srcElement = jQuery(this);
+                    jQuery(this).mouseup(function(eventMouseUp) {
+                        if (eventMouseUp.which != 3) return;
+                        eventMouseUp.stopPropagation();
                         srcElement.unbind('mouseup');
-                        if( evt.button == 2 ) {
-                            // Hide context menus that may be showing
-                            jQuery(".contextMenu").hide();
-                            // Get this context menu
-                            var menu = jQuery('#' + o.menu);
-                            menu.enableContextMenuItems();
-                            if (onShowMenu) {
-                                if (!onShowMenu( srcElement, menu )) {
-                                    return false;
-                                }
-                            }
-                            if (!srcElement.hasClass('rowSelected')) {
-                                jQuery("#gs_content_table div.gsItem").removeClass('rowSelected');
-                                if (o.addSelectedClass) {
-                                    srcElement.addClass('rowSelected');
-                                }
-                            }
 
-                            var jmenu = jQuery(menu);
-                            if( jQuery(el).hasClass('disabled')) {
+                        // Hide context menus that may be showing
+                        jQuery(".contextMenu").hide();
+                        // Get this context menu
+                        var menu = jQuery('#' + o.menu);
+                        menu.enableContextMenuItems();
+                        if (onShowMenu) {
+                            if (!onShowMenu( srcElement, menu)) {
                                 return false;
                             }
-                            // Detect mouse position
-                            var d = {}, x, y;
-                            if( self.innerHeight ) {
-                                d.pageYOffset = self.pageYOffset;
-                                d.pageXOffset = self.pageXOffset;
-                                d.innerHeight = self.innerHeight;
-                                d.innerWidth = self.innerWidth;
-                            } else if( document.documentElement &&
-                                document.documentElement.clientHeight ) {
-                                d.pageYOffset = document.documentElement.scrollTop;
-                                d.pageXOffset = document.documentElement.scrollLeft;
-                                d.innerHeight = document.documentElement.clientHeight;
-                                d.innerWidth = document.documentElement.clientWidth;
-                            } else if( document.body ) {
-                                d.pageYOffset = document.body.scrollTop;
-                                d.pageXOffset = document.body.scrollLeft;
-                                d.innerHeight = document.body.clientHeight;
-                                d.innerWidth = document.body.clientWidth;
-                            }
-                            (e.pageX) ? x = e.pageX : x = e.clientX + d.scrollLeft;
-                            (e.pageY) ? y = e.pageY : y = e.clientY + d.scrollTop;
-
-                            // Show the menu
-                            jQuery(document).unbind('click');
-                            jmenu.css({ top: y, left: x }).fadeIn(o.inSpeed);
-
-                            // Hover events
-                            jmenu.find('a').mouseover(function() {
-                                jmenu.find('li.hover').removeClass('hover');
-                                if (!jQuery(this).parent().parent().hasClass('subContextMenu')) {
-                                     jmenu.find('ul.subContextMenu').hide();
-                                }
-                                jQuery(this).parent().addClass('hover');
-                                jQuery(this).parent().find('ul').css({ top: 0, left: 120 }).fadeIn(o.inSpeed);
-                            }).mouseout( function() {
-                                jmenu.find('li.hover').removeClass('hover');
-                            });
-
-                            // When items are selected
-                            menu.find('a').unbind('click');
-                            menu.find('a').bind('click', function() {
-                                if(jQuery(this).parent().hasClass('disabled')){
-                                   return false;
-                                }
-                                jQuery(".contextMenu").hide();
-                                // Callback
-                                if (callback) {
-                                    callback( jQuery(this).attr('rel'), jQuery(srcElement), {x: x - offset.left, y: y - offset.top, docX: x, docY: y} );
-                                }
-                                return false;
-                            });
-
-                            // Hide bindings
-                            setTimeout( function() { // Delay for Mozilla
-                                jQuery(document).click( function() {
-                                    jQuery(menu).fadeOut(o.outSpeed);
-                                });
-                            }, 0);
                         }
+                        if (!srcElement.hasClass('rowSelected')) {
+                            jQuery("#gs_content_table div.gsItem").removeClass('rowSelected');
+                            if (o.addSelectedClass) {
+                                srcElement.addClass('rowSelected');
+                            }
+                        }
+
+                        var jmenu = jQuery(menu);
+                        if (jQuery(el).hasClass('disabled')) {
+                            return false;
+                        }
+                        // Detect mouse position
+                        var d = {};
+                        if (self.innerHeight) {
+                            d.pageYOffset = self.pageYOffset;
+                            d.pageXOffset = self.pageXOffset;
+                            d.innerHeight = self.innerHeight;
+                            d.innerWidth = self.innerWidth;
+                        } else if (document.documentElement &&
+                            document.documentElement.clientHeight) {
+                            d.pageYOffset = document.documentElement.scrollTop;
+                            d.pageXOffset = document.documentElement.scrollLeft;
+                            d.innerHeight = document.documentElement.clientHeight;
+                            d.innerWidth = document.documentElement.clientWidth;
+                        } else if (document.body) {
+                            d.pageYOffset = document.body.scrollTop;
+                            d.pageXOffset = document.body.scrollLeft;
+                            d.innerHeight = document.body.clientHeight;
+                            d.innerWidth = document.body.clientWidth;
+                        }
+                        var x = eventMouseUp.pageX ? eventMouseUp.pageX : eventMouseUp.clientX + d.scrollLeft;
+                        var y = eventMouseUp.pageY ? eventMouseUp.pageY : eventMouseUp.clientY + d.scrollTop;
+
+                        // Show the menu
+                        jQuery(document).unbind('click');
+                        jmenu.css({ top: y, left: x }).fadeIn(o.inSpeed);
+
+                        // Hover events
+                        jmenu.find('a').mouseover(function() {
+                            jmenu.find('li.hover').removeClass('hover');
+                            if (!jQuery(this).parent().parent().hasClass('subContextMenu')) {
+                                 jmenu.find('ul.subContextMenu').hide();
+                            }
+                            jQuery(this).parent().addClass('hover');
+                            jQuery(this).parent().find('ul').css({ top: 0, left: 120 }).fadeIn(o.inSpeed);
+                        }).mouseout( function() {
+                            jmenu.find('li.hover').removeClass('hover');
+                        });
+
+                        // When items are selected
+                        menu.find('a').unbind('click');
+                        menu.find('a').bind('click', function() {
+                            if(jQuery(this).parent().hasClass('disabled')){
+                               return false;
+                            }
+                            jQuery(".contextMenu").hide();
+                            // Callback
+                            if (callback) {
+                                callback( jQuery(this).attr('rel'), jQuery(srcElement), {x: x - offset.left, y: y - offset.top, docX: x, docY: y});
+                            }
+                            return false;
+                        });
+
+                        // Hide bindings
+                        setTimeout( function() { // Delay for Mozilla
+                            jQuery(document).click( function() {
+                                jQuery(menu).fadeOut(o.outSpeed);
+                            });
+                        }, 0);
+
                     });
                 });
 
@@ -1205,30 +1207,27 @@ if(jQuery)(function() {
             var element = jQuery(this);
             if (o == undefined) {
                 // Disable all
-                jQuery(this).find('LI').addClass('disabled');
-                return( jQuery(this) );
-            }
-            jQuery(this).each( function() {
-                if( o != undefined ) {
+                element.find('li').addClass('disabled');
+            } else {
+                element.each(function() {
                     var d = o.split(',');
                     for (var i = 0; i < d.length; i++) {
                         //alert(d[i]);
-                        jQuery(this).find('a[rel="' + d[i] + '"]').parent().addClass('disabled');
+                        element.find('a[rel="' + d[i] + '"]').parent().addClass('disabled');
                     }
-                }
-            });
-            return( jQuery(this) );
+                });
+            }
+            return element;
         },
 
         // Enable context menu items on the fly
         enableContextMenuItems: function(o) {
-            if( o == undefined ) {
+            var element = jQuery(this);
+            if (o == undefined) {
                 // Enable all
-                jQuery(this).find('li.disabled').removeClass('disabled');
-                return( jQuery(this) );
-            }
-            jQuery(this).each( function() {
-                if( o != undefined ) {
+                element.find('li').removeClass('disabled');
+            } else {
+                element.each(function() {
                     var d = o.split(',');
                     for (var i = 0; i < d.length; i++) {
                         element.find('a[rel="' + d[i] + '"]').parent().removeClass('disabled');
@@ -1240,28 +1239,25 @@ if(jQuery)(function() {
 
         // Disable context menu(s)
         disableContextMenu: function() {
-            jQuery(this).each( function() {
-                jQuery(this).addClass('disabled');
-            });
-            return( jQuery(this) );
+            var element = jQuery(this);
+            element.addClass('disabled');
+            return element;
         },
 
         // Enable context menu(s)
         enableContextMenu: function() {
-            jQuery(this).each( function() {
-                jQuery(this).removeClass('disabled');
-            });
-            return( jQuery(this) );
+            var element = jQuery(this);
+            element.removeClass('disabled');
+            return element;
         },
 
         // Destroy context menu(s)
         destroyContextMenu: function() {
             // Destroy specified context menus
-            jQuery(this).each( function() {
-                // Disable action
-                jQuery(this).unbind('mousedown').unbind('mouseup');
-            });
-            return( jQuery(this) );
+            var element = jQuery(this);
+            element.unbind('mousedown');
+            element.unbind('mouseup');
+            return element;
         }
 
     });
