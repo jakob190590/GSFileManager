@@ -1,4 +1,4 @@
-UL.jqueryFileTree {
+ul.jqueryFileTree {
   font-family: Verdana, sans-serif;
   font-size: 12px;
   line-height: 18px;
@@ -6,7 +6,7 @@ UL.jqueryFileTree {
   margin: 0px;
 }
 
-UL.jqueryFileTree LI {
+ul.jqueryFileTree li {
   list-style: none;
   padding: 0px;
   padding-left: 20px;
@@ -14,12 +14,12 @@ UL.jqueryFileTree LI {
   white-space: nowrap;
 }
 
-UL.jqueryFileTree A {
+ul.jqueryFileTree a {
   color: #333;
   text-decoration: none;
 }
 
-UL.jqueryFileTree A:hover {
+ul.jqueryFileTree a:hover {
   background: #BDF;
 }
 
@@ -153,13 +153,13 @@ UL.jqueryFileTree A:hover {
 }
 
 .directoryMeny a { background: url(images/directory.png) left top no-repeat; padding-left: 20px}
-/*.jqueryFileTree LI.expanded { background: url(images/folder_open.png) 20px top no-repeat; }*/
+/*.jqueryFileTree li.expanded { background: url(images/folder_open.png) 20px top no-repeat; }*/
 .file {
   background-image:url(images/file.png);
   background-repeat:no-repeat;
   cursor: pointer;
   }
-.jqueryFileTree LI.wait { background: url(images/spinner.gif) left top no-repeat; }
+.jqueryFileTree li.wait { background: url(images/spinner.gif) left top no-repeat; }
 
 /* File Extensions*/
 .ext_3gp {
@@ -295,13 +295,13 @@ UL.jqueryFileTree A:hover {
   display: none;
 }
 
-.contextMenu LI {
+.contextMenu li {
   list-style: none;
   padding: 0px;
   margin: 0px;
 }
 
-.contextMenu A {
+.contextMenu a {
   color: #333;
   text-decoration: none;
   display: block;
@@ -314,21 +314,21 @@ UL.jqueryFileTree A:hover {
   padding-left: 28px;
 }
 
-.contextMenu LI.hover A {
+.contextMenu li.hover a {
   color: #FFF;
   background-color: #3399FF;
 }
 
-.contextMenu LI.disabled A {
+.contextMenu li.disabled a {
   color: #AAA;
   cursor: default;
 }
 
-.contextMenu LI.hover.disabled A {
+.contextMenu li.hover.disabled a {
   background-color: transparent;
 }
 
-.contextMenu LI.separator {
+.contextMenu li.separator {
   border-top: solid 1px #CCC;
 }
 
@@ -336,22 +336,22 @@ UL.jqueryFileTree A:hover {
   Adding Icons
 
   You can add icons to the context menu by adding
-  classes to the respective LI element(s)
+  classes to the respective li element(s)
 */
 
-.contextMenu LI.edit A { background-image: url(images/page_white_edit.png); }
-.contextMenu LI.cut A { background-image: url(images/cut.png); }
-.contextMenu LI.copy A { background-image: url(images/page_white_copy.png); }
-.contextMenu LI.paste A { background-image: url(images/page_white_paste.png); }
-.contextMenu LI.delete A { background-image: url(images/cross.png); }
-.contextMenu LI.quit A { background-image: url(images/door.png); }
-.contextMenu LI.directorymenu A { background-image: url(images/folder_open.png); }
-.contextMenu LI.rename A { background-image: url(images/file.png); }
-.contextMenu LI.download A { background-image: url(images/disk.png); }
-.contextMenu LI.notepad A { background-image: url(images/kwrite.png); }
-.contextMenu LI.picture A { background-image: url(images/picture.png); }
-.contextMenu LI.newfile A { background-image: url(images/new_file.png); }
-.contextMenu LI.newdir A { background-image: url(images/new_dir.png); }
-.contextMenu LI.uploadfolder A { background-image: url(images/upload_folder.png); }
-.contextMenu LI.selection A { background-image: url(images/selection-select.png); }
-.contextMenu LI.zip A { background-image: url(images/zip.png); }
+.contextMenu li.edit a { background-image: url(images/page_white_edit.png); }
+.contextMenu li.cut a { background-image: url(images/cut.png); }
+.contextMenu li.copy a { background-image: url(images/page_white_copy.png); }
+.contextMenu li.paste a { background-image: url(images/page_white_paste.png); }
+.contextMenu li.delete a { background-image: url(images/cross.png); }
+.contextMenu li.quit a { background-image: url(images/door.png); }
+.contextMenu li.directorymenu a { background-image: url(images/folder_open.png); }
+.contextMenu li.rename a { background-image: url(images/file.png); }
+.contextMenu li.download a { background-image: url(images/disk.png); }
+.contextMenu li.notepad a { background-image: url(images/kwrite.png); }
+.contextMenu li.picture a { background-image: url(images/picture.png); }
+.contextMenu li.newfile a { background-image: url(images/new_file.png); }
+.contextMenu li.newdir a { background-image: url(images/new_dir.png); }
+.contextMenu li.uploadfolder a { background-image: url(images/upload_folder.png); }
+.contextMenu li.selection a { background-image: url(images/selection-select.png); }
+.contextMenu li.zip a { background-image: url(images/zip.png); }
