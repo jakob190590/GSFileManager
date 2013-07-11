@@ -570,7 +570,7 @@ if (jQuery) (function(jQuery){
                     menu: 'gsFileMenu'
                 },
                     function(action, el, pos) {
-                       jQuery(el).doGSAction({action: action, script: o.script, type: 'file', lg: o.language});
+                       jQuery(el).doGSAction({action action, script: o.script, type: 'file', lg: o.language});
                 },
                 manageGsMenu);
                 jQuery('table.dirs_files_table tr').find('div.gsItem.file').dblclick(function(e) {
@@ -683,7 +683,7 @@ if (jQuery) (function(jQuery){
             function showRoot() {
                 showTree(jQuery('#gs_dir_list'), o.root);
                 //jQuery(this).parent().parent().find('ul').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
-                //jQuery(this).parent().parent().find('LI.directory').removeClass('expanded').addClass('collapsed');
+                //jQuery(this).parent().parent().find('li.directory').removeClass('expanded').addClass('collapsed');
             }
 
             var cusElement = jQuery('#gs_dir_list');
@@ -1173,14 +1173,14 @@ if(jQuery)( function() {
 
                             // Hover events
                             jmenu.find('a').mouseover(function() {
-                                jmenu.find('LI.hover').removeClass('hover');
+                                jmenu.find('li.hover').removeClass('hover');
                                 if (!jQuery(this).parent().parent().hasClass('subContextMenu')) {
-                                     jmenu.find('UL.subContextMenu').hide();
+                                     jmenu.find('ul.subContextMenu').hide();
                                 }
                                 jQuery(this).parent().addClass('hover');
                                 jQuery(this).parent().find('ul').css({ top: 0, left: 120 }).fadeIn(o.inSpeed);
                             }).mouseout( function() {
-                                jmenu.find('LI.hover').removeClass('hover');
+                                jmenu.find('li.hover').removeClass('hover');
                             });
 
                             // When items are selected
@@ -1217,7 +1217,7 @@ if(jQuery)( function() {
                     jQuery('#' + o.menu).each(function() { jQuery(this).bind('mousedown.disableTextSelect', function() { return false; }); });
 //                }
                 // Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
-                jQuery(el).add(jQuery('UL.contextMenu')).bind('contextmenu', function() { return false; });
+                jQuery(el).add(jQuery('ul.contextMenu')).bind('contextmenu', function() { return false; });
 
             });
             return jQuery(this);
@@ -1235,7 +1235,7 @@ if(jQuery)( function() {
                     var d = o.split(',');
                     for( var i = 0; i < d.length; i++ ) {
                         //alert(d[i]);
-                        jQuery(this).find('A[rel="' + d[i] + '"]').parent().addClass('disabled');
+                        jQuery(this).find('a[rel="' + d[i] + '"]').parent().addClass('disabled');
                     }
                 }
             });
@@ -1246,14 +1246,14 @@ if(jQuery)( function() {
         enableContextMenuItems: function(o) {
             if( o == undefined ) {
                 // Enable all
-                jQuery(this).find('LI.disabled').removeClass('disabled');
+                jQuery(this).find('li.disabled').removeClass('disabled');
                 return( jQuery(this) );
             }
             jQuery(this).each( function() {
                 if( o != undefined ) {
                     var d = o.split(',');
                     for( var i = 0; i < d.length; i++ ) {
-                        jQuery(this).find('A[rel="' + d[i] + '"]').parent().removeClass('disabled');
+                        jQuery(this).find('a[rel="' + d[i] + '"]').parent().removeClass('disabled');
 
                     }
                 }
