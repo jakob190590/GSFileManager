@@ -37,15 +37,15 @@ var gsItem = function(type, name, path, size, id, exta, lastMod) {
     };
 
     this.isPicture = function(){
-        return typeof(gs_ext_pictures[this.exta]) != 'undefined';
+        return s_ext_pictures.hasOwnProperty(this.exta);
     };
 
     this.isEditable = function(){
-        return typeof(gs_ext_editables[this.exta]) != 'undefined';
+        return gs_ext_editables.hasOwnProperty(this.exta);
     };
 
     this.isArchive = function(){
-        return typeof(gs_ext_arhives[this.exta]) != 'undefined';
+        return gs_ext_arhives.hasOwnProperty(this.exta);
     };
 
     this.getType = function(){
@@ -266,38 +266,42 @@ var gs_cur_items =  new Array();
 
 var gs_clipboard = new Array();
 
-var gs_ext_editables = new Array();
-gs_ext_editables['txt'] = '1';
-gs_ext_editables['php'] = '1';
-gs_ext_editables['doc'] = '1';
-gs_ext_editables['js'] = '1';
-gs_ext_editables['html'] = '1';
-gs_ext_editables['htm'] = '1';
-gs_ext_editables['rtf'] = '1';
-gs_ext_editables['css'] = '1';
-gs_ext_editables['java'] = '1';
-gs_ext_editables['asp'] = '1';
-gs_ext_editables['xml'] = '1';
-gs_ext_editables['xls'] = '1';
-gs_ext_editables['sql'] = '1';
-gs_ext_editables['log'] = '1';
+var gs_ext_editables = {
+    'txt'  = null,
+    'php'  = null,
+    'doc'  = null,
+    'js'   = null,
+    'html' = null,
+    'htm'  = null,
+    'rtf'  = null,
+    'css'  = null,
+    'java' = null,
+    'asp'  = null,
+    'xml'  = null,
+    'xls'  = null,
+    'sql'  = null,
+    'log'  = null
+};
 
-var gs_ext_pictures = new Array();
-gs_ext_pictures['png'] = '1';
-gs_ext_pictures['jpg'] = '1';
-gs_ext_pictures['jpeg'] = '1';
-gs_ext_pictures['gif'] = '1';
-gs_ext_pictures['pdf'] = '1';
-gs_ext_pictures['ico'] = '1';
+var gs_ext_pictures = {
+    'png'  = null,
+    'jpg'  = null,
+    'jpeg' = null,
+    'gif'  = null,
+    'pdf'  = null,
+    'ico'  = null
+};
 
-var gs_ext_arhives = new Array();
-gs_ext_arhives['zip'] = '1';
+var gs_ext_arhives = {
+    'zip' = true
+};
 
-var gs_forbitten_ext_mapping = new Array();
-gs_forbitten_ext_mapping['editable'] = '15,16,17,23';
-gs_forbitten_ext_mapping['picture'] = '12,18,23';
-gs_forbitten_ext_mapping['unknown'] = '12,15,16,17,18,23';
-gs_forbitten_ext_mapping['archive'] = '12,15,16,17,18,19';
+var gs_forbidden_ext_mapping = {
+    'editable' = '15,16,17,23';
+    'picture'  = '12,18,23';
+    'unknown'  = '12,15,16,17,18,23';
+    'archive'  = '12,15,16,17,18,19';
+};
 
 if (jQuery) (function(jQuery){
 
@@ -534,8 +538,8 @@ if (jQuery) (function(jQuery){
                 }
                 gs_item = gs_cur_items[srcElement.attr('rel')];
                 type = gs_item.getType();
-                if (typeof(gs_forbitten_ext_mapping[type]) != 'undefined') {
-                    menu.disableContextMenuItems(gs_forbitten_ext_mapping[type]);
+                if (gs_forbidden_ext_mapping.hasOwnProperty(type)) {
+                    menu.disableContextMenuItems(gs_forbidden_ext_mapping[type]);
                 }
                 return true;
             }
