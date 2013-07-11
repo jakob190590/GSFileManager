@@ -1076,24 +1076,26 @@ if (jQuery) (function(jQuery){
 // This plugin is dual-licensed under the GNU General Public License
 //   and the MIT License and is copyright A Beautiful Site, LLC.
 //
-if(jQuery)(function() {
-    jQuery.extend(jQuery.fn, {
+if (jQuery) (function() {
+    jQuery.fn.extend({
 
         contextMenu: function(o, callback, onShowMenu) {
             // Defaults
             if (o.menu == undefined) return false;
-            if (o.inSpeed == undefined) o.inSpeed = 150;
+            var menu = jQuery('#' + o.menu);
+            
             if (o.addSelectedClass == undefined) o.addSelectedClass = true;
-            if (o.outSpeed == undefined) o.outSpeed = 75;
+            if (o.inSpeed  == undefined) o.inSpeed  = 150;
+            if (o.outSpeed == undefined) o.outSpeed =  75;
             // 0 needs to be -1 for expected results (no fade)
-            if (o.inSpeed == 0) o.inSpeed = -1;
-            if (o.outSpeed == 0) o.outSpeed = -1;
+            o.inSpeed  = o.inSpeed  || -1;
+            o.outSpeed = o.outSpeed || -1;
             // Loop each context menu
             jQuery(this).each(function() {
                 var el = jQuery(this);
                 var offset = el.offset();
                 // Add contextMenu class
-                jQuery('#' + o.menu).addClass('contextMenu');
+                menu.addClass('contextMenu');
 
 
                 jQuery(this).mouseup(function(eventMouseUp) {
@@ -1103,8 +1105,6 @@ if(jQuery)(function() {
 
                     // Hide context menus that may be showing
                     jQuery(".contextMenu").hide();
-                    // Get this context menu
-                    var menu = jQuery('#' + o.menu);
                     menu.enableContextMenuItems();
                     if (onShowMenu) {
                         if (!onShowMenu(srcElement, menu)) {
@@ -1118,7 +1118,6 @@ if(jQuery)(function() {
                         }
                     }
 
-                    var jmenu = jQuery(menu);
                     if (jQuery(el).hasClass('disabled')) {
                         return false;
                     }
@@ -1145,19 +1144,19 @@ if(jQuery)(function() {
                     var y = eventMouseUp.pageY ? eventMouseUp.pageY : eventMouseUp.clientY + d.scrollTop;
 
                     // Show the menu
-                    jQuery(document).unbind('click');
-                    jmenu.css({ top: y, left: x }).fadeIn(o.inSpeed);
+                    jQuery(document).off('click');
+                    menu.css({ top: y, left: x }).fadeIn(o.inSpeed);
 
                     // Hover events
-                    jmenu.find('a').mouseover(function() {
-                        jmenu.find('li.hover').removeClass('hover');
+                    menu.find('a').mouseover(function() {
+                        menu.find('li.hover').removeClass('hover');
                         if (!jQuery(this).parent().parent().hasClass('subContextMenu')) {
-                             jmenu.find('ul.subContextMenu').hide();
+                             menu.find('ul.subContextMenu').hide();
                         }
                         jQuery(this).parent().addClass('hover');
                         jQuery(this).parent().find('ul').css({ top: 0, left: 120 }).fadeIn(o.inSpeed);
                     }).mouseout(function() {
-                        jmenu.find('li.hover').removeClass('hover');
+                        menu.find('li.hover').removeClass('hover');
                     });
 
                     // When items are selected
@@ -1186,11 +1185,11 @@ if(jQuery)(function() {
                 // Disable text selection
                 // TODO (Jakob) jQuery.browser is deprecated since 1.3 and removed since 1.9 (we have 1.9)
 //                if (jQuery.browser.mozilla) {
-//                    jQuery('#' + o.menu).each(function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
+//                    menu.each(function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
 //                } else if (jQuery.browser.msie) {
-//                    jQuery('#' + o.menu).each(function() { jQuery(this).bind('selectstart.disableTextSelect', function() { return false; }); });
+//                    menu.each(function() { jQuery(this).on('selectstart.disableTextSelect', function() { return false; }); });
 //                } else {
-                    jQuery('#' + o.menu).bind('mousedown.disableTextSelect', noAction);
+                    menu.on('mousedown.disableTextSelect', noAction);
 //                }
                 // Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
                 jQuery(el).add(jQuery('ul.contextMenu')).bind('contextmenu', noAction);
