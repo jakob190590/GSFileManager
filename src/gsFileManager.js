@@ -105,7 +105,7 @@ function gsGetSelectedItems(){
     return null;
 }
 
-function gsCheckResponce (data) {
+function gsCheckResponse (data) {
     if (typeof(data) == 'undefined') {
         return;
     }
@@ -451,7 +451,7 @@ if (jQuery) (function(jQuery){
                 },
 
                 success: function (responseText, statusText, xhr, $form) {
-                    gsCheckResponce(responseText);
+                    gsCheckResponse(responseText);
                     filenamea = jQuery('#gs_jcrop_filename').val();
                     dira = escape(jQuery('#gs_jcrop_dir').val());
                     var imageSrc = gs_makeUrl(o.script, "opt=15&filename=" + filenamea +"&dir=" + dira + "&time="+ new Date().getTime());
@@ -469,7 +469,7 @@ if (jQuery) (function(jQuery){
                         jQuery('#gsuploadfiles').append('<div class="loadingDiv">&nbsp;</div>');
                     },
                     success: function (responseText, statusText, xhr, $form) {
-                        gsCheckResponce(responseText);
+                        gsCheckResponse(responseText);
                         jQuery('#'+jQuery("#curDir").attr('rel')).trigger('click');
                         jQuery('#gsuploadfiles').find('div.loadingDiv').remove();
                     },
@@ -1068,7 +1068,7 @@ if (jQuery) (function(jQuery){
                            xhr.setRequestHeader('Accept', "text/html; charset=utf-8");
                        },
                       success: function(data) {
-                                  gsCheckResponce(data);
+                                  gsCheckResponse(data);
                                   if (refresh) {
                                         jQuery('#'+jQuery("#curDir").attr('rel')).trigger('click');
                                   }
