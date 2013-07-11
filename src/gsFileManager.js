@@ -447,7 +447,7 @@ if (jQuery) (function(jQuery){
                     jQuery('#gsimagecropzoom').append('<div class="loadingDiv">&nbsp;</div>');
                 },
 
-                success: function(responseText, statusText, xhr, $form) {
+                success: function(responseText, statusText, xhr, form) {
                     gsCheckResponse(responseText);
                     filenamea = jQuery('#gs_jcrop_filename').val();
                     dira = escape(jQuery('#gs_jcrop_dir').val());
@@ -465,7 +465,7 @@ if (jQuery) (function(jQuery){
                     beforeSubmit: function() {
                         jQuery('#gsuploadfiles').append('<div class="loadingDiv">&nbsp;</div>');
                     },
-                    success: function(responseText, statusText, xhr, $form) {
+                    success: function(responseText, statusText, xhr, form) {
                         gsCheckResponse(responseText);
                         jQuery('#'+jQuery("#curDir").attr('rel')).trigger('click');
                         jQuery('#gsuploadfiles').find('div.loadingDiv').remove();
@@ -561,8 +561,8 @@ if (jQuery) (function(jQuery){
             }
 
             function showContent(gsdirss, gsfiless) {
-                var dirshtml = showDirs (gsdirss);
-                var fileshtml = showFiles (gsfiless);
+                var dirshtml = showDirs(gsdirss);
+                var fileshtml = showFiles(gsfiless);
                 var tableheader = '<table class=\'dirs_files_table\' cellpadding=0 cellspacing=2 id="gs_content_table"><tr><th>' + gs_getTranslation(o.language, 7)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 8)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 9)+ '</th><th width=\'20%\'>' + gs_getTranslation(o.language, 10)+ '</th></tr>';
                 jQuery('#gs_dir_content').html(tableheader + dirshtml + fileshtml + "</table>");
 
@@ -580,11 +580,7 @@ if (jQuery) (function(jQuery){
                     var cur_element = jQuery(this);
                     var rel = jQuery(this).attr('rel');
                     if (rel != 'up') {
-                        if (cur_element.hasClass('rowSelected')) {
-                            cur_element.removeClass('rowSelected');
-                        } else {
-                            cur_element.addClass('rowSelected');
-                        }
+                        cur_element.toggleClass('rowSelected');
                     }
                     jQuery(".contextMenu").hide();
                     return false;
@@ -697,30 +693,16 @@ if (jQuery) (function(jQuery){
         },
 
         doGSAction: function(o) {
-            if (o.action == '20') { // select
-                jQuery("#gs_content_table div.gsItem").each(function(){
-                    if (jQuery(this).attr('rel') != 'up') {
-                        jQuery(this).addClass('rowSelected');
-                    }
-                });
+            if (o.action == '20') { // select all
+                jQuery('#gs_content_table div.gsItem[rel!="up"]').addClass('rowSelected');
                 return false;
             }
-            if (o.action == '21') { // deselect
-                jQuery("#gs_content_table div.gsItem").each(function(){
-                    jQuery(this).removeClass('rowSelected');
-                });
+            if (o.action == '21') { // deselect all
+                jQuery("#gs_content_table div.gsItem").removeClass('rowSelected');
                 return false;
             }
             if (o.action == '22') { // invert select
-                jQuery("#gs_content_table div.gsItem").each(function(){
-                    if (jQuery(this).attr('rel') != 'up') {
-                        if (jQuery(this).hasClass('rowSelected')) {
-                            jQuery(this).removeClass('rowSelected');
-                        } else {
-                            jQuery(this).addClass('rowSelected');
-                        }
-                    }
-                });
+                jQuery('#gs_content_table div.gsItem[rel!="up"]').toggleClass('rowSelected');
                 return false;
             }
             var curDir = jQuery('#curDir').text();
@@ -1132,10 +1114,8 @@ if(jQuery)( function() {
                                     return false;
                                 }
                             }
-                            if (!srcElement.hasClass('rowSelected')){
-                                jQuery("#gs_content_table div.gsItem").each(function(){
-                                    jQuery(this).removeClass('rowSelected');
-                                });
+                            if (!srcElement.hasClass('rowSelected')) {
+                                jQuery("#gs_content_table div.gsItem").removeClass('rowSelected');
                                 if (o.addSelectedClass) {
                                     srcElement.addClass('rowSelected');
                                 }
