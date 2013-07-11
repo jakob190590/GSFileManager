@@ -1128,11 +1128,11 @@ if (jQuery) (function() {
                     }
                     // Detect mouse position
                     var d = {};
-                    if (self.innerHeight) {
-                        d.pageYOffset = self.pageYOffset;
-                        d.pageXOffset = self.pageXOffset;
-                        d.innerHeight = self.innerHeight;
-                        d.innerWidth = self.innerWidth;
+                    if (window.self.innerHeight) {
+                        d.pageYOffset = window.self.pageYOffset;
+                        d.pageXOffset = window.self.pageXOffset;
+                        d.innerHeight = window.self.innerHeight;
+                        d.innerWidth  = window.self.innerWidth;
                     } else if (document.documentElement &&
                         document.documentElement.clientHeight) {
                         d.pageYOffset = document.documentElement.scrollTop;
