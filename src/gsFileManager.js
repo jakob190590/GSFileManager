@@ -584,7 +584,7 @@ if (jQuery) (function(jQuery){
                 jQuery('table.dirs_files_table tr').find('div.gsItem.file').dblclick(function(e) {
                     jQuery(this).doGSAction({action: 11, script: o.script, type: 'file', lg: o.language});
                 });
-                jQuery('table.dirs_files_table tr').find('div.gsItem').bind('click', function(e){
+                jQuery('table.dirs_files_table tr').find('div.gsItem').on('click', function(e) {
                     var cur_element = jQuery(this);
                     var rel = jQuery(this).attr('rel');
                     if (rel != 'up') {
@@ -660,12 +660,12 @@ if (jQuery) (function(jQuery){
 
             function setHandlers(t) {
                 //jQuery(t).find('li').droppable();
-                jQuery(t).find('li > a').bind('click', function() {
+                jQuery(t).find('li > a').on('click', function() {
                     showTree(jQuery(this).parent(), jQuery(this).attr('rel'));
                     jQuery(this).parent().removeClass('collapsed').addClass('expanded');
                     jQuery(this).parent().find(' > span').removeClass('toggleplus').addClass('toggleminus');
                 });
-                jQuery(t).find('li > span').bind('click', function() {
+                jQuery(t).find('li > span').on('click', function() {
                     var thisEl = jQuery(this);
                     if (thisEl.parent().hasClass('collapsed')) {
                         thisEl.parent().find('ul').slideDown({ duration: o.collapseSpeed, easing: o.collapseEasing });
@@ -695,7 +695,7 @@ if (jQuery) (function(jQuery){
             cusElement.html('<ul class="jqueryFileTree start"><li class="wait">' + o.loadMessage + '<li></ul>');
             // Get the initial file list
             cusElement.prepend('<a href="javascript:void(0)" id="rootLink">root</a>');
-            cusElement.find('#rootLink').bind('click', showRoot);
+            cusElement.find('#rootLink').on('click', showRoot);
 
             showRoot();
         },
@@ -1165,9 +1165,9 @@ if (jQuery) (function() {
                     });
 
                     // When items are selected
-                    menu.find('a').unbind('click');
-                    menu.find('a').bind('click', function() {
-                        if(jQuery(this).parent().hasClass('disabled')){
+                    menu.find('a').off('click');
+                    menu.find('a').on('click', function() {
+                        if (jQuery(this).parent().hasClass('disabled')){
                            return false;
                         }
                         jQuery(".contextMenu").hide();
@@ -1197,7 +1197,7 @@ if (jQuery) (function() {
                     menu.on('mousedown.disableTextSelect', noAction);
 //                }
                 // Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
-                jQuery(el).add(jQuery('ul.contextMenu')).bind('contextmenu', noAction);
+                jQuery(el).add(jQuery('ul.contextMenu')).on('contextmenu', noAction);
 
             });
             return jQuery(this);
@@ -1256,8 +1256,8 @@ if (jQuery) (function() {
         destroyContextMenu: function() {
             // Destroy specified context menus
             var element = jQuery(this);
-            element.unbind('mousedown');
-            element.unbind('mouseup');
+            element.off('mousedown');
+            element.off('mouseup');
             return element;
         }
 
