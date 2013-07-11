@@ -80,29 +80,22 @@ function gs_show_loading() {
     jQuery("#gs_dir_content").html('<div class="loadingDiv">&nbsp;</div>');
 }
 
+// wohl eher: get ItemPaths From Clipboard
 function gsGetSelectedItemsPath() {
     var arr = new Array();
     for (var x in gs_clipboard) {
         arr.push(gs_clipboard[x].path);
     }
-    if (arr.length > 0) {
-        return arr.join(',,,');
-    }
-    return null;
+    return arr;
 }
 
 function gsGetSelectedItems(){
     var arr = new Array();
-    jQuery("#gs_content_table div.rowSelected").each(function(){
-        var id = jQuery(this).attr('rel');
-        if (typeof(gs_cur_items[id]) != 'undefined') {
-            arr.push(gs_cur_items[id].name);
-        }
+    jQuery('#gs_content_table div').filter('.rowSelected').each(function () {
+        var filename = jQuery(this).text();
+        arr.push(filename);
     });
-    if (arr.length > 0) {
-        return arr.join(',,,');
-    }
-    return null;
+    return arr;
 }
 
 function gsCheckResponse (data) {
