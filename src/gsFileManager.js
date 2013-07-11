@@ -143,17 +143,22 @@ function gs_showClipboardContent() {
         divaHtml += '<div class="'+ clasa +'">&nbsp;&nbsp;&nbsp;' + gs_clipboard[xx].path + '<div>';
     }
     diva.html(divaHtml);
-    diva.dialog({title: 'Clipboard', modal: true, buttons: {
-         "Clear": function() {
-              gs_clipboard = new Array(); jQuery('#gsclipboardContent').html(''); jQuery("#gsClipBoard").html('0 items');
-              jQuery(this).dialog('close');
-              }
-          }
+    diva.dialog({
+        title: 'Clipboard',
+        modal: true,
+        buttons: {
+            Clear: function() {
+                gs_clipboard = [];
+                jQuery('#gsclipboardContent').html('');
+                jQuery("#gsClipBoard").html('0 items');
+                jQuery(this).dialog('close');
+            }
+        }
     });
     return false;
 }
 
-function gs_makeUrl(root, params){
+function gs_makeUrl(root, params) {
     if (root.indexOf('?') !=-1) {
         return root + '&' + params;
     } else {
@@ -399,8 +404,8 @@ if (jQuery) (function(jQuery){
             wrapperHtml += hiddenElements;
             jQuery(this).html(wrapperHtml);
 
-            jQuery('#gs_image_x').bind('blur', function(){gsmanageImgSizes('x')});
-            jQuery('#gs_image_y').bind('blur', function(){gsmanageImgSizes('y')});
+            jQuery('#gs_image_x').on('blur', function() { gsmanageImgSizes('x'); });
+            jQuery('#gs_image_y').on('blur', function() { gsmanageImgSizes('y'); });
 
             jQuery('#gs_dir_content').contextMenu({
                 menu: 'gsContentMenu',
@@ -1133,12 +1138,12 @@ if (jQuery) (function() {
                         d.pageYOffset = document.documentElement.scrollTop;
                         d.pageXOffset = document.documentElement.scrollLeft;
                         d.innerHeight = document.documentElement.clientHeight;
-                        d.innerWidth = document.documentElement.clientWidth;
+                        d.innerWidth  = document.documentElement.clientWidth;
                     } else if (document.body) {
                         d.pageYOffset = document.body.scrollTop;
                         d.pageXOffset = document.body.scrollLeft;
                         d.innerHeight = document.body.clientHeight;
-                        d.innerWidth = document.body.clientWidth;
+                        d.innerWidth  = document.body.clientWidth;
                     }
                     var x = eventMouseUp.pageX ? eventMouseUp.pageX : eventMouseUp.clientX + d.scrollLeft;
                     var y = eventMouseUp.pageY ? eventMouseUp.pageY : eventMouseUp.clientY + d.scrollTop;
@@ -1183,7 +1188,7 @@ if (jQuery) (function() {
                 });
 
                 // Disable text selection
-                // TODO (Jakob) jQuery.browser is deprecated since 1.3 and removed since 1.9 (we have 1.9)
+                // TODO jQuery Browserweiche ansehen und ueber Loeschung entscheiden
 //                if (jQuery.browser.mozilla) {
 //                    menu.each(function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
 //                } else if (jQuery.browser.msie) {
