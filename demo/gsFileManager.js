@@ -110,17 +110,17 @@ function gsCheckResponce (data) {
         return;
     }
     if (data.substr(0 , 9) == '{result: ') {
-        eval('var my_responce = ' + data + ';');
-        if (typeof(my_responce.result != 'undefined')) {
-          if (my_responce.result == '1') {
+        eval('var my_response = ' + data + ';');
+        if (typeof(my_response.result != 'undefined')) {
+          if (my_response.result == '1') {
               //alert('OK');
-          } else if (typeof(my_responce.gserror) != 'undefined') {
-              alert(my_responce.gserror);
+          } else if (typeof(my_response.gserror) != 'undefined') {
+              alert(my_response.gserror);
           } else {
               alert('Error');
           }
         }
-        delete my_responce;
+        delete my_response;
     }
 
 }

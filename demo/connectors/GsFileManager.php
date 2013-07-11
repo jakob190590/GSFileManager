@@ -194,9 +194,9 @@ class GSFileManager {
         $this->functions[6] = 'renameItem';
         $this->functions[7] = 'moveItems';
         $this->functions[8] = 'downloadItem';
-        $this->functions[9] = 'readfile';
-        $this->functions[10] = 'writefile';
-        $this->functions[11] = 'uploadfile';
+        $this->functions[9] = 'readFile';
+        $this->functions[10] = 'writeFile';
+        $this->functions[11] = 'uploadFile';
         $this->functions[12] = 'jCropImage';
         $this->functions[13] = 'imageResize';
         $this->functions[14] = 'copyAsFile';
@@ -230,7 +230,7 @@ class GSFileManager {
             throw new Exception('ConfigurationException: root can NOT be null', 1);
         }
         if (!isset($args['dir']) || empty($args['dir'])) {
-            throw new Exception('ILlegalArgumentException: dir can NOT be null', 4);
+            throw new Exception('IllegalArgumentException: dir can NOT be null', 4);
         } else {
             $args['dir'] = urldecode($args['dir']);
             $args['dir'] = $this->fixString($args['dir']);
@@ -251,20 +251,20 @@ class GSFileManager {
             $this->checkFileName($args['newfilename']);
         }
         if (strpos($args['dir'], '..') !== false) {
-            throw new Exception('ILlegalArgumentException: dir can NOT go up', 13);
+            throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
         }
-        $responce = '';
+        $response = '';
         $functionName = $this->getRequestFunction($args[$this->opt_param]);
         if ($functionName != null) {
-            $responce = $this->$functionName($args);
+            $response = $this->$functionName($args);
         } else {
-            throw new Exception('ILlegalArgumentException: Uknown action '.$args[$this->opt_param], 6);
+            throw new Exception('IllegalArgumentException: Uknown action '.$args[$this->opt_param], 6);
 
         }
         if ($this->setUtf8Header) {
             header ("Content-Type: text/html; charset=utf-8");
         }
-        return $responce;
+        return $response;
     }
 
     public function unZipItem($args){
@@ -287,14 +287,14 @@ class GSFileManager {
                         return '{result: \'0\'}';
                     }
                 } else {
-                    throw new Exception('ILlegalArgumentException: Destination already exists', 8);
+                    throw new Exception('IllegalArgumentException: Destination already exists', 8);
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
             }
 
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -317,13 +317,13 @@ class GSFileManager {
                     }
                     return '{result: \'0\'}';
                 } else {
-                    throw new Exception('ILlegalArgumentException: Destination already exists', 8);
+                    throw new Exception('IllegalArgumentException: Destination already exists', 8);
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -358,10 +358,10 @@ class GSFileManager {
                 header('Content-Type: image/'.$ext);
                 return $content;
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists', 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -381,7 +381,7 @@ class GSFileManager {
                 $jpeg_quality = 90;
                 $function = $this->returnCorrectFunction($ext);
                 if (empty($function)) {
-                    throw new Exception('ILlegalArgumentException: Image can not be recognized', 15);
+                    throw new Exception('IllegalArgumentException: Image can not be recognized', 15);
                 }
                 $img_r = $this->fileStorage->$function($src);
                 $new_image = imagecreatetruecolor($new_w, $new_h);
@@ -394,10 +394,10 @@ class GSFileManager {
                     return '{result: \'0\'}';
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists', 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
     public function jCropImage($args) {
@@ -416,7 +416,7 @@ class GSFileManager {
 
                 $function = $this->returnCorrectFunction($ext);
                 if (empty($function)) {
-                    throw new Exception('ILlegalArgumentException: Image can not be recognized', 15);
+                    throw new Exception('IllegalArgumentException: Image can not be recognized', 15);
                 }
                 $img_r = $this->fileStorage->$function($src);
                 $dst_r = imagecreatetruecolor( $targ_w, $targ_h );
@@ -432,10 +432,10 @@ class GSFileManager {
                     return '{result: \'0\'}';
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists', 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -458,28 +458,28 @@ class GSFileManager {
         return $function;
     }
 
-    public function uploadfile($args) {
+    public function uploadFile($args) {
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
         if (empty($_FILES)) {
-            throw new Exception('ILlegalArgumentException: no files for upload', 11);
+            throw new Exception('IllegalArgumentException: no files for upload', 11);
         }
         $maxSize = $this->getOptionValue('max_upload_filesize', 0);
-        $responce = '{result: \'0\'}';
+        $response = '{result: \'0\'}';
         foreach ($_FILES as $file) {
             if (!$this->fileStorage->file_exists($root.$dir.$file['name'])) {
                 if ($maxSize > 0 && $maxSize < intval($file['size']) / 1000) {
-                    throw new Exception('ILlegalArgumentException: File to large '.$file['name'], 14);
+                    throw new Exception('IllegalArgumentException: File to large '.$file['name'], 14);
                 }
                 $this->checkFileName($file['name']);
                 if ($this->fileStorage->move_uploaded_file($file['tmp_name'], $root.$dir.$file['name'])){
-                    $responce = '{result: \'1\'}';
+                    $response = '{result: \'1\'}';
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Destination already exists '.$file['name'], 8);
+                throw new Exception('IllegalArgumentException: Destination already exists '.$file['name'], 8);
             }
         }
-        return $responce;
+        return $response;
     }
 
     public function copyAsFile($args){
@@ -493,22 +493,22 @@ class GSFileManager {
                 }
                 if (!$this->fileStorage->file_exists($root.$dir.$newFilename)) {
                     $content = $this->fileStorage->readFile($root.$dir.$args['filename']);
-                    if ($this->fileStorage->writefile($root.$dir.$newFilename, $content) !== false){
+                    if ($this->fileStorage->writeFile($root.$dir.$newFilename, $content) !== false){
                         return '{result: \'1\'}';
                     }
                     return '{result: \'0\', gserror: \'Can NOT copy '.addslashes($dir.$newFilename).'\'}';
                 }else {
-                    throw new Exception('ILlegalArgumentException: Destination already exists '.$dir.$newFilename, 8);
+                    throw new Exception('IllegalArgumentException: Destination already exists '.$dir.$newFilename, 8);
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists', 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
-    public function writefile($args) {
+    public function writeFile($args) {
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['filename'])) {
             $content = '';
@@ -518,19 +518,19 @@ class GSFileManager {
             $filename = $args['filename'];
             $dir = $args['dir'];
             if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                if($this->fileStorage->writefile($root.$dir.$filename, $this->fixString($content)) !== false){
+                if($this->fileStorage->writeFile($root.$dir.$filename, $content) !== false){
                     return '{result: \'1\'}';
                 }
                 return '{result: \'0\', gserror: \'Can NOT copy '.addslashes($dir.$filename).'\'}';
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists', 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
-    public function readfile($args) {
+    public function readFile($args) {
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['filename'])) {
             $filename = $args['filename'];
@@ -542,10 +542,10 @@ class GSFileManager {
                 }
                 return $content;
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists '.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -567,10 +567,10 @@ class GSFileManager {
                 echo $content;
                 exit;
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists', 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -579,30 +579,30 @@ class GSFileManager {
         if (isset($args['files'])) {
             $files = split(',,,', urldecode($args['files']));
             $dir = $args['dir'];
-            $responce = '{result: \'0\'}';
+            $response = '{result: \'0\'}';
             foreach ($files as $filename) {
                 $filename = urldecode($filename);
                 $filename = html_entity_decode($filename, ENT_QUOTES, 'UTF-8');
                 $filename = $this->fixString($filename);
                 if (strpos($filename, '..') !== false) {
-                    throw new Exception('ILlegalArgumentException: dir can NOT go up', 13);
+                    throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
                 }
                 $this->checkFileName($filename);
                 if ($this->fileStorage->file_exists($root.$filename)) {
                     if (!$this->fileStorage->file_exists($root.$dir.basename($filename))) {
                         if ($this->fileStorage->renameItem($root.$filename, $root.$dir.basename($filename))) {
-                            $responce = '{result: \'1\'}';
+                            $response = '{result: \'1\'}';
                         }
                     } else {
-                        throw new Exception('ILlegalArgumentException: Destination already exists '.$filename, 8);
+                        throw new Exception('IllegalArgumentException: Destination already exists '.$filename, 8);
                     }
                 } else {
-                    throw new Exception('ILlegalArgumentException: Source does NOT exists '.$filename, 7);
+                    throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
                 }
             }
-            return $responce;
+            return $response;
         } else {
-            throw new Exception('ILlegalArgumentException: files can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: files can NOT be null', 5);
         }
     }
 
@@ -623,13 +623,13 @@ class GSFileManager {
                     }
                     return '{result: \'0\' , gserror: \'can not rename item '.addslashes($dir.$filename).' to '.addslashes($dir.$newFileName).'\'}';
                 } else {
-                    throw new Exception('ILlegalArgumentException: Destination already exists', 8);
+                    throw new Exception('IllegalArgumentException: Destination already exists', 8);
                 }
             } else {
-                throw new Exception('ILlegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
             }
         } else {
-            throw new Exception('ILlegalArgumentException: files can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: files can NOT be null', 5);
         }
     }
 
@@ -638,34 +638,34 @@ class GSFileManager {
         if (isset($args['files'])) {
             $files = split(',,,', urldecode($args['files']));
             $dir = $args['dir'];
-            $responce = '{result: \'0\'}';
+            $response = '{result: \'0\'}';
             foreach ($files as $filename) {
                 $filename = urldecode($filename);
                 $filename = html_entity_decode($filename, ENT_QUOTES, 'UTF-8');
                 $filename = $this->fixString($filename);
                 if (strpos($filename, '..') !== false) {
-                    throw new Exception('ILlegalArgumentException: dir can NOT go up', 13);
+                    throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
                 }
                 $this->checkFileName($filename);
                 if ($this->fileStorage->file_exists($root.$filename)) {
                     if (!$this->fileStorage->file_exists($root.$dir.basename($filename))) {
                         if (!is_dir($root.$filename)) {
                             if ($this->fileStorage->copyFile($root.$filename, $root.$dir.basename($filename))) {
-                                $responce = '{result: \'1\'}';
+                                $response = '{result: \'1\'}';
                             }
                         } else if ($this->fileStorage->copyDir($root.$filename, $root.$dir.basename($filename))){
-                            $responce = '{result: \'1\'}';
+                            $response = '{result: \'1\'}';
                         }
                     } else {
-                        throw new Exception('ILlegalArgumentException: Destination already exists '.$filename, 8);
+                        throw new Exception('IllegalArgumentException: Destination already exists '.$filename, 8);
                     }
                 } else {
-                    throw new Exception('ILlegalArgumentException: Source does NOT exists '.$filename, 7);
+                    throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
                 }
             }
-            return $responce;
+            return $response;
         } else {
-            throw new Exception('ILlegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
         }
     }
 
@@ -674,7 +674,7 @@ class GSFileManager {
         if (isset($args['files'])) {
             $files = split(',,,', urldecode($args['files']));
             $dir = $args['dir'];
-            $responce = '{result: \'1\'}';
+            $response = '{result: \'1\'}';
             foreach ($files as $filename) {
                 $path_parts2 = split('/', $filename);
                 $filename = end($path_parts2);
@@ -692,12 +692,12 @@ class GSFileManager {
                         }
                     }
                 } else {
-                    throw new Exception('ILlegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                    throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
                 }
             }
-            return $responce;
+            return $response;
         } else {
-            throw new Exception('ILlegalArgumentException: files can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: files can NOT be null', 5);
         }
     }
 
@@ -715,7 +715,7 @@ class GSFileManager {
             }
             return '{result: \'0\' , gserror: \'can not create item '.addslashes($dir.$filename).'\'}';
         } else {
-            throw new Exception('ILlegalArgumentException: Destination already exists', 8);
+            throw new Exception('IllegalArgumentException: Destination already exists', 8);
         }
         return '{result: \'0\'}';
     }
@@ -763,13 +763,13 @@ class GSFileManager {
             }
             return $html;
         } else {
-            throw new Exception('ILlegalArgumentException: dir to list does NOT exists '.$dir, 3);
+            throw new Exception('IllegalArgumentException: dir to list does NOT exists '.$dir, 3);
         }
     }
 
     public function checkFileName($filename){
         if ($filename == '.htaccess') {
-            throw new Exception('ILlegalArgumentException: Source does NOT exists '.$filename, 7);
+            throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
         }
     }
 
