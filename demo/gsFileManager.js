@@ -642,7 +642,7 @@ if (jQuery) (function(jQuery){
             // Loading message
             cusElement.html('<ul class="jqueryFileTree start"><li class="wait">' + o.loadMessage + '<li></ul>');
             // Get the initial file list
-            cusElement.prepend('<a href="#" id="rootLink">root</a>');
+            cusElement.prepend('<a href="javascript:void(0)" id="rootLink">root</a>');
             cusElement.find('#rootLink').bind('click', showRoot);
 
             showRoot();
