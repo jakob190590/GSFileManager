@@ -11,7 +11,7 @@
  * http://freewebfilemanager.com
  */
 
-var gsItem = function (type, name, path, size, id, exta, lastMod) {
+var gsItem = function(type, name, path, size, id, exta, lastMod) {
     this.path = path;
     this.type = type;
     this.name = name;
@@ -20,7 +20,7 @@ var gsItem = function (type, name, path, size, id, exta, lastMod) {
     this.exta = exta.toLowerCase();
     this.lastMod = lastMod;
 
-    this.getSize = function () {
+    this.getSize = function() {
         if (this.size < 1000000) {
             return Math.ceil(this.size / 1000) + ' KB';
         } else {
@@ -28,11 +28,11 @@ var gsItem = function (type, name, path, size, id, exta, lastMod) {
         }
     };
 
-    this.getExt = function () {
+    this.getExt = function() {
         return this.exta;
     };
 
-    this.getLastMod = function () {
+    this.getLastMod = function() {
         return this.lastMod;
     };
 
@@ -89,16 +89,16 @@ function gsGetSelectedItemsPath() {
     return arr;
 }
 
-function gsGetSelectedItems(){
+function gsGetSelectedItems() {
     var arr = new Array();
-    jQuery('#gs_content_table div').filter('.rowSelected').each(function () {
+    jQuery('#gs_content_table div').filter('.rowSelected').each(function() {
         var filename = jQuery(this).text();
         arr.push(filename);
     });
     return arr;
 }
 
-function gsCheckResponse (data) {
+function gsCheckResponse(data) {
     if (typeof(data) == 'undefined') {
         return;
     }
@@ -118,7 +118,7 @@ function gsCheckResponse (data) {
 
 }
 
-function gs_storeSelectedItems(){
+function gs_storeSelectedItems() {
     gs_clipboard = new Array();
     jQuery('#gs_content_table div.rowSelected').each(function(){
         var id = jQuery(this).attr('rel');
@@ -130,7 +130,7 @@ function gs_storeSelectedItems(){
     });
 }
 
-function gs_showClipboardContent(){
+function gs_showClipboardContent() {
     var diva = jQuery('#gsclipboardContent');
     var divaHtml = '';
     for (var xx in gs_clipboard) {
@@ -403,47 +403,47 @@ if (jQuery) (function(jQuery){
                     jQuery(el).doGSAction({action: action, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_uploadbutton').click(function (e){
+            jQuery('#gs_uploadbutton').click(function(e){
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 14, script:  o.script, type: 'file', lg: o.language});
             });
 
-            jQuery('#gs_newfilebutton').click(function (e){
+            jQuery('#gs_newfilebutton').click(function(e){
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 2, script: o.script, type: 'file', lg: o.language});
             });
 
-            jQuery('#gs_newdirbutton').click(function (e){
+            jQuery('#gs_newdirbutton').click(function(e){
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 3, script: o.script, type: 'dir', lg: o.language});
             });
 
-            jQuery('#gs_pastebutton').click(function (e){
+            jQuery('#gs_pastebutton').click(function(e){
                 e.stopPropagation();
                 jQuery(this).doGSAction({script: o.script, action: 9, lg: o.language});
             });
 
-            jQuery('#gs_selectallbutton').click(function (e){
+            jQuery('#gs_selectallbutton').click(function(e){
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 20, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_deselectbutton').click(function (e){
+            jQuery('#gs_deselectbutton').click(function(e){
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 21, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_invertselectbutton').click(function (e){
+            jQuery('#gs_invertselectbutton').click(function(e){
                 e.stopPropagation();
                 return jQuery(this).doGSAction({action: 22, script: o.script, type: 'context', lg: o.language});
             });
 
             jQuery('#gs_jcrop_form').ajaxForm({
-                beforeSubmit: function () {
+                beforeSubmit: function() {
                     jQuery('#gsimagecropzoom').append('<div class="loadingDiv">&nbsp;</div>');
                 },
 
-                success: function (responseText, statusText, xhr, $form) {
+                success: function(responseText, statusText, xhr, $form) {
                     gsCheckResponse(responseText);
                     filenamea = jQuery('#gs_jcrop_filename').val();
                     dira = escape(jQuery('#gs_jcrop_dir').val());
@@ -458,10 +458,10 @@ if (jQuery) (function(jQuery){
              });
 
             jQuery('#gsUploadForm').ajaxForm({
-                    beforeSubmit: function () {
+                    beforeSubmit: function() {
                         jQuery('#gsuploadfiles').append('<div class="loadingDiv">&nbsp;</div>');
                     },
-                    success: function (responseText, statusText, xhr, $form) {
+                    success: function(responseText, statusText, xhr, $form) {
                         gsCheckResponse(responseText);
                         jQuery('#'+jQuery("#curDir").attr('rel')).trigger('click');
                         jQuery('#gsuploadfiles').find('div.loadingDiv').remove();
@@ -516,7 +516,7 @@ if (jQuery) (function(jQuery){
                 }
             }
 
-            function showFiles (gsfiless) {
+            function showFiles(gsfiless) {
                 var fileshtml = '';
                 if (gsfiless.length > 0) {
                     for (var num in gsfiless) {
@@ -528,7 +528,7 @@ if (jQuery) (function(jQuery){
                 return fileshtml;
             }
 
-            function manageGsMenu (srcElement, menu){
+            function manageGsMenu(srcElement, menu){
                 if (srcElement.attr('rel') == 'up') {
                     return false;
                 }
@@ -540,7 +540,7 @@ if (jQuery) (function(jQuery){
                 return true;
             }
 
-            function showDirs (gsfiless) {
+            function showDirs(gsfiless) {
                 var fileshtml = '';
                 var gs_lastparent = jQuery('#' + jQuery("#curDir").attr('rel')).parent().parent().parent().children('a');
                 if (gs_lastparent.length > 0) {
@@ -556,7 +556,7 @@ if (jQuery) (function(jQuery){
                 return fileshtml;
             }
 
-            function showContent (gsdirss, gsfiless) {
+            function showContent(gsdirss, gsfiless) {
                 var dirshtml = showDirs (gsdirss);
                 var fileshtml = showFiles (gsfiless);
                 var tableheader = '<table class=\'dirs_files_table\' cellpadding=0 cellspacing=2 id="gs_content_table"><tr><th>' + gs_getTranslation(o.language, 7)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 8)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 9)+ '</th><th width=\'20%\'>' + gs_getTranslation(o.language, 10)+ '</th></tr>';
@@ -569,7 +569,7 @@ if (jQuery) (function(jQuery){
                        jQuery(el).doGSAction({action: action, script: o.script, type: 'file', lg: o.language});
                 },
                 manageGsMenu);
-                jQuery('table.dirs_files_table tr').find('div.gsItem.file').dblclick(function (e) {
+                jQuery('table.dirs_files_table tr').find('div.gsItem.file').dblclick(function(e) {
                     jQuery(this).doGSAction({action: 11, script: o.script, type: 'file', lg: o.language});
                 });
                 jQuery('table.dirs_files_table tr').find('div.gsItem').bind('click', function(e){
@@ -635,50 +635,50 @@ if (jQuery) (function(jQuery){
 
                         cObject.find('.start').html('');
 
-                        cObject.find('UL').remove();
+                        cObject.find('ul').remove();
 
                         cObject.removeClass('wait').append(dirhtml);
 
                         showContent(gsdirs, gsfiles, unescape(t));
 
                         if( o.root == t ) {
-                            cObject.find('UL:hidden').show();
+                            cObject.find('ul:hidden').show();
                         } else {
-                            cObject.find('UL:hidden').slideDown({ duration: o.expandSpeed, easing: o.expandEasing });
+                            cObject.find('ul:hidden').slideDown({ duration: o.expandSpeed, easing: o.expandEasing });
                         }
                         setHandlers(cObject);
                    }});
             }
 
             function setHandlers(t) {
-                //jQuery(t).find('LI').droppable();
-                jQuery(t).find('LI > A').bind('click', function () {
+                //jQuery(t).find('li').droppable();
+                jQuery(t).find('li > a').bind('click', function() {
                     showTree(jQuery(this).parent(), jQuery(this).attr('rel'));
                     jQuery(this).parent().removeClass('collapsed').addClass('expanded');
                     jQuery(this).parent().find(' > span').removeClass('toggleplus').addClass('toggleminus');
                 });
-                jQuery(t).find('LI > SPAN').bind('click', function () {
+                jQuery(t).find('li > span').bind('click', function() {
                     var thisEl = jQuery(this);
                     if( thisEl.parent().hasClass('collapsed') ) {
-                        thisEl.parent().find('UL').slideDown({ duration: o.collapseSpeed, easing: o.collapseEasing });
-                        var contenUL = thisEl.parent().find('UL');
+                        thisEl.parent().find('ul').slideDown({ duration: o.collapseSpeed, easing: o.collapseEasing });
+                        var contenUL = thisEl.parent().find('ul');
                         if (contenUL.length < 1) {
-                            thisEl.parent().find('A').trigger('click');
+                            thisEl.parent().find('a').trigger('click');
                             thisEl.parent().find(' > span').removeClass('toggleplus').addClass('toggleminus');
                         }
                         thisEl.parent().removeClass('collapsed').addClass('expanded');
                         thisEl.parent().find(' > span').removeClass('toggleplus').addClass('toggleminus');
                     } else {
-                        thisEl.parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
+                        thisEl.parent().find('ul').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
                         thisEl.parent().removeClass('expanded').addClass('collapsed');
                         thisEl.parent().find(' > span').removeClass('toggleminus').addClass('toggleplus');
                     }
                 });
             }
 
-            function showRoot(){
+            function showRoot() {
                 showTree(jQuery('#gs_dir_list'), o.root);
-                //jQuery(this).parent().parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
+                //jQuery(this).parent().parent().find('ul').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
                 //jQuery(this).parent().parent().find('LI.directory').removeClass('expanded').addClass('collapsed');
             }
 
@@ -1168,20 +1168,20 @@ if(jQuery)( function() {
                             jmenu.css({ top: y, left: x }).fadeIn(o.inSpeed);
 
                             // Hover events
-                            jmenu.find('A').mouseover( function() {
+                            jmenu.find('a').mouseover(function() {
                                 jmenu.find('LI.hover').removeClass('hover');
                                 if (!jQuery(this).parent().parent().hasClass('subContextMenu')) {
                                      jmenu.find('UL.subContextMenu').hide();
                                 }
                                 jQuery(this).parent().addClass('hover');
-                                jQuery(this).parent().find('UL').css({ top: 0, left: 120 }).fadeIn(o.inSpeed);
+                                jQuery(this).parent().find('ul').css({ top: 0, left: 120 }).fadeIn(o.inSpeed);
                             }).mouseout( function() {
                                 jmenu.find('LI.hover').removeClass('hover');
                             });
 
                             // When items are selected
-                            menu.find('A').unbind('click');
-                            menu.find('A').bind('click', function() {
+                            menu.find('a').unbind('click');
+                            menu.find('a').bind('click', function() {
                                 if(jQuery(this).parent().hasClass('disabled')){
                                    return false;
                                 }
@@ -1206,9 +1206,9 @@ if(jQuery)( function() {
                 // Disable text selection
                 // TODO (Jakob) jQuery.browser is deprecated since 1.3 and removed since 1.9 (we have 1.9)
 //                if( jQuery.browser.mozilla ) {
-//                    jQuery('#' + o.menu).each( function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
+//                    jQuery('#' + o.menu).each(function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
 //                } else if( jQuery.browser.msie ) {
-//                    jQuery('#' + o.menu).each( function() { jQuery(this).bind('selectstart.disableTextSelect', function() { return false; }); });
+//                    jQuery('#' + o.menu).each(function() { jQuery(this).bind('selectstart.disableTextSelect', function() { return false; }); });
 //                } else {
                     jQuery('#' + o.menu).each(function() { jQuery(this).bind('mousedown.disableTextSelect', function() { return false; }); });
 //                }
