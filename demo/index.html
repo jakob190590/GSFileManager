@@ -4,27 +4,27 @@
     <title>GSFileManager Demo</title>
     <meta charset="UTF-8" />
 
-    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
-    <link rel="stylesheet" type="text/css" href="gsFileManager.css"/>
-    <link rel="stylesheet" type="text/css" href="jquery.Jcrop.css"/>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <link rel="stylesheet" href="gsFileManager.css"/>
+    <link rel="stylesheet" href="jquery.Jcrop.css"/>
     <style type="text/css">
-        body {
-            height: 100%;
-            width: 100%;
-        }
-        html {
-            height: 100%;
-            width: 100%;
-		   }
+      body {
+        height: 100%;
+        width: 100%;
+      }
+      html {
+        height: 100%;
+        width: 100%;
+     }
     </style>
 
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> <!-- Version < 1.9 wegen $.browser -->
-    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script type="text/javascript" src="gsFileManager.js"></script>
-    <script type="text/javascript" src="jquery.form.js"></script>
-    <script type="text/javascript" src="jquery.Jcrop.js"></script>
-    <script type="text/javascript" src="../lib/ckeditor/ckeditor.js"></script>
-    <script type="text/javascript">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> <!-- Version < 1.9 wegen $.browser -->
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="gsFileManager.js"></script>
+    <script src="jquery.form.js"></script>
+    <script src="jquery.Jcrop.js"></script>
+    <script src="../lib/ckeditor/ckeditor.js"></script>
+    <script>
         $(document).ready(function() {
             jQuery('#fileTreeDemo_1').gsFileManager({ script: 'connectors/GsFileManager.php' });
         });
