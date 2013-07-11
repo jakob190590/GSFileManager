@@ -753,7 +753,7 @@ mb_internal_encoding("UTF-8");
 
 $options = array();
 $options['max_upload_filesize'] = '2000'; //(the size in Kbytes)
-$options[GSFileManager::$root_param] = 'C:/jtreefs';
+$options[GSFileManager::$root_param] = 'C:/temp';
 $manager = new GSFileManager(new GSFileSystemFileStorage(), $options);
 try {
 	$result = $manager->process($_REQUEST);
