@@ -1152,7 +1152,6 @@ if (jQuery) (function() {
                     var y = eventMouseUp.pageY ? eventMouseUp.pageY : eventMouseUp.clientY + d.scrollTop;
 
                     // Show the menu
-                    jQuery(document).off('click');
                     menu.css({ top: y, left: x }).fadeIn(o.inSpeed);
 
                     // Hover events
@@ -1181,7 +1180,7 @@ if (jQuery) (function() {
                         return false;
                     });
 
-                    jQuery(document).click(function() {
+                    jQuery(':root').mousedown(function() {
                         menu.fadeOut(o.outSpeed);
                     });
                 });
