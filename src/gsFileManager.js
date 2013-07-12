@@ -185,7 +185,7 @@ gs_filemanager_languages['en'][13] = 'ImageViewer';
 gs_filemanager_languages['en'][14] = 'Copy';
 gs_filemanager_languages['en'][15] = 'Cut';
 gs_filemanager_languages['en'][16] = 'Rename';
-gs_filemanager_languages['en'][17] = 'Copy AS';
+gs_filemanager_languages['en'][17] = 'Copy As';
 gs_filemanager_languages['en'][18] = 'Download';
 gs_filemanager_languages['en'][19] = 'Delete';
 gs_filemanager_languages['en'][20] = 'Open';
@@ -1088,21 +1088,24 @@ if (jQuery) (function() {
             // Defaults
             if (o.menu == undefined) return false;
             var menu = jQuery('#' + o.menu);
-            
+
             if (o.addSelectedClass == undefined) o.addSelectedClass = true;
             if (o.inSpeed  == undefined) o.inSpeed  = 150;
             if (o.outSpeed == undefined) o.outSpeed =  75;
             // 0 needs to be -1 for expected results (no fade)
             o.inSpeed  = o.inSpeed  || -1;
             o.outSpeed = o.outSpeed || -1;
-            // Loop each context menu
+
+            // This method may also be called on a set, e.g. $('div.file')
             jQuery(this).each(function() {
                 var el = jQuery(this);
-                var offset = el.offset();
-                // Add contextMenu class
-                menu.addClass('contextMenu');
+                var offset = el.offset(); // absolute position
+                menu.addClass('contextMenu'); // TODO why? for visibility?
 
-
+                // Auf Rechtsklick reagieren:
+                // $(document).click(...) geht
+                // $('div').click(...) geht nicht :(
+                // --> deswegen .mouseup
                 jQuery(this).mouseup(function(eventMouseUp) {
                     if (eventMouseUp.which != 3) return;
                     eventMouseUp.stopPropagation();
