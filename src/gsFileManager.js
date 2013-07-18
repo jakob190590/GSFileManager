@@ -702,7 +702,7 @@ if (jQuery) (function(jQuery) {
             var gsitem = gs_get_cur_item(jQuery(this).attr('rel'));
 
             if (o.action == '23') { // zip
-                unZipItem(o, curDir, gsitem);
+                unZipItems(o, curDir, gsitem);
                 return;
             }
 
@@ -747,7 +747,7 @@ if (jQuery) (function(jQuery) {
                 return;
             }
             if (o.action == '19') { // zip
-                zipItem(o, curDir, gsitem);
+                zipItems(o, curDir, gsitem);
                 return;
             }
             if (o.action == '7') { // copy
@@ -786,7 +786,7 @@ if (jQuery) (function(jQuery) {
                 return;
             }
             if (o.action == '4' || o.action == '6') { //delete item
-                deleteItem(o, curDir, gsitem);
+                deleteItems(o, curDir, gsitem);
                 return;
             }
             if (o.action == '5') { //open dir
@@ -970,7 +970,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function unZipItem(o, curDir, gsitem){
+            function unZipItems(o, curDir, gsitem){
                 var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + gsitem.itemData.name);
                 if (newName == null) {
                     return;
@@ -979,7 +979,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function zipItem(o, curDir, gsitem){
+            function zipItems(o, curDir, gsitem){
                 var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', gsitem.itemData.name + '.zip');
                 if (newName == null) {
                     return;
@@ -1015,7 +1015,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function deleteItem(o, curDir, gsitem){
+            function deleteItems(o, curDir, gsitem){
                 var selectedFiles = gsGetSelectedItems();
                 if (selectedFiles.length == 0 || !window.confirm(gs_getTranslation(o.lg, 38))) {
                     return;

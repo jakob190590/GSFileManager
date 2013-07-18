@@ -189,8 +189,8 @@ class GSFileManager {
         $this->functions[1] = 'listDir';
         $this->functions[2] = 'makeFile';
         $this->functions[3] = 'makeDirectory';
-        $this->functions[4] = 'deleteItem';
-        $this->functions[5] = 'copyItem';
+        $this->functions[4] = 'deleteItems';
+        $this->functions[5] = 'copyItems';
         $this->functions[6] = 'renameItem';
         $this->functions[7] = 'moveItems';
         $this->functions[8] = 'downloadItem';
@@ -201,8 +201,8 @@ class GSFileManager {
         $this->functions[13] = 'imageResize';
         $this->functions[14] = 'copyAsFile';
         $this->functions[15] = 'serveImage';
-        $this->functions[16] = 'zipItem';
-        $this->functions[17] = 'unZipItem';
+        $this->functions[16] = 'zipItems';
+        $this->functions[17] = 'unZipItems';
     }
 
     public function getOptionValue ($key, $default = null) {
@@ -253,7 +253,7 @@ class GSFileManager {
         return $response;
     }
 
-    public function unZipItem($args){
+    public function unZipItems($args){
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['filename'])) {
             $filename = $args['filename'];
@@ -284,7 +284,7 @@ class GSFileManager {
         }
     }
 
-    public function zipItem($args) {
+    public function zipItems($args) {
         $root = $this->getOptionValue(self::$root_param);
         if (isset($args['filename'])) {
             $filename = $args['filename'];
@@ -616,7 +616,7 @@ class GSFileManager {
         }
     }
 
-    public function copyItem($args) {
+    public function copyItems($args) {
         if (!isset($args['files'])) {
             throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
@@ -646,7 +646,7 @@ class GSFileManager {
         return '{result: \'1\'}';
     }
 
-    public function deleteItem($args) {
+    public function deleteItems($args) {
         if (!isset($args['files'])) {
             throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
