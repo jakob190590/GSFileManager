@@ -568,7 +568,7 @@ if (jQuery) (function(jQuery){
             function showContent(gsdirss, gsfiless) {
                 var dirshtml = showDirs(gsdirss);
                 var fileshtml = showFiles(gsfiless);
-                var tableheader = '<table class=\'dirs_files_table\' cellpadding=0 cellspacing=2 id="gs_content_table"><tr><th>' + gs_getTranslation(o.language, 7)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 8)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 9)+ '</th><th width=\'20%\'>' + gs_getTranslation(o.language, 10)+ '</th></tr>';
+                var tableheader = '<table class="dirs_files_table" cellpadding=0 cellspacing=2 id="gs_content_table"><tr><th>' + gs_getTranslation(o.language, 7)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 8)+ '</th><th width=\'10%\'>' + gs_getTranslation(o.language, 9)+ '</th><th width=\'20%\'>' + gs_getTranslation(o.language, 10)+ '</th></tr>';
                 jQuery('#gs_dir_content').html(tableheader + dirshtml + fileshtml + "</table>");
 
                 jQuery('div.file').contextMenu({
@@ -601,7 +601,7 @@ if (jQuery) (function(jQuery){
 
             }
 
-            function showTree(c, t) {
+            function showTree(c, directory) {
                 var cObject = jQuery(c);
                 cObject.addClass('wait');
                 gs_show_loading();
@@ -609,44 +609,42 @@ if (jQuery) (function(jQuery){
                 jQuery.ajax({
                     type: 'POST',
                     url: o.script,
-                    data: { dir: t },
-                    dataType: 'script',
+                    data: { dir: directory },
+                    dataType: 'json',
                     contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('Accept', "text/html; charset=UTF-8");
-                    },
                     success: function(data) {
 
-                        //remember current dir id
-                        jQuery('#curDir').text(t);
-                        jQuery('#curDir').attr('rel', jQuery('a', cObject).attr('id'));
-
-                        gs_cur_items = new Array();
-
-                        var dirhtml = '';
-                        if (typeof(gsdirs) != 'undefined' && gsdirs.length > 0) {
-                            dirhtml += '<ul class="jqueryFileTree" style="display: none;">';
-                            for (var num in gsdirs) {
-                                 var curItem = gsdirs[num];
-                                 dirhtml += '<li class="directoryMeny collapsed"><span class="dir_index toggleplus">&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="javascript:void(0)" rel="' + curItem.path + '/" id="' + curItem.id + '">' + curItem.name + '</a></li>';
-                            }
-                            dirhtml += "</ul>";
-                        } else {
-                            gsdirs = []; // global
+                        gsdirs = []; // global
+                        for (var i = 0; i < data.gsdirs.length; i++) {
+                            var itemData = data.gsdirs[i];
+                            gsdirs.push(new gsItem(itemData.type, itemData.name, itemData.path, itemData.size, itemData.id, itemData.extension, itemData.lastMod));
                         }
-                        if (typeof(gsfiles) == 'undefined') {
-                            gsfiles = []; // global
+                        gsfiles = []; // global
+                        for (var i = 0; i < data.gsfiles.length; i++) {
+                            var itemData = data.gsfiles[i];
+                            gsfiles.push(new gsItem(itemData.type, itemData.name, itemData.path, itemData.size, itemData.id, itemData.extension, itemData.lastMod));
                         }
+
+                        jQuery('#curDir').text(directory);
+                        jQuery('#curDir').attr('rel', jQuery('a', cObject).attr('id')); // remember current dir id
+
+                        gs_cur_items = [];
+
+                        var dirhtml = '<ul class="jqueryFileTree" style="display: none;">';
+                        for (var i = 0; i < gsdirs.length; i++) {
+                             var curItem = gsdirs[i];
+                             dirhtml += '<li class="directoryMeny collapsed"><span class="dir_index toggleplus">&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="javascript:void(0)" rel="' + curItem.path + '/" id="' + curItem.id + '">' + curItem.name + '</a></li>';
+                        }
+                        dirhtml += "</ul>";
 
                         cObject.find('.start').html('');
-
                         cObject.find('ul').remove();
+                        cObject.removeClass('wait');
+                        cObject.append(dirhtml);
 
-                        cObject.removeClass('wait').append(dirhtml);
+                        showContent(gsdirs, gsfiles);
 
-                        showContent(gsdirs, gsfiles, unescape(t));
-
-                        if (o.root == t) {
+                        if (o.root == directory) {
                             cObject.find('ul:hidden').show();
                         } else {
                             cObject.find('ul:hidden').slideDown({ duration: o.expandSpeed, easing: o.expandEasing });
