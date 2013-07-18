@@ -310,7 +310,7 @@ var gs_forbidden_ext_mapping = {
     'archive':  '12,15,16,17,18,19'
 };
 
-if (jQuery) (function(jQuery){
+if (jQuery) (function(jQuery) {
 
     jQuery.extend(jQuery.fn, {
         gsFileManager: function(o) {
@@ -971,8 +971,14 @@ if (jQuery) (function(jQuery){
             }
 
             function copyAs(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 34) + ': ', gsitem.name);
+                var oldName = gsitem.name;
+                var newName = makeNewFilenameForCopy(oldName);
+                newName = window.prompt(gs_getTranslation(o.lg, 34) + ': ', newName);
                 if (newName == null) {
+                    return;
+                }
+                if (newName == oldName) {
+                    alert('Der neue Dateiname muss sich vom alten unterscheiden.');
                     return;
                 }
                 dataForSend = {opt: 14, filename: gsitem.name, dir: curDir, newfilename: newName};
@@ -1065,6 +1071,18 @@ if (jQuery) (function(jQuery){
     });
 
 })(jQuery);
+
+function makeNewFilenameForCopy(oldFilename) {
+    var DOT = '.';
+    var APPENDAGE = ' (1)';
+    var nameParts = oldFilename.split(DOT);
+    if (nameParts.length > 1) {
+        nameParts[nameParts.length - 2] += APPENDAGE;
+        return nameParts.join(DOT);
+    } else {
+        return oldFilename + APPENDAGE;
+    }
+}
 
 //jQuery Context Menu Plugin
 //
