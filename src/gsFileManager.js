@@ -211,6 +211,7 @@ gs_filemanager_languages['en'][41] = 'Zip archive name';
 gs_filemanager_languages['en'][42] = 'UnZip';
 gs_filemanager_languages['en'][43] = 'UnZip Name';
 gs_filemanager_languages['en'][44] = 'Lock sizes';
+gs_filemanager_languages['en'][45] = 'Folder';
 
 gs_filemanager_languages['de'] = [];
 gs_filemanager_languages['de'][1] = 'Aktuelles Verzeichnis';
@@ -257,9 +258,10 @@ gs_filemanager_languages['de'][41] = 'Zip-Dateiname';
 gs_filemanager_languages['de'][42] = 'UnZip';
 gs_filemanager_languages['de'][43] = 'UnZip-Dateiname';
 gs_filemanager_languages['de'][44] = 'Größe verriegeln';
+gs_filemanager_languages['de'][45] = 'Ordner';
 
 function gs_getTranslation(lg, code){
-    var result = null;
+    var result = '';
     if (typeof gs_filemanager_languages[lg] != 'undefined' &&
         typeof gs_filemanager_languages[lg][code] != 'undefined') {
         result = gs_filemanager_languages[lg][code];
@@ -553,13 +555,13 @@ if (jQuery) (function(jQuery){
                 var fileshtml = '';
                 var gs_lastparent = jQuery('#' + jQuery("#curDir").attr('rel')).parent().parent().parent().children('a');
                 if (gs_lastparent.length > 0) {
-                    fileshtml += "<tr><td><div class='directory directory_info gsItem' rel=\'up\'><a href='javascript:void(0)' ondblclick=\"jQuery('#" + jQuery("#curDir").attr('rel')+ "').parent().parent().parent().children('a').trigger('click'); return false\"> ..up</a></div></td><td>Dir</td></tr>";
+                    fileshtml += "<tr><td><div class='directory directory_info gsItem' rel=\'up\'><a href='javascript:void(0)' ondblclick=\"jQuery('#" + jQuery("#curDir").attr('rel')+ "').parent().parent().parent().children('a').trigger('click'); return false\"> ..up</a></div></td><td>" + gs_getTranslation(o.language, 45) + "</td></tr>";
                 }
                 if (gsfiless.length > 0) {
                     for (var numf in gsfiless) {
                         var curItem = gsfiless[numf];
                         gs_cur_items[curItem.id] = curItem;
-                        fileshtml += "<tr><td><div class='directory directory_info gsItem' rel=\'" + curItem.id + "\'><a href='javascript:void(0)' ondblclick=\"jQuery('#"+curItem.id+"').trigger('click'); return false\">" + curItem.name + "</a></div></td><td>Dir</td><td>0</td><td>"+curItem.getLastMod()+"</td></tr>";
+                        fileshtml += "<tr><td><div class='directory directory_info gsItem' rel=\'" + curItem.id + "\'><a href='javascript:void(0)' ondblclick=\"jQuery('#"+curItem.id+"').trigger('click'); return false\">" + curItem.name + "</a></div></td><td>" + gs_getTranslation(o.language, 45) + "</td><td>0</td><td>"+curItem.getLastMod()+"</td></tr>";
                     }
                 }
                 return fileshtml;
