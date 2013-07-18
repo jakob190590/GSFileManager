@@ -722,7 +722,7 @@ class GSFileManager {
             $html .= 'var gsfiles = new Array();';
             if( count($files) > 2 ) { /* The 2 accounts for . and .. */
                 foreach( $files as $file ) {
-                    if ($file == '.' || $file == '..' || $file == '.htaccess') {
+                    if ($file == '.' || $file == '..') {
                         continue;
                     }
                     if( !$this->fileStorage->is_dir($root.$dir.$file) ) {
@@ -744,10 +744,7 @@ class GSFileManager {
     }
 
     public function checkFileName($filename) {
-        $this->checkPathName($filename); // filename koennte ja auch als teilpfad/filename missbraucht werden
-        if ($filename == '.htaccess') {
-            throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
-        }
+        $this->checkPathName($filename); // filename koennte ja auch als "teilpfad/filename" missbraucht werden
     }
 
     public function checkPathName($pathname) {
