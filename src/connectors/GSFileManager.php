@@ -248,7 +248,7 @@ class GSFileManager {
 
         }
         if ($this->setUtf8Header) {
-            header ("Content-Type: text/json; charset=utf-8");
+            header ("Content-Type: application/json; charset=UTF-8");
         }
         return $response;
     }
@@ -720,7 +720,7 @@ class GSFileManager {
             $result = array(
                 'gsdirs'  => array(),
                 'gsfiles' => array()
-            );            
+            );
             foreach ($files as $file) {
                 if ($file == '.' || $file == '..') {
                     continue;
@@ -728,10 +728,10 @@ class GSFileManager {
                 $newItem = array(
                     'name' => $file,
                     'path' => $dir . $file,
-                    'id'   => md5($dir . $file),                        
+                    'id'   => md5($dir . $file),
                     'lastMod' => date('Y-m-d H:i:s', $this->fileStorage->filemtime($root . $dir . $file))
                 );
-                if ($this->fileStorage->is_dir($root . $dir . $file)) {                        
+                if ($this->fileStorage->is_dir($root . $dir . $file)) {
                     $newItem['type']       = 'dir';
                     $newItem['extension']  = '';
                     $newItem['size']       = 0;
@@ -774,7 +774,7 @@ class GSFileManager {
         }
         return (substr($haystack, -$length) === $needle);
     }
-    
+
     protected function getFileExtension($filename) {
         $lastPos = strrpos($filename, '.');
         return ($lastPos === false) ? 'unknown' : substr($filename, $lastPos + 1);
