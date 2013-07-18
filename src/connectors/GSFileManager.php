@@ -248,7 +248,7 @@ class GSFileManager {
 
         }
         if ($this->setUtf8Header) {
-            header ("Content-Type: text/html; charset=utf-8");
+            header ("Content-Type: application/json; charset=UTF-8");
         }
         return $response;
     }
@@ -714,30 +714,36 @@ class GSFileManager {
     public function listDir($args) {
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
-        if( $this->fileStorage->file_exists($root.$dir) ) {
-            $files = $this->fileStorage->scandir($root.$dir);
+        if ($this->fileStorage->file_exists($root . $dir)) {
+            $files = $this->fileStorage->scandir($root . $dir);
             natcasesort($files);
-            $html = '';
-            $html .= 'var gsdirs = new Array();';
-            $html .= 'var gsfiles = new Array();';
-            if( count($files) > 2 ) { /* The 2 accounts for . and .. */
-                foreach( $files as $file ) {
-                    if ($file == '.' || $file == '..') {
-                        continue;
-                    }
-                    if( !$this->fileStorage->is_dir($root.$dir.$file) ) {
-                        $ext = preg_replace('/^.*\./', '', $file);
-                        if ($ext == $file) {
-                            $ext = 'unknown';
-                        }
-                        $html .= 'gsfiles.push(new gsItem("dir", "'.htmlentities($file, ENT_QUOTES, 'UTF-8').'", "'.htmlentities($dir.$file, ENT_QUOTES, 'UTF-8').'", "'.$this->fileStorage->filesize($root.$dir.$file).'", "'.md5($dir.$file).'", "'.strtolower($ext).'", "'.date('Y-m-d H:i:s', $this->fileStorage->filemtime($root.$dir.$file)).'"));';
-                    } else {
-                        $html .= 'gsdirs.push(new gsItem("file", "'.htmlentities($file, ENT_QUOTES, 'UTF-8').'", "'.htmlentities($dir.$file, ENT_QUOTES, 'UTF-8').'", "0", "'.md5($dir.$file).'", "", "'.date('Y-m-d H:i:s', $this->fileStorage->filemtime($root.$dir.$file)).'"));';
-                    }
+            $result = array(
+                'gsdirs'  => array(),
+                'gsfiles' => array()
+            );
+            foreach ($files as $file) {
+                if ($file == '.' || $file == '..') {
+                    continue;
                 }
-
+                $newItem = array(
+                    'name' => $file,
+                    'path' => $dir . $file,
+                    'id'   => md5($dir . $file),
+                    'lastMod' => date('Y-m-d H:i:s', $this->fileStorage->filemtime($root . $dir . $file))
+                );
+                if ($this->fileStorage->is_dir($root . $dir . $file)) {
+                    $newItem['type']       = 'dir';
+                    $newItem['extension']  = '';
+                    $newItem['size']       = 0;
+                    $result['gsdirs'][] = $newItem;
+                } else {
+                    $newItem['type']       = 'file';
+                    $newItem['extension']  = strtolower($this->getFileExtension($file));
+                    $newItem['size']       = $this->fileStorage->filesize($root . $dir . $file);
+                    $result['gsfiles'][] = $newItem;
+                }
             }
-            return $html;
+            return json_encode($result);
         } else {
             throw new Exception('IllegalArgumentException: dir to list does NOT exists '.$dir, 3);
         }
@@ -767,5 +773,10 @@ class GSFileManager {
             return true;
         }
         return (substr($haystack, -$length) === $needle);
+    }
+
+    protected function getFileExtension($filename) {
+        $lastPos = strrpos($filename, '.');
+        return ($lastPos === false) ? 'unknown' : substr($filename, $lastPos + 1);
     }
 }
