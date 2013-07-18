@@ -12,45 +12,39 @@
  *
  */
 
-var gsItem = function(type, name, path, size, id, extension, lastMod) {
-    this.path = path;
-    this.type = type;
-    this.name = name;
-    this.size = size;
-    this.id = id;
-    this.extension = extension.toLowerCase();
-    this.lastMod = lastMod;
+var GsItem = function(itemData) {
+    this.itemData = itemData;
 
     this.getSize = function() {
-        if (this.size < 1e6) {
-            return Math.ceil(this.size / 1e3) + ' KB';
+        if (this.itemData.size < 1e6) {
+            return Math.ceil(this.itemData.size / 1e3) + ' KB';
         } else {
-            return Math.ceil(this.size / 1e6) + ' MB';
+            return Math.ceil(this.itemData.size / 1e6) + ' MB';
         }
     };
 
     this.getExtension = function() {
-        return this.extension;
+        return this.itemData.extension.toLowerCase();
     };
 
     this.getLastMod = function() {
-        return this.lastMod;
+        return this.itemData.lastMod;
     };
 
     this.isPicture = function() {
-        return gs_ext_pictures.hasOwnProperty(this.extension);
+        return gs_ext_pictures.hasOwnProperty(this.itemData.extension);
     };
 
     this.isEditable = function() {
-        return gs_ext_editables.hasOwnProperty(this.extension);
+        return gs_ext_editables.hasOwnProperty(this.itemData.extension);
     };
 
     this.isArchive = function() {
-        return gs_ext_arhives.hasOwnProperty(this.extension);
+        return gs_ext_arhives.hasOwnProperty(this.itemData.extension);
     };
 
     this.isDirectory = function() {
-        return this.type == 'dir';
+        return this.itemData.type == 'dir';
     };
 
     this.getFileType = function() {
@@ -88,7 +82,7 @@ function gs_show_loading() {
 }
 
 // wohl eher: get ItemPaths From Clipboard
-function gsGetSelectedItemsPath() {
+function gsGetSelectedItem(path) {
     var arr = [];
     for (var x in gs_clipboard) {
         arr.push(gs_clipboard[x].path);
@@ -532,8 +526,8 @@ if (jQuery) (function(jQuery) {
                 if (gsfiless.length > 0) {
                     for (var num in gsfiless) {
                         var curItem = gsfiless[num];
-                        gs_cur_items[curItem.id] = curItem;
-                        fileshtml += "<tr><td><div class='file gsItem directory_info ext_" + curItem.getExtension() + "' rel=\'" + curItem.id + "\'>" + curItem.name + "</div></td><td><span class=\'file_ext_name\'>" + curItem.getExtension() + "</span> file</td><td>" + curItem.getSize() + "</td><td>"+curItem.getLastMod()+"</td></tr>";
+                        gs_cur_items[curItem.itemData.id] = curItem;
+                        fileshtml += "<tr><td><div class='file gsItem directory_info ext_" + curItem.getExtension() + "' rel=\'" + curItem.itemData.id + "\'>" + curItem.itemData.name + "</div></td><td><span class=\'file_ext_name\'>" + curItem.getExtension() + "</span> file</td><td>" + curItem.getSize() + "</td><td>"+curItem.getLastMod()+"</td></tr>";
                     }
                 }
                 return fileshtml;
@@ -560,8 +554,8 @@ if (jQuery) (function(jQuery) {
                 if (gsfiless.length > 0) {
                     for (var numf in gsfiless) {
                         var curItem = gsfiless[numf];
-                        gs_cur_items[curItem.id] = curItem;
-                        fileshtml += "<tr><td><div class='directory directory_info gsItem' rel=\'" + curItem.id + "\'><a href='javascript:void(0)' ondblclick=\"jQuery('#"+curItem.id+"').trigger('click'); return false\">" + curItem.name + "</a></div></td><td>" + gs_getTranslation(o.language, 45) + "</td><td>0</td><td>"+curItem.getLastMod()+"</td></tr>";
+                        gs_cur_items[curItem.itemData.id] = curItem;
+                        fileshtml += "<tr><td><div class='directory directory_info gsItem' rel=\'" + curItem.itemData.id + "\'><a href='javascript:void(0)' ondblclick=\"jQuery('#"+curItem.itemData.id+"').trigger('click'); return false\">" + curItem.itemData.name + "</a></div></td><td>" + gs_getTranslation(o.language, 45) + "</td><td>0</td><td>"+curItem.getLastMod()+"</td></tr>";
                     }
                 }
                 return fileshtml;
@@ -618,13 +612,11 @@ if (jQuery) (function(jQuery) {
 
                         gsdirs = []; // global
                         for (var i = 0; i < data.gsdirs.length; i++) {
-                            var itemData = data.gsdirs[i];
-                            gsdirs.push(new gsItem(itemData.type, itemData.name, itemData.path, itemData.size, itemData.id, itemData.extension, itemData.lastMod));
+                            gsdirs.push(new GsItem(data.gsdirs[i]));
                         }
                         gsfiles = []; // global
                         for (var i = 0; i < data.gsfiles.length; i++) {
-                            var itemData = data.gsfiles[i];
-                            gsfiles.push(new gsItem(itemData.type, itemData.name, itemData.path, itemData.size, itemData.id, itemData.extension, itemData.lastMod));
+                            gsfiles.push(new GsItem(data.gsfiles[i]));
                         }
 
                         jQuery('#curDir').text(directory);
@@ -635,7 +627,7 @@ if (jQuery) (function(jQuery) {
                         var dirhtml = '<ul class="jqueryFileTree" style="display: none;">';
                         for (var i = 0; i < gsdirs.length; i++) {
                              var curItem = gsdirs[i];
-                             dirhtml += '<li class="directoryMeny collapsed"><span class="dir_index toggleplus">&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="javascript:void(0)" rel="' + curItem.path + '/" id="' + curItem.id + '">' + curItem.name + '</a></li>';
+                             dirhtml += '<li class="directoryMeny collapsed"><span class="dir_index toggleplus">&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="javascript:void(0)" rel="' + curItem.itemData.path + '/" id="' + curItem.itemData.id + '">' + curItem.itemData.name + '</a></li>';
                         }
                         dirhtml += "</ul>";
 
@@ -786,7 +778,7 @@ if (jQuery) (function(jQuery) {
                 return;
             }
             if (o.action == '11') { //download
-                dataForSend = {opt: 8, filename: gsitem.name, dir: curDir};
+                dataForSend = {opt: 8, filename: gsitem.itemData.name, dir: curDir};
                 location.href= gs_makeUrl(o.script, jQuery.param(dataForSend));
                 return;
             }
@@ -803,14 +795,14 @@ if (jQuery) (function(jQuery) {
                 return;
             }
             if (o.action == '5') { //open dir
-                jQuery('#' + gsitem.id).trigger('click');
+                jQuery('#' + gsitem.itemData.id).trigger('click');
                 return;
             }
 
             function showCKEditor(o, curDir, gsitem){
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
-                jQuery('#gsckeditor').dialog({title: 'CKEditor ' + gsitem.name, modal: true, width: width, height: height,
+                jQuery('#gsckeditor').dialog({title: 'CKEditor ' + gsitem.itemData.name, modal: true, width: width, height: height,
                     buttons: [ {
                                    click: function() { jQuery(this).dialog("close"); jQuery('#gs_ckeditor_content').html(''); },
                                    text: gs_getTranslation(o.lg, 28)
@@ -833,9 +825,9 @@ if (jQuery) (function(jQuery) {
                            }]
                 });
                 jQuery('#gs_ckeditor_content').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 9, filename: gsitem.name, dir: curDir};
+                dataForSend = {opt: 9, filename: gsitem.itemData.name, dir: curDir};
                 sendAndRefresh(o, dataForSend, false, function(data) {
-                               jQuery('#gs_ckeditor_content').html('<textarea id="gsFileContent" name="gsFileContent" rel="' + gsitem.name +'">' + data + '</textarea>');
+                               jQuery('#gs_ckeditor_content').html('<textarea id="gsFileContent" name="gsFileContent" rel="' + gsitem.itemData.name +'">' + data + '</textarea>');
 
                                if (typeof(CKEDITOR.instances.gsFileContent) != 'undefined') {
                                    CKEDITOR.remove(CKEDITOR.instances['gsFileContent']);
@@ -851,7 +843,7 @@ if (jQuery) (function(jQuery) {
                 var width = parseInt(jQuery(window).width()) - 100;
                 var rows = parseInt(height / 30);
                 var cols = parseInt(width / 10);
-                jQuery('#gsnotepadedit').dialog({title: 'Edit ' + gsitem.name, modal: true, width: width, height: height,
+                jQuery('#gsnotepadedit').dialog({title: 'Edit ' + gsitem.itemData.name, modal: true, width: width, height: height,
                     buttons: [ {
                                  click: function() { jQuery(this).dialog("close"); },
                                  text: gs_getTranslation(o.lg, 28)
@@ -873,16 +865,16 @@ if (jQuery) (function(jQuery) {
                              }]
                 });
                 jQuery('#gsnotepadedit').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 9, filename: gsitem.name, dir: curDir};
+                dataForSend = {opt: 9, filename: gsitem.itemData.name, dir: curDir};
                 sendAndRefresh(o, dataForSend, false, function(data) {
-                               jQuery('#gsnotepadedit').html('<textarea name="gsFileContent" rows="' + rows + '" cols="' + cols + '" rel="' + gsitem.name +'">' + data + '</textarea>');
+                               jQuery('#gsnotepadedit').html('<textarea name="gsFileContent" rows="' + rows + '" cols="' + cols + '" rel="' + gsitem.itemData.name +'">' + data + '</textarea>');
                   });
             }
 
             function showImageViewer(o, curDir, gsitem){
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
-                jQuery('#gsimageviewer').dialog({title: 'Image viewer ' + gsitem.name, modal: true, width: width, height: height,
+                jQuery('#gsimageviewer').dialog({title: 'Image viewer ' + gsitem.itemData.name, modal: true, width: width, height: height,
                     buttons: [{
                                 click: function() { jQuery(this).dialog("close"); jQuery('#gsimageviewer_content').html(''); },
                                 text: gs_getTranslation(o.lg, 28)
@@ -891,15 +883,15 @@ if (jQuery) (function(jQuery) {
                                text: gs_getTranslation(o.lg, 32),
                                click: function() {
                                    jQuery('#gsimageviewer_content').html('<div class="loadingDiv">&nbsp;</div>');
-                                   dataForSend = {opt: 13, filename: gsitem.name, dir: curDir, new_x: jQuery('#gs_image_x').val(), new_y: jQuery('#gs_image_y').val()};
+                                   dataForSend = {opt: 13, filename: gsitem.itemData.name, dir: curDir, new_x: jQuery('#gs_image_x').val(), new_y: jQuery('#gs_image_y').val()};
                                    sendAndRefresh(o, dataForSend, true, function(data) {
-                                        dataForSend = {opt: 15, filename: gsitem.name, dir: curDir};
+                                        dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
                                         jQuery('#gsimageviewer_content').html('<img src="'+ gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime())+'" id="gs_imageviewer_image"/>');
                                    });
                            }
                      }]
                 });
-                dataForSend = {opt: 15, filename: gsitem.name, dir: curDir};
+                dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
                 var imageSrc = gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime());
                 jQuery('#gs_image_x').val('');
                 jQuery('#gs_image_y').val('');
@@ -918,7 +910,7 @@ if (jQuery) (function(jQuery) {
                 var gs_jcrop_div = jQuery('#gs_jcrop_div');
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
-                gs_jcrop_div.dialog({title: 'JCrop ' + gsitem.name, width: width, height: height, modal: true,
+                gs_jcrop_div.dialog({title: 'JCrop ' + gsitem.itemData.name, width: width, height: height, modal: true,
                     buttons: [{
                                click: function() { jQuery(this).dialog("close");},
                                text: gs_getTranslation(o.lg, 28)
@@ -931,20 +923,20 @@ if (jQuery) (function(jQuery) {
                              }]
                 });
                 jQuery('#gs_jcrop_div_container').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 15, filename: gsitem.name, dir: curDir};
+                dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
                 var imageSrc = gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime());
                 jQuery('#gs_jcrop_div_container').html('<img src="'+ imageSrc + '" id="gsjcrop_target"/>');
                 jQuery('#gsjcrop_target').load(function(){
                     jQuery('#gsjcrop_target').Jcrop({onSelect: updateCoords});
                 });
                 jQuery("#gs_jcrop_dir").val(curDir);
-                jQuery("#gs_jcrop_filename").val(gsitem.name);
+                jQuery("#gs_jcrop_filename").val(gsitem.itemData.name);
             }
 
             function pasteItems(o, curDir, gsitem){
                 var clipBoard = jQuery("#gsClipBoard");
                 var opt = null;
-                var selectedFiles = gsGetSelectedItemsPath();
+                var selectedFiles = gsGetSelectedItem.itemData.path();
                 if (selectedFiles.length === 0) return false;
                 if (clipBoard.attr('rel') == '7') { //copy
                     opt = 5;
@@ -971,7 +963,7 @@ if (jQuery) (function(jQuery) {
             }
 
             function copyAs(o, curDir, gsitem){
-                var oldName = gsitem.name;
+                var oldName = gsitem.itemData.name;
                 var newName = makeNewFilenameForCopy(oldName);
                 newName = window.prompt(gs_getTranslation(o.lg, 34) + ': ', newName);
                 if (newName == null) {
@@ -981,34 +973,34 @@ if (jQuery) (function(jQuery) {
                     alert('Der neue Dateiname muss sich vom alten unterscheiden.');
                     return;
                 }
-                dataForSend = {opt: 14, filename: gsitem.name, dir: curDir, newfilename: newName};
+                dataForSend = {opt: 14, filename: gsitem.itemData.name, dir: curDir, newfilename: newName};
                 sendAndRefresh(o, dataForSend, true);
             }
 
             function unZipItem(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + gsitem.name);
+                var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + gsitem.itemData.name);
                 if (newName == null) {
                     return;
                 }
-                dataForSend = {opt: 17, filename: gsitem.name, dir: curDir, newfilename: newName};
+                dataForSend = {opt: 17, filename: gsitem.itemData.name, dir: curDir, newfilename: newName};
                 sendAndRefresh(o, dataForSend, true);
             }
 
             function zipItem(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', gsitem.name + '.zip');
+                var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', gsitem.itemData.name + '.zip');
                 if (newName == null) {
                     return;
                 }
-                dataForSend = {opt: 16, filename: gsitem.name, dir: curDir, newfilename: newName};
+                dataForSend = {opt: 16, filename: gsitem.itemData.name, dir: curDir, newfilename: newName};
                 sendAndRefresh(o, dataForSend, true);
             }
 
             function renameItem(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 35) + ': ', gsitem.name);
+                var newName = window.prompt(gs_getTranslation(o.lg, 35) + ': ', gsitem.itemData.name);
                 if (newName == null) {
                     return;
                 }
-                dataForSend = {opt: 6, filename: curDir+gsitem.name, dir: curDir, newfilename: newName};
+                dataForSend = {opt: 6, filename: curDir+gsitem.itemData.name, dir: curDir, newfilename: newName};
                 sendAndRefresh(o, dataForSend, true);
             }
 
