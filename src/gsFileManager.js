@@ -1000,7 +1000,7 @@ if (jQuery) (function(jQuery) {
                 if (newName == null) {
                     return;
                 }
-                dataForSend = {opt: 6, filename: curDir+gsitem.itemData.name, dir: curDir, newfilename: newName};
+                dataForSend = {opt: 6, filename: curDir + gsitem.itemData.name, dir: curDir, newfilename: newName};
                 sendAndRefresh(o, dataForSend, true);
             }
 
