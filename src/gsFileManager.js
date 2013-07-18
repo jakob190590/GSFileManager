@@ -49,7 +49,7 @@ var gsItem = function(type, name, path, size, id, extension, lastMod) {
         return gs_ext_arhives.hasOwnProperty(this.extension);
     };
 
-    this.isDirectory() = function() {
+    this.isDirectory = function() {
         return this.type == 'dir';
     };
 
