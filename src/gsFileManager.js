@@ -106,22 +106,19 @@ function gsGetSelectedItems() {
 }
 
 function gsCheckResponse(data) {
-    if (typeof(data) == 'undefined') {
-        return;
-    }
-    if (data.substr(0 , 9) == '{result: ') {
+    if (typeof data == 'undefined') return;
+    if (data.substr(0, 9) == '{result: ') {
         var my_response = data;
-        if (typeof(my_response.result != 'undefined')) {
-          if (my_response.result == '1') {
-              //alert('OK');
-          } else if (typeof(my_response.gserror) != 'undefined') {
-              alert(my_response.gserror);
-          } else {
-              alert('Error');
-          }
+        if (typeof my_response.result != 'undefined') {
+            if (my_response.result == '1') {
+
+            } else if (typeof my_response.gserror != 'undefined') {
+                alert(my_response.gserror);
+            } else {
+                alert('Error');
+            }
         }
     }
-
 }
 
 function gs_storeSelectedItems() {
@@ -263,10 +260,9 @@ gs_filemanager_languages['de'][44] = 'Größe verriegeln';
 
 function gs_getTranslation(lg, code){
     var result = null;
-    if (typeof(gs_filemanager_languages[lg]) != 'undefined') {
-        if (typeof(gs_filemanager_languages[lg][code]) != 'undefined') {
-            result = gs_filemanager_languages[lg][code];
-        }
+    if (typeof gs_filemanager_languages[lg] != 'undefined' &&
+        typeof gs_filemanager_languages[lg][code] != 'undefined') {
+        result = gs_filemanager_languages[lg][code];
     }
     return result;
 }
@@ -1046,23 +1042,24 @@ if (jQuery) (function(jQuery){
                 }
                 dataForSend.dir = dataForSend.dir;
                 jQuery.ajax({
-                        type: 'POST',
-                      url: o.script,
-                      data: jQuery.param(dataForSend) + '&time='+ new Date().getTime(),
-                      dataType: type,
-                      contentType : 'application/x-www-form-urlencoded;charset=utf-8',
-                      beforeSend : function(xhr) {
-                           xhr.setRequestHeader('Accept', "text/html; charset=utf-8");
-                       },
-                      success: function(data) {
-                                  gsCheckResponse(data);
-                                  if (refresh) {
-                                        jQuery('#'+jQuery("#curDir").attr('rel')).trigger('click');
-                                  }
-                                    if (callback) {
-                                        callback(data);
-                                    }
-                 }});
+                    type: 'POST',
+                    url: o.script,
+                    data: jQuery.param(dataForSend) + '&time='+ new Date().getTime(),
+                    dataType: type,
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    beforeSend: function(xhr) {
+                       xhr.setRequestHeader('Accept', "text/html; charset=utf-8");
+                    },
+                    success: function(data) {
+                        gsCheckResponse(data);
+                        if (refresh) {
+                            jQuery('#'+jQuery("#curDir").attr('rel')).trigger('click');
+                        }
+                        if (callback) {
+                            callback(data);
+                        }
+                    }
+                });
             }
         }
     });
