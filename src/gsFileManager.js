@@ -22,10 +22,10 @@ var gsItem = function(type, name, path, size, id, extension, lastMod) {
     this.lastMod = lastMod;
 
     this.getSize = function() {
-        if (this.size < 1000000) {
-            return Math.ceil(this.size / 1000) + ' KB';
+        if (this.size < 1e6) {
+            return Math.ceil(this.size / 1e3) + ' KB';
         } else {
-            return Math.ceil(this.size / 1000000) + ' MB';
+            return Math.ceil(this.size / 1e6) + ' MB';
         }
     };
 
@@ -37,23 +37,23 @@ var gsItem = function(type, name, path, size, id, extension, lastMod) {
         return this.lastMod;
     };
 
-    this.isPicture = function(){
+    this.isPicture = function() {
         return gs_ext_pictures.hasOwnProperty(this.extension);
     };
 
-    this.isEditable = function(){
+    this.isEditable = function() {
         return gs_ext_editables.hasOwnProperty(this.extension);
     };
 
-    this.isArchive = function(){
+    this.isArchive = function() {
         return gs_ext_arhives.hasOwnProperty(this.extension);
     };
-    
+
     this.isDirectory() {
         return this.type == 'dir';
     };
 
-    this.getFilefileType = function(){
+    this.getFileType = function() {
         var fileType = 'unknown';
         if (this.isPicture()) {
             fileType = 'picture';
@@ -952,6 +952,7 @@ if (jQuery) (function(jQuery){
                 var clipBoard = jQuery("#gsClipBoard");
                 var opt = null;
                 var selectedFiles = gsGetSelectedItemsPath();
+                if (selectedFiles.length === 0) return false;
                 if (clipBoard.attr('rel') == '7') { //copy
                     opt = 5;
                 } else if (clipBoard.attr('rel') == '8') { // paste
@@ -963,10 +964,10 @@ if (jQuery) (function(jQuery){
                 } else {
                     return;
                 }
-                if (selectedFiles != null) {
-                    dataForSend = {opt: opt, files: selectedFiles, dir: curDir};
-                    sendAndRefresh(o, dataForSend, true);
-                }
+
+                dataForSend = {opt: opt, files: selectedFiles, dir: curDir};
+                sendAndRefresh(o, dataForSend, true);
+
                 if (opt == 7) {
                     for (var xx in gs_clipboard) {
                          if (gs_clipboard[xx].getExtension() == 'dir') {
