@@ -617,36 +617,33 @@ class GSFileManager {
     }
 
     public function copyItem($args) {
-        $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['files'])) {
-            $dir   = $args['dir'];
-            $files = $args['files'];
-            $response = '{result: \'0\'}';
-            foreach ($files as $filename) {
-                if (strpos($filename, '..') !== false) { // TODO sollte doch grundsätzlich ausgeschlossen werden mit checkFileName, oder?
-                    throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
-                }
-                $this->checkFileName($filename);
-                if ($this->fileStorage->file_exists($root . $filename)) {
-                    if (!$this->fileStorage->file_exists($root . $dir . basename($filename))) {
-                        if (!is_dir($root . $filename)) {
-                            if ($this->fileStorage->copyFile($root . $filename, $root . $dir . basename($filename))) {
-                                $response = '{result: \'1\'}';
-                            }
-                        } else if ($this->fileStorage->copyDir($root . $filename, $root . $dir . basename($filename))){
-                            $response = '{result: \'1\'}';
-                        }
-                    } else {
-                        throw new Exception('IllegalArgumentException: Destination already exists ' . $filename, 8);
-                    }
-                } else {
-                    throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
-                }
-            }
-            return $response;
-        } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+        if (!isset($args['files'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
+        $root  = $this->getOptionValue(self::$root_param);
+        $dir   = $args['dir'];
+        $files = $args['files'];
+        foreach ($files as $filename) {
+            $success = false;
+            $this->checkFileName($filename);
+            $oldFilename = $root . $filename;
+            $newFilename = $root . $dir . basename($filename);
+            if (!$this->fileStorage->file_exists($oldFilename)) {
+                throw new Exception('IllegalArgumentException: Source does not exists: ' . $filename, 7);
+            }
+            if ($this->fileStorage->file_exists($newFilename)) {
+                throw new Exception('IllegalArgumentException: Destination already exists: ' . $filename, 8);
+            }
+            if ($this->fileStorage->is_dir($oldFilename)) {
+                $success = $this->fileStorage->copyDir($oldFilename, $newFilename);
+            } else {
+                $success = $this->fileStorage->copyFile($oldFilename, $newFilename);
+            }
+            if (!$success) {
+                return '{result: \'0\'}';
+            }
+        }
+        return '{result: \'1\'}';
     }
 
     public function deleteItem($args) {
