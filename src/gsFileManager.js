@@ -12,13 +12,13 @@
  *
  */
 
-var gsItem = function(type, name, path, size, id, exta, lastMod) {
+var gsItem = function(type, name, path, size, id, extension, lastMod) {
     this.path = path;
     this.type = type;
     this.name = name;
     this.size = size;
     this.id = id;
-    this.exta = exta.toLowerCase();
+    this.extension = extension.toLowerCase();
     this.lastMod = lastMod;
 
     this.getSize = function() {
@@ -29,8 +29,8 @@ var gsItem = function(type, name, path, size, id, exta, lastMod) {
         }
     };
 
-    this.getExt = function() {
-        return this.exta;
+    this.getExtension = function() {
+        return this.extension;
     };
 
     this.getLastMod = function() {
@@ -38,27 +38,31 @@ var gsItem = function(type, name, path, size, id, exta, lastMod) {
     };
 
     this.isPicture = function(){
-        return gs_ext_pictures.hasOwnProperty(this.exta);
+        return gs_ext_pictures.hasOwnProperty(this.extension);
     };
 
     this.isEditable = function(){
-        return gs_ext_editables.hasOwnProperty(this.exta);
+        return gs_ext_editables.hasOwnProperty(this.extension);
     };
 
     this.isArchive = function(){
-        return gs_ext_arhives.hasOwnProperty(this.exta);
+        return gs_ext_arhives.hasOwnProperty(this.extension);
+    };
+    
+    this.isDirectory() {
+        return this.type == 'dir';
     };
 
-    this.getType = function(){
-        type = 'unknown';
+    this.getFilefileType = function(){
+        var fileType = 'unknown';
         if (this.isPicture()) {
-            type = 'picture';
+            fileType = 'picture';
         } else if (this.isEditable()) {
-            type = 'editable';
+            fileType = 'editable';
         } else if (this.isArchive()) {
-            type = 'archive';
+            fileType = 'archive';
         }
-        return type;
+        return fileType;
     };
 };
 
@@ -137,7 +141,7 @@ function gs_showClipboardContent() {
     var divaHtml = '';
     for (var xx in gs_clipboard) {
         var clasa = 'file';
-        if (gs_clipboard[xx].getExt() == 'dir') {
+        if (gs_clipboard[xx].getExtension() == 'dir') {
             clasa = 'directory';
         }
         divaHtml += '<div class="'+ clasa +'">&nbsp;&nbsp;&nbsp;' + gs_clipboard[xx].path + '<div>';
@@ -534,7 +538,7 @@ if (jQuery) (function(jQuery){
                     for (var num in gsfiless) {
                         var curItem = gsfiless[num];
                         gs_cur_items[curItem.id] = curItem;
-                        fileshtml += "<tr><td><div class='file gsItem directory_info ext_" + curItem.getExt() + "' rel=\'" + curItem.id + "\'>" + curItem.name + "</div></td><td><span class=\'file_ext_name\'>" + curItem.getExt() + "</span> file</td><td>" + curItem.getSize() + "</td><td>"+curItem.getLastMod()+"</td></tr>";
+                        fileshtml += "<tr><td><div class='file gsItem directory_info ext_" + curItem.getExtension() + "' rel=\'" + curItem.id + "\'>" + curItem.name + "</div></td><td><span class=\'file_ext_name\'>" + curItem.getExtension() + "</span> file</td><td>" + curItem.getSize() + "</td><td>"+curItem.getLastMod()+"</td></tr>";
                     }
                 }
                 return fileshtml;
@@ -545,7 +549,7 @@ if (jQuery) (function(jQuery){
                     return false;
                 }
                 var gs_item = gs_cur_items[srcElement.attr('rel')];
-                var type = gs_item.getType();
+                var type = gs_item.getFileType();
                 if (gs_forbidden_ext_mapping.hasOwnProperty(type)) {
                     menu.disableContextMenuItems(gs_forbidden_ext_mapping[type]);
                 }
@@ -965,7 +969,7 @@ if (jQuery) (function(jQuery){
                 }
                 if (opt == 7) {
                     for (var xx in gs_clipboard) {
-                         if (gs_clipboard[xx].getExt() == 'dir') {
+                         if (gs_clipboard[xx].getExtension() == 'dir') {
                              jQuery('#' + gs_clipboard[xx].id).parent().remove();
                          }
                     }
