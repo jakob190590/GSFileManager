@@ -60,7 +60,7 @@ class GSFileSystemFileStorage {
         $files = scandir($dirname);
         if (count($files) > 2) {
             foreach( $files as $file ) {
-                if ($this->isNoRealFileOrFolder($file)) {
+                if (GSFileManager::isNoRealFileOrFolder($file)) {
                     continue;
                 }
                 $file_utf8 = self::toUTF8($file);
@@ -105,7 +105,7 @@ class GSFileSystemFileStorage {
         $dir = opendir($src);
         $result = @mkdir($dst);
         while (($file = readdir($dir)) !== false) {
-            if ($this->isNoRealFileOrFolder($file)) {
+            if (GSFileManager::isNoRealFileOrFolder($file)) {
                 continue;
             }
             if (is_dir($src . '/' . $file)) {
@@ -318,7 +318,7 @@ class GSFileManager {
             //$zipArchive->addEmptyDir(basename($root . $dir));
             $files = $this->fileStorage->scandir($root . $dir);
             foreach ($files as $file) {
-                if ($this->isNoRealFileOrFolder($file)) {
+                if (GSFileManager::isNoRealFileOrFolder($file)) {
                     continue;
                 }
                 if ($this->fileStorage->is_dir($root . $dir . '/' . $file)) {
@@ -723,7 +723,7 @@ class GSFileManager {
                 'gsfiles' => array()
             );
             foreach ($files as $file) {
-                if ($this->isNoRealFileOrFolder($file)) {
+                if (GSFileManager::isNoRealFileOrFolder($file)) {
                     continue;
                 }
                 $newItem = array(
@@ -739,7 +739,7 @@ class GSFileManager {
                     $result['gsdirs'][] = $newItem;
                 } else {
                     $newItem['type']       = 'file';
-                    $newItem['extension']  = strtolower($this->getFileExtension($file));
+                    $newItem['extension']  = strtolower(GSFileManager::getFileExtension($file));
                     $newItem['size']       = $this->fileStorage->filesize($root . $dir . $file);
                     $result['gsfiles'][] = $newItem;
                 }
@@ -756,19 +756,19 @@ class GSFileManager {
 
     public function checkPathName($pathname) {
         if ($pathname == '..' ||
-            $this->stringStartsWith($pathname, '../') ||
-            $this->stringEndsWith  ($pathname, '/..') ||
+            GSFileManager::stringStartsWith($pathname, '../') ||
+            GSFileManager::stringEndsWith  ($pathname, '/..') ||
             strpos($pathname, '/../') !== false
         ) {
             throw new Exception('IllegalArgumentException: Relative paths are not allowed . ');
         }
     }
 
-    protected function stringStartsWith($haystack, $needle) {
+    static function stringStartsWith($haystack, $needle) {
         return !strncmp($haystack, $needle, strlen($needle));
     }
 
-    protected function stringEndsWith($haystack, $needle) {
+    static function stringEndsWith($haystack, $needle) {
         $length = strlen($needle);
         if ($length == 0) {
             return true;
@@ -776,12 +776,12 @@ class GSFileManager {
         return (substr($haystack, -$length) === $needle);
     }
 
-    protected function getFileExtension($filename) {
+    static function getFileExtension($filename) {
         $lastPos = strrpos($filename, ' . ');
         return ($lastPos === false) ? 'unknown' : substr($filename, $lastPos + 1);
     }
 
-    protected function isNoRealFileOrFolder($filename) {
+    static function isNoRealFileOrFolder($filename) {
         return $filename === '.' || $filename === '..';
     }
 }
