@@ -150,7 +150,7 @@ function gs_showClipboardContent() {
             Clear: function() {
                 gs_clipboard = [];
                 jQuery('#gsclipboardContent').html('');
-                jQuery("#gsClipBoard").html('0 items');
+                jQuery("#gsClipBoard").text('0 items');
                 jQuery(this).dialog('close');
             }
         }
@@ -769,14 +769,14 @@ if (jQuery) (function(jQuery){
             if (o.action == '7') { // copy
                 var clipBoard = jQuery("#gsClipBoard");
                 gs_storeSelectedItems();
-                clipBoard.html('(Copy) ' + gs_clipboard.length + ' ' + gs_getTranslation(o.lg, 30));
+                clipBoard.text('(Copy) ' + gs_clipboard.length + ' ' + gs_getTranslation(o.lg, 30));
                 clipBoard.attr('rel', o.action);
                 return;
             }
             if (o.action == '8') { // cut
                 var clipBoard = jQuery("#gsClipBoard");
                 gs_storeSelectedItems();
-                clipBoard.html('(Cut) ' + gs_clipboard.length + ' ' + gs_getTranslation(o.lg, 30));
+                clipBoard.text('(Cut) ' + gs_clipboard.length + ' ' + gs_getTranslation(o.lg, 30));
                 clipBoard.attr('rel', o.action);
                 return;
             }
@@ -952,7 +952,7 @@ if (jQuery) (function(jQuery){
                     opt = 5;
                 } else if (clipBoard.attr('rel') == '8') { // paste
                     gs_clipboard = new Array();
-                    clipBoard.html('0 items');
+                    clipBoard.text('0 items');
                     jQuery('#gsclipboardContent').html('');
                     clipBoard.attr('rel', '');
                     opt = 7;
