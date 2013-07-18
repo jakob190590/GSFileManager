@@ -49,7 +49,7 @@ var gsItem = function(type, name, path, size, id, extension, lastMod) {
         return gs_ext_arhives.hasOwnProperty(this.extension);
     };
 
-    this.isDirectory() {
+    this.isDirectory() = function() {
         return this.type == 'dir';
     };
 
@@ -140,11 +140,8 @@ function gs_showClipboardContent() {
     var diva = jQuery('#gsclipboardContent');
     var divaHtml = '';
     for (var xx in gs_clipboard) {
-        var clasa = 'file';
-        if (gs_clipboard[xx].getExtension() == 'dir') {
-            clasa = 'directory';
-        }
-        divaHtml += '<div class="'+ clasa +'">&nbsp;&nbsp;&nbsp;' + gs_clipboard[xx].path + '<div>';
+        var htmlClass = gs_clipboard[xx].isDirectory() ? 'dir' : 'file';
+        divaHtml += '<div class="' + htmlClass + '">&nbsp;&nbsp;&nbsp;' + gs_clipboard[xx].path + '<div>';
     }
     diva.html(divaHtml);
     diva.dialog({
@@ -970,7 +967,7 @@ if (jQuery) (function(jQuery){
 
                 if (opt == 7) {
                     for (var xx in gs_clipboard) {
-                         if (gs_clipboard[xx].getExtension() == 'dir') {
+                         if (gs_clipboard[xx].isDirectory()) {
                              jQuery('#' + gs_clipboard[xx].id).parent().remove();
                          }
                     }
