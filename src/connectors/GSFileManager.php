@@ -647,33 +647,30 @@ class GSFileManager {
     }
 
     public function deleteItem($args) {
-        $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['files'])) {
-            $dir       = $args['dir'];
-            $filenames = $args['files'];
-            $response  = '{result: \'1\'}';
-            foreach ($filenames as $filename) {
-                $path_parts2 = @split('/', $filename);
-                $filename = end($path_parts2);
-                $this->checkFileName($filename);
-                if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                    if ($this->fileStorage->is_dir($root . $dir . $filename)) {
-                        if (!$this->fileStorage->deleteDirectory($root . $dir . $filename)) {
-                            throw new Exception('ServerException: can NOT delete dir ' . $dir . $filename, 9);
-                        }
-                    } else {
-                        if (!$this->fileStorage->deleteFile($root . $dir . $filename)) {
-                            throw new Exception('ServerException: can NOT delete file ' . $dir . $filename, 9);
-                        }
-                    }
-                } else {
-                    throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
-                }
-            }
-            return $response;
-        } else {
-            throw new Exception('IllegalArgumentException: files can NOT be null', 5);
+        if (!isset($args['files'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
+        $root  = $this->getOptionValue(self::$root_param);
+        $dir   = $args['dir'];
+        $files = $args['files'];
+        foreach ($files as $filename) {
+            $success = false;
+            $filename = $dir . $filename;
+            $this->checkFileName($filename);
+            $fullFilename = $root . $filename;
+            if (!$this->fileStorage->file_exists($fullFilename)) {
+                throw new Exception('IllegalArgumentException: Source does not exist: ' . $filename, 7);
+            }
+            if ($this->fileStorage->is_dir($fullFilename)) {
+                $success = $this->fileStorage->deleteDirectory($fullFilename);
+            } else {
+                $success = $this->fileStorage->deleteFile($fullFilename);
+            }
+            if (!$success) {
+                return '{result: \'0\'}';
+            }
+        }
+        return '{result: \'1\'}';
     }
 
     public function makeFile($args) {
