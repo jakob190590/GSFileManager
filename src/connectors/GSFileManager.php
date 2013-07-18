@@ -777,7 +777,7 @@ class GSFileManager {
     }
 
     static function getFileExtension($filename) {
-        $lastPos = strrpos($filename, ' . ');
+        $lastPos = strrpos($filename, '.');
         return ($lastPos === false) ? 'unknown' : substr($filename, $lastPos + 1);
     }
 
