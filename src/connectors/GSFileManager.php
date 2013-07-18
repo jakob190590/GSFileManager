@@ -64,10 +64,10 @@ class GSFileSystemFileStorage {
                     continue;
                 }
                 $file_utf8 = self::toUTF8($file);
-                if (is_dir($dirname.'/'.$file)) {
-                    $this->deleteDirectory($dirname_utf8.'/'.$file_utf8);
+                if (is_dir($dirname . '/' . $file)) {
+                    $this->deleteDirectory($dirname_utf8 . '/' . $file_utf8);
                 } else {
-                    @unlink($dirname.'/'.$file);
+                    @unlink($dirname . '/' . $file);
                 }
             }
         }
@@ -244,7 +244,7 @@ class GSFileManager {
         if ($functionName != null) {
             $response = $this->$functionName($args);
         } else {
-            throw new Exception('IllegalArgumentException: Uknown action '.$args[$this->opt_param], 6);
+            throw new Exception('IllegalArgumentException: Uknown action ' . $args[$this->opt_param], 6);
 
         }
         if ($this->setUtf8Header) {
@@ -258,15 +258,15 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $filename = $args['filename'];
             $dir = $args['dir'];
-            $newFileName = 'unzipped_'.$filename;
+            $newFileName = 'unzipped_' . $filename;
             if (isset($args['newfilename'])) {
                 $newFileName = $args['newfilename'];
             }
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                if (!$this->fileStorage->file_exists($root.$dir.basename($newFileName))) {
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                if (!$this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
                     $archive = new ZipArchive();
-                    if ($archive->open($root.$dir.$filename)){
-                        $archive->extractTo($root.$dir.basename($newFileName));
+                    if ($archive->open($root . $dir . $filename)){
+                        $archive->extractTo($root . $dir . basename($newFileName));
                         $archive->close();
                         return '{result: \'1\'}';
                     } else {
@@ -276,7 +276,7 @@ class GSFileManager {
                     throw new Exception('IllegalArgumentException: Destination already exists', 8);
                 }
             } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
             }
 
         } else {
@@ -289,15 +289,15 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $filename = $args['filename'];
             $dir = $args['dir'];
-            $newFileName = $filename.'.zip';
+            $newFileName = $filename . '.zip';
             if (isset($args['newfilename'])) {
                 $newFileName = $args['newfilename'];
             }
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                if (!$this->fileStorage->file_exists($root.$dir.basename($newFileName))) {
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                if (!$this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
                     $archive = new ZipArchive();
-                    $archive->open($root.$dir.$newFileName, ZIPARCHIVE::CREATE);
-                    $this->addFolderToZip($dir.$filename, $archive, $root, $filename);
+                    $archive->open($root . $dir . $newFileName, ZIPARCHIVE::CREATE);
+                    $this->addFolderToZip($dir . $filename, $archive, $root, $filename);
                     if ($archive->close()) {
                         return '{result: \'1\'}';
                     }
@@ -306,7 +306,7 @@ class GSFileManager {
                     throw new Exception('IllegalArgumentException: Destination already exists', 8);
                 }
             } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
             }
         } else {
             throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
@@ -314,21 +314,21 @@ class GSFileManager {
     }
 
     private function addFolderToZip($dir, $zipArchive, $root, $base){
-        if ($this->fileStorage->is_dir($root.$dir)) {
-            //$zipArchive->addEmptyDir(basename($root.$dir));
-            $files = $this->fileStorage->scandir($root.$dir);
+        if ($this->fileStorage->is_dir($root . $dir)) {
+            //$zipArchive->addEmptyDir(basename($root . $dir));
+            $files = $this->fileStorage->scandir($root . $dir);
             foreach ($files as $file) {
                 if ($this->isNoRealFileOrFolder($file)) {
                     continue;
                 }
-                if ($this->fileStorage->is_dir($root.$dir.'/'.$file)) {
-                    $this->addFolderToZip($dir.'/'.$file, $zipArchive, $root, $base.'/'.$file);
+                if ($this->fileStorage->is_dir($root . $dir . '/' . $file)) {
+                    $this->addFolderToZip($dir . '/' . $file, $zipArchive, $root, $base . '/' . $file);
                 } else {
-                    $zipArchive->addFile($root.$dir.'/'.$file, $base.'/'.$file);
+                    $zipArchive->addFile($root . $dir . '/' . $file, $base . '/' . $file);
                 }
             }
         } else {
-           $zipArchive->addFile($root.$dir, basename($dir));
+           $zipArchive->addFile($root . $dir, basename($dir));
         }
     }
 
@@ -337,12 +337,12 @@ class GSFileManager {
             $root = $this->getOptionValue(self::$root_param);
             $filename = $args['filename'];
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                $src = $root.$dir.$filename;
-                $content = $this->fileStorage->readFile($root.$dir.$filename);
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                $src = $root . $dir . $filename;
+                $content = $this->fileStorage->readFile($root . $dir . $filename);
                 $ext = strtolower(end(explode('.', $src)));
                 $this->setUtf8Header = false;
-                header('Content-Type: image/'.$ext);
+                header('Content-Type: image/' . $ext);
                 return $content;
             } else {
                 throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
@@ -359,8 +359,8 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $root = $this->getOptionValue(self::$root_param);
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$args['filename'])) {
-                $src = $root.$dir.$args['filename'];
+            if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
+                $src = $root . $dir . $args['filename'];
                 $image_info = getimagesize($src);
                 $ext = strtolower(end(explode('.', $src)));
                 $new_w = $args['new_x'];
@@ -394,8 +394,8 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $root = $this->getOptionValue(self::$root_param);
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$args['filename'])) {
-                $src = $root.$dir.$args['filename'];
+            if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
+                $src = $root . $dir . $args['filename'];
                 $ext = strToLower(end(explode('.', $src)));
 
                 $targ_w = $args['gs_jcrop_w'];
@@ -454,16 +454,16 @@ class GSFileManager {
         $maxSize = $this->getOptionValue('max_upload_filesize', 0);
         $response = '{result: \'0\'}';
         foreach ($_FILES as $file) {
-            if (!$this->fileStorage->file_exists($root.$dir.$file['name'])) {
+            if (!$this->fileStorage->file_exists($root . $dir . $file['name'])) {
                 if ($maxSize > 0 && $maxSize < intval($file['size']) / 1000) {
-                    throw new Exception('IllegalArgumentException: File to large '.$file['name'], 14);
+                    throw new Exception('IllegalArgumentException: File to large ' . $file['name'], 14);
                 }
                 $this->checkFileName($file['name']);
-                if ($this->fileStorage->move_uploaded_file($file['tmp_name'], $root.$dir.$file['name'])){
+                if ($this->fileStorage->move_uploaded_file($file['tmp_name'], $root . $dir . $file['name'])){
                     $response = '{result: \'1\'}';
                 }
             } else {
-                throw new Exception('IllegalArgumentException: Destination already exists '.$file['name'], 8);
+                throw new Exception('IllegalArgumentException: Destination already exists ' . $file['name'], 8);
             }
         }
         return $response;
@@ -473,19 +473,19 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $root = $this->getOptionValue(self::$root_param);
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$args['filename'])) {
-                $newFilename = 'copy of '.$args['filename'];
+            if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
+                $newFilename = 'copy of ' . $args['filename'];
                 if (isset($args['newfilename']) && strlen($args['newfilename']) > 0 ) {
                     $newFilename = $args['newfilename'];
                 }
-                if (!$this->fileStorage->file_exists($root.$dir.$newFilename)) {
-                    $content = $this->fileStorage->readFile($root.$dir.$args['filename']);
-                    if ($this->fileStorage->writeFile($root.$dir.$newFilename, $content) !== false){
+                if (!$this->fileStorage->file_exists($root . $dir . $newFilename)) {
+                    $content = $this->fileStorage->readFile($root . $dir . $args['filename']);
+                    if ($this->fileStorage->writeFile($root . $dir . $newFilename, $content) !== false){
                         return '{result: \'1\'}';
                     }
-                    return '{result: \'0\', gserror: \'Can NOT copy '.addslashes($dir.$newFilename).'\'}';
+                    return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $newFilename) . '\'}';
                 }else {
-                    throw new Exception('IllegalArgumentException: Destination already exists '.$dir.$newFilename, 8);
+                    throw new Exception('IllegalArgumentException: Destination already exists ' . $dir . $newFilename, 8);
                 }
             } else {
                 throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
@@ -504,11 +504,11 @@ class GSFileManager {
             }
             $filename = $args['filename'];
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                if($this->fileStorage->writeFile($root.$dir.$filename, $content) !== false){
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                if($this->fileStorage->writeFile($root . $dir . $filename, $content) !== false){
                     return '{result: \'1\'}';
                 }
-                return '{result: \'0\', gserror: \'Can NOT copy '.addslashes($dir.$filename).'\'}';
+                return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $filename) . '\'}';
             } else {
                 throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
             }
@@ -522,14 +522,14 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $filename = $args['filename'];
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                $content = $this->fileStorage->readFile($root.$dir.$filename);
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                $content = $this->fileStorage->readFile($root . $dir . $filename);
                 if (isset($args['base64_encode']) && $args['base64_encode'] == 1) {
                     $content = base64_encode($content);
                 }
                 return $content;
             } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
             }
         } else {
             throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
@@ -541,11 +541,11 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $filename = $args['filename'];
             $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                $content = $this->fileStorage->readFile($root.$dir.$filename);
-                header('Content-Description: Download File: '.$filename);
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                $content = $this->fileStorage->readFile($root . $dir . $filename);
+                header('Content-Description: Download File: ' . $filename);
                 header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename="'.$filename.'"');
+                header('Content-Disposition: attachment; filename="' . $filename . '"');
                 header('Content-Transfer-Encoding: binary');
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -568,20 +568,20 @@ class GSFileManager {
             $files = $args['files'];
             $response = '{result: \'0\'}';
             foreach ($files as $filename) {
-                if (strpos($filename, '..') !== false) {
+                if (strpos($filename, '..') !== false) { // TODO sollte doch grundsätzlich ausgeschlossen werden mit checkFileName, oder?
                     throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
                 }
                 $this->checkFileName($filename);
-                if ($this->fileStorage->file_exists($root.$filename)) {
-                    if (!$this->fileStorage->file_exists($root.$dir.basename($filename))) {
-                        if ($this->fileStorage->renameItem($root.$filename, $root.$dir.basename($filename))) {
+                if ($this->fileStorage->file_exists($root . $filename)) {
+                    if (!$this->fileStorage->file_exists($root . $dir . basename($filename))) {
+                        if ($this->fileStorage->renameItem($root . $filename, $root . $dir . basename($filename))) {
                             $response = '{result: \'1\'}';
                         }
                     } else {
-                        throw new Exception('IllegalArgumentException: Destination already exists '.$filename, 8);
+                        throw new Exception('IllegalArgumentException: Destination already exists ' . $filename, 8);
                     }
                 } else {
-                    throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
+                    throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
                 }
             }
             return $response;
@@ -599,17 +599,17 @@ class GSFileManager {
             if (isset($args['newfilename'])) {
                 $newFileName = $args['newfilename'];
             }
-            if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                if (!$this->fileStorage->file_exists($root.$dir.$newFileName)) {
-                    if ($this->fileStorage->renameItem($root.$dir.$filename, $root.$dir.$newFileName)) {
+            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                if (!$this->fileStorage->file_exists($root . $dir . $newFileName)) {
+                    if ($this->fileStorage->renameItem($root . $dir . $filename, $root . $dir . $newFileName)) {
                         return '{result: \'1\'}';
                     }
-                    return '{result: \'0\' , gserror: \'can not rename item '.addslashes($dir.$filename).' to '.addslashes($dir.$newFileName).'\'}';
+                    return '{result: \'0\' , gserror: \'can not rename item ' . addslashes($dir . $filename) . ' to ' . addslashes($dir . $newFileName) . '\'}';
                 } else {
                     throw new Exception('IllegalArgumentException: Destination already exists', 8);
                 }
             } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
             }
         } else {
             throw new Exception('IllegalArgumentException: files can NOT be null', 5);
@@ -623,24 +623,24 @@ class GSFileManager {
             $files = $args['files'];
             $response = '{result: \'0\'}';
             foreach ($files as $filename) {
-                if (strpos($filename, '..') !== false) {
+                if (strpos($filename, '..') !== false) { // TODO sollte doch grundsätzlich ausgeschlossen werden mit checkFileName, oder?
                     throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
                 }
                 $this->checkFileName($filename);
-                if ($this->fileStorage->file_exists($root.$filename)) {
-                    if (!$this->fileStorage->file_exists($root.$dir.basename($filename))) {
-                        if (!is_dir($root.$filename)) {
-                            if ($this->fileStorage->copyFile($root.$filename, $root.$dir.basename($filename))) {
+                if ($this->fileStorage->file_exists($root . $filename)) {
+                    if (!$this->fileStorage->file_exists($root . $dir . basename($filename))) {
+                        if (!is_dir($root . $filename)) {
+                            if ($this->fileStorage->copyFile($root . $filename, $root . $dir . basename($filename))) {
                                 $response = '{result: \'1\'}';
                             }
-                        } else if ($this->fileStorage->copyDir($root.$filename, $root.$dir.basename($filename))){
+                        } else if ($this->fileStorage->copyDir($root . $filename, $root . $dir . basename($filename))){
                             $response = '{result: \'1\'}';
                         }
                     } else {
-                        throw new Exception('IllegalArgumentException: Destination already exists '.$filename, 8);
+                        throw new Exception('IllegalArgumentException: Destination already exists ' . $filename, 8);
                     }
                 } else {
-                    throw new Exception('IllegalArgumentException: Source does NOT exists '.$filename, 7);
+                    throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
                 }
             }
             return $response;
@@ -659,18 +659,18 @@ class GSFileManager {
                 $path_parts2 = @split('/', $filename);
                 $filename = end($path_parts2);
                 $this->checkFileName($filename);
-                if ($this->fileStorage->file_exists($root.$dir.$filename)) {
-                    if ($this->fileStorage->is_dir($root.$dir.$filename)) {
-                        if (!$this->fileStorage->deleteDirectory($root.$dir.$filename)) {
-                            throw new Exception('ServerException: can NOT delete dir '.$dir.$filename, 9);
+                if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+                    if ($this->fileStorage->is_dir($root . $dir . $filename)) {
+                        if (!$this->fileStorage->deleteDirectory($root . $dir . $filename)) {
+                            throw new Exception('ServerException: can NOT delete dir ' . $dir . $filename, 9);
                         }
                     } else {
-                        if (!$this->fileStorage->deleteFile($root.$dir.$filename)) {
-                            throw new Exception('ServerException: can NOT delete file '.$dir.$filename, 9);
+                        if (!$this->fileStorage->deleteFile($root . $dir . $filename)) {
+                            throw new Exception('ServerException: can NOT delete file ' . $dir . $filename, 9);
                         }
                     }
                 } else {
-                    throw new Exception('IllegalArgumentException: Source does NOT exists '.$dir.$filename, 7);
+                    throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
                 }
             }
             return $response;
@@ -685,13 +685,13 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $filename = $args['filename'];
         } else {
-            $filename = 'newfile_'.time().'.txt';
+            $filename = 'newfile_' . time() . '.txt';
         }
-        if (!$this->fileStorage->file_exists($root.$dir.$filename)) {
-            if ($this->fileStorage->makeFile($root.$dir.$filename)) {
+        if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
+            if ($this->fileStorage->makeFile($root . $dir . $filename)) {
                 return '{result: \'1\'}';
             }
-            return '{result: \'0\' , gserror: \'can not create item '.addslashes($dir.$filename).'\'}';
+            return '{result: \'0\' , gserror: \'can not create item ' . addslashes($dir . $filename) . '\'}';
         } else {
             throw new Exception('IllegalArgumentException: Destination already exists', 8);
         }
@@ -704,9 +704,9 @@ class GSFileManager {
         if (isset($args['filename'])) {
             $filename = $args['filename'];
         } else {
-            $filename = 'new folder_'.time();
+            $filename = 'new folder_' . time();
         }
-        if ($this->fileStorage->file_exists($root.$dir.$filename) || $this->fileStorage->makeDirectory($root.$dir.$filename)) {
+        if ($this->fileStorage->file_exists($root . $dir . $filename) || $this->fileStorage->makeDirectory($root . $dir . $filename)) {
             return '{result: \'1\'}';
         }
         return '{result: \'0\'}';
@@ -746,7 +746,7 @@ class GSFileManager {
             }
             return json_encode($result);
         } else {
-            throw new Exception('IllegalArgumentException: dir to list does NOT exists '.$dir, 3);
+            throw new Exception('IllegalArgumentException: dir to list does NOT exists ' . $dir, 3);
         }
     }
 
@@ -760,7 +760,7 @@ class GSFileManager {
             $this->stringEndsWith  ($pathname, '/..') ||
             strpos($pathname, '/../') !== false
         ) {
-            throw new Exception('IllegalArgumentException: Relative paths are not allowed.');
+            throw new Exception('IllegalArgumentException: Relative paths are not allowed . ');
         }
     }
 
@@ -777,11 +777,11 @@ class GSFileManager {
     }
 
     protected function getFileExtension($filename) {
-        $lastPos = strrpos($filename, '.');
+        $lastPos = strrpos($filename, ' . ');
         return ($lastPos === false) ? 'unknown' : substr($filename, $lastPos + 1);
     }
 
     protected function isNoRealFileOrFolder($filename) {
-        return $filename == '.' || $filename == '..';
+        return $filename === '.' || $filename === '..';
     }
 }
