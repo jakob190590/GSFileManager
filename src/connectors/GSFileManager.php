@@ -60,7 +60,7 @@ class GSFileSystemFileStorage {
         $files = scandir($dirname);
         if (count($files) > 2) {
             foreach( $files as $file ) {
-                if ($file == '.' || $file == '..') {
+                if ($this->isNoRealFileOrFolder($file)) {
                     continue;
                 }
                 $file_utf8 = self::toUTF8($file);
@@ -105,7 +105,7 @@ class GSFileSystemFileStorage {
         $dir = opendir($src);
         $result = @mkdir($dst);
         while (($file = readdir($dir)) !== false) {
-            if ($file == '.' || $file == '..' ) {
+            if ($this->isNoRealFileOrFolder($file)) {
                 continue;
             }
             if (is_dir($src . '/' . $file)) {
@@ -318,10 +318,11 @@ class GSFileManager {
             //$zipArchive->addEmptyDir(basename($root.$dir));
             $files = $this->fileStorage->scandir($root.$dir);
             foreach ($files as $file) {
-                if ($this->fileStorage->is_dir($root.$dir.'/'.$file)){
-                    if (($file !== ".") && ($file !== "..")){
-                        $this->addFolderToZip($dir.'/'.$file, $zipArchive, $root, $base.'/'.$file);
-                    }
+                if ($this->isNoRealFileOrFolder($file)) {
+                    continue;
+                }
+                if ($this->fileStorage->is_dir($root.$dir.'/'.$file)) {
+                    $this->addFolderToZip($dir.'/'.$file, $zipArchive, $root, $base.'/'.$file);
                 } else {
                     $zipArchive->addFile($root.$dir.'/'.$file, $base.'/'.$file);
                 }
@@ -722,7 +723,7 @@ class GSFileManager {
                 'gsfiles' => array()
             );
             foreach ($files as $file) {
-                if ($file == '.' || $file == '..') {
+                if ($this->isNoRealFileOrFolder($file)) {
                     continue;
                 }
                 $newItem = array(
@@ -778,5 +779,9 @@ class GSFileManager {
     protected function getFileExtension($filename) {
         $lastPos = strrpos($filename, '.');
         return ($lastPos === false) ? 'unknown' : substr($filename, $lastPos + 1);
+    }
+
+    protected function isNoRealFileOrFolder($filename) {
+        return $filename == '.' || $filename == '..';
     }
 }
