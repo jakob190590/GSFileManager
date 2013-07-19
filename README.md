@@ -8,7 +8,7 @@ Parts of the original code are not good or not suitable for us. Here follows an 
 - Data sent to server is now optimal encoded.  Before, it was two times URL-encoded plus one time with HTML entities.
 - Code style is getting better.  We begin to apply the Google [JavaScript][gjssg] and [HTML/CSS][ghcsg] Style Guides and for PHP an adopted [PEAR Coding Standard][pcs].
 - Better use of [jQuery][jq] i.e. discarding the use of deprecated/removed features and changing poor use of jQuery (e.g. `.html()` vs. `.text()`).
-- PHP's low-level file system functions seems to need CP1252 (under Windows), therefore conversion added.
+- PHP's low-level file system functions seem to need CP1252 (under Windows), therefore conversion added.
 - Server now responses with JSON instead of JavaScript.
 - Refactoring, e.g. extracting functions, renaming variables, splitting modules.
 - German localization added.
