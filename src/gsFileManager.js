@@ -328,6 +328,18 @@ var gs_forbidden_ext_mapping = {
     'archive':  '12,15,16,17,18,19'
 };
 
+// Clipboard loeschende Aktionen
+var clipboardClearingActions = {
+    '4': null, // delete item
+    '6': null, // delete item
+    '7': null, // copy
+    '8': null, // cut
+    '10': null, // rename
+    '13': null, // copy as
+    '19': null, // zip
+    '23': null // unzip
+};
+
 if (jQuery) (function(jQuery) {
 
     jQuery.extend(jQuery.fn, {
@@ -710,7 +722,10 @@ if (jQuery) (function(jQuery) {
         },
 
         doGSAction: function(o) {
-            // TODO clipboard bei den meisten aktionen leeren, z.b. on rename or delete.
+            if (clipboardClearingActions.hasOwnProperty(o.action)) {
+                gs_clipboard.clear();
+                gs_clipboard.refreshView();
+            }
             if (o.action == '20') { // select all
                 jQuery('#gs_content_table div.gsItem[rel!="up"]').addClass('rowSelected');
                 return false;
@@ -727,7 +742,7 @@ if (jQuery) (function(jQuery) {
             var dataForSend = null;
             var gsitem = gs_get_cur_item(jQuery(this).attr('rel'));
 
-            if (o.action == '23') { // zip
+            if (o.action == '23') { // unzip
                 unZipItems(o, curDir, gsitem);
                 return;
             }
@@ -777,43 +792,41 @@ if (jQuery) (function(jQuery) {
                 return;
             }
             if (o.action == '7') { // copy
-                gs_clipboard.clear();
                 gs_clipboard.addItemsForCopy(gs_cur_items);
                 gs_clipboard.refreshView();
                 return;
             }
             if (o.action == '8') { // cut
-                gs_clipboard.clear();
                 gs_clipboard.addItemsForCut(gs_cur_items);
                 gs_clipboard.refreshView();
                 return;
             }
-            if (o.action == '9') { //paste
+            if (o.action == '9') { // paste
                 pasteItems(o, curDir, gsitem);
                 return;
             }
-            if (o.action == '10') { //rename
+            if (o.action == '10') { // rename
                 renameItem(o, curDir, gsitem);
                 return;
             }
-            if (o.action == '11') { //download
+            if (o.action == '11') { // download
                 dataForSend = {opt: 8, filename: gsitem.itemData.name, dir: curDir};
                 location.href= gs_makeUrl(o.script, jQuery.param(dataForSend));
                 return;
             }
-            if (o.action == '2') { //new file
+            if (o.action == '2') { // new file
                 newFile(o, curDir, gsitem);
                 return;
             }
-            if (o.action == '3') { //new dir
+            if (o.action == '3') { // new dir
                 newDir(o, curDir, gsitem);
                 return;
             }
-            if (o.action == '4' || o.action == '6') { //delete item
+            if (o.action == '4' || o.action == '6') { // delete item
                 deleteItems(o, curDir, gsitem);
                 return;
             }
-            if (o.action == '5') { //open dir
+            if (o.action == '5') { // open dir
                 jQuery('#' + gsitem.itemData.id).trigger('click');
                 return;
             }
