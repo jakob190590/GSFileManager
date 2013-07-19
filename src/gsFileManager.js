@@ -12,7 +12,7 @@
  *
  */
 
-var GsItem = function(itemData) {
+function GsItem(itemData) {
     this.itemData = itemData;
 
     this.getSize = function() {
@@ -60,6 +60,76 @@ var GsItem = function(itemData) {
     };
 };
 
+function GsClipboard() {
+    this.items = [];
+    this.action;
+    this.clear = function() {
+        this.items = [];
+        this.action = null;
+    }
+    this.getItemCount = function () {
+        return this.items.length;
+    }
+    this.getAction = function() {
+        return this.action;
+    }
+    this.getPaths = function() {
+        return this.items.map(function(elem) {
+            return elem.itemData.path;
+        });
+    }
+    this.addItemsForCut = function(items) {
+        this.addItems(items, '8');
+    }
+    this.addItemsForCopy = function(items) {
+        this.addItems(items, '7');
+    }
+    this.addItems = function(items, action) {
+        this.action = action;
+        var thisClipboard = this;
+        jQuery('#gs_content_table div.rowSelected').each(function() {
+            var id = jQuery(this).attr('rel');
+            if (typeof items[id] != 'undefined') {
+                thisClipboard.items.push(items[id]);
+            }
+        });
+    }
+    this.refreshView = function() {
+        var actionInWords = '';
+        if (this.action) {
+            actionInWords = '(' + this.getActionInWords() + ') ';
+        }
+        jQuery('#gsClipBoard').text(actionInWords + this.getItemCount() + ' ' + gs_getTranslation('en', 30));
+    }
+    this.getActionInWords = function() {
+        if (this.action === '7') return 'Copy';
+        if (this.action === '8') return 'Cut';
+        return '';
+    }
+    this.showContentInWindow = function() {
+        var thisClipboard = this;
+        var div = jQuery('#gsclipboardContent');
+        var divHtml = '';
+        for (var i = 0; i < this.items.length; i++) {
+            var itemData = this.items[i].itemData;
+            // TODO icon wird nicht mehr angezeigt. was muss nochmal die div class sein???
+            divHtml += '<div class="' + itemData.extension + '">&nbsp;&nbsp;&nbsp;' + itemData.path + '</div>';
+        }
+        div.html(divHtml);
+        div.dialog({
+            title: 'Clipboard',
+            modal: true,
+            buttons: {
+                Clear: function() {
+                    thisClipboard.clear();
+                    thisClipboard.refreshView();
+                    jQuery(this).dialog('close');
+                }
+            }
+        });
+    }
+}
+
 function noAction() { return false; }
 
 function updateCoords(c){
@@ -79,14 +149,6 @@ function gs_get_cur_item(id){
 
 function gs_show_loading() {
     jQuery("#gs_dir_content").html('<div class="loadingDiv">&nbsp;</div>');
-}
-
-function gsGetFilesInClipboard(path) {
-    var arr = [];
-    for (var i = 0; i < gs_clipboard.length; i++) {
-        arr.push(gs_clipboard[i].itemData.path);
-    }
-    return arr;
 }
 
 function gsGetSelectedItems() {
@@ -112,41 +174,6 @@ function gsCheckResponse(data) {
             }
         }
     }
-}
-
-function gs_storeSelectedItems() {
-    gs_clipboard = [];
-    jQuery('#gs_content_table div.rowSelected').each(function(){
-        var id = jQuery(this).attr('rel');
-        if (typeof gs_cur_items[id] != 'undefined') {
-            gs_clipboard.push(gs_cur_items[id]);
-        } else {
-            alert('Uknown item selected');
-        }
-    });
-}
-
-function gs_showClipboardContent() {
-    var diva = jQuery('#gsclipboardContent');
-    var divaHtml = '';
-    for (var i = 0; i < gs_clipboard.length; i++) {
-        var htmlClass = gs_clipboard[i].isDirectory() ? 'dir' : 'file';
-        divaHtml += '<div class="' + htmlClass + '">&nbsp;&nbsp;&nbsp;' + gs_clipboard[i].path + '<div>';
-    }
-    diva.html(divaHtml);
-    diva.dialog({
-        title: 'Clipboard',
-        modal: true,
-        buttons: {
-            Clear: function() {
-                gs_clipboard = [];
-                jQuery('#gsclipboardContent').html('');
-                jQuery("#gsClipBoard").text('0 items');
-                jQuery(this).dialog('close');
-            }
-        }
-    });
-    return false;
 }
 
 function gs_makeUrl(root, params) {
@@ -263,8 +290,7 @@ function gs_getTranslation(lg, code){
 }
 
 var gs_cur_items = [];
-
-var gs_clipboard =[];
+var gs_clipboard = new GsClipboard();
 
 var gs_ext_editables = {
     'txt':  null,
@@ -317,7 +343,7 @@ if (jQuery) (function(jQuery) {
             if (o.collapseEasing == undefined) o.collapseEasing = null;
             if (o.loadMessage == undefined) o.loadMessage = 'Loading...';
 
-            var menuHtml = '<table class="gsHeadTable" cellpadding=0 cellspacing=0><tr><td><span class="gsHeadText"> ' + gs_getTranslation(o.language, 1)+ ': </span><span id=\'curDir\'></span></td><td><a href=\'javascript: void(0);\' onClick=\'return gs_showClipboardContent();\' class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 2)+ '&nbsp;</a><span id=\'gsClipBoard\'>0 items</span> </td></tr></table>';
+            var menuHtml = '<table class="gsHeadTable" cellpadding=0 cellspacing=0><tr><td><span class="gsHeadText"> ' + gs_getTranslation(o.language, 1)+ ': </span><span id=\'curDir\'></span></td><td><a href=\'javascript: void(0);\' onClick=\'return gs_clipboard.showContentInWindow();\' class=\'gs_dir_content_button\'>&nbsp;' + gs_getTranslation(o.language, 2)+ '&nbsp;</a><span id=\'gsClipBoard\'>0 items</span> </td></tr></table>';
             menuHtml += '<a id="gs_uploadbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 3)+ '&nbsp;</a>';
             menuHtml += '<a id="gs_newfilebutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 4)+ '&nbsp;</a>';
             menuHtml += '<a id="gs_newdirbutton" class="gs_dir_content_button">&nbsp;' + gs_getTranslation(o.language, 5)+ '&nbsp;</a>';
@@ -685,6 +711,7 @@ if (jQuery) (function(jQuery) {
         },
 
         doGSAction: function(o) {
+            // TODO clipboard bei den meisten aktionen leeren, z.b. on rename or delete.
             if (o.action == '20') { // select all
                 jQuery('#gs_content_table div.gsItem[rel!="up"]').addClass('rowSelected');
                 return false;
@@ -751,17 +778,15 @@ if (jQuery) (function(jQuery) {
                 return;
             }
             if (o.action == '7') { // copy
-                var clipBoard = jQuery("#gsClipBoard");
-                gs_storeSelectedItems();
-                clipBoard.text('(Copy) ' + gs_clipboard.length + ' ' + gs_getTranslation(o.lg, 30));
-                clipBoard.attr('rel', o.action);
+                gs_clipboard.clear();
+                gs_clipboard.addItemsForCopy(gs_cur_items);
+                gs_clipboard.refreshView();
                 return;
             }
             if (o.action == '8') { // cut
-                var clipBoard = jQuery("#gsClipBoard");
-                gs_storeSelectedItems();
-                clipBoard.text('(Cut) ' + gs_clipboard.length + ' ' + gs_getTranslation(o.lg, 30));
-                clipBoard.attr('rel', o.action);
+                gs_clipboard.clear();
+                gs_clipboard.addItemsForCut(gs_cur_items);
+                gs_clipboard.refreshView();
                 return;
             }
             if (o.action == '9') { //paste
@@ -928,30 +953,29 @@ if (jQuery) (function(jQuery) {
                 jQuery("#gs_jcrop_filename").val(gsitem.itemData.name);
             }
 
-            function pasteItems(o, curDir, gsitem){
-                var clipBoard = jQuery("#gsClipBoard");
+            function pasteItems(o, curDir, gsitem) {
                 var opt = null;
-                if (clipBoard.attr('rel') == '7') { // copy
+                var clipboardAction = gs_clipboard.getAction();
+                if (clipboardAction === '7') { // copy
                     opt = 5;
-                } else if (clipBoard.attr('rel') == '8') { // paste
+                } else if (clipboardAction === '8') { // cut
                     opt = 7;
                 } else {
                     return;
                 }
-                dataForSend = {opt: opt, files: gsGetFilesInClipboard(), dir: curDir};
+                dataForSend = {opt: opt, files: gs_clipboard.getPaths(), dir: curDir};
                 sendAndRefresh(o, dataForSend, true);
 
-                if (opt == 7) { // TODO pruefen
-                    gs_clipboard = []; // TODO refactoring, clearClipboard...
-                    clipBoard.text('0 items');
-                    jQuery('#gsclipboardContent').html('');
-                    clipBoard.attr('rel', '');
-
+                if (opt == 7) { // cut
+                    // TODO divs von verschobenen items loeschen (wird das an anderen stellen auch gemacht?)
                     for (var i = 0; i < gs_clipboard.length; i++) {
                         if (gs_clipboard[i].isDirectory()) {
                             jQuery('#' + gs_clipboard[i].id).parent().remove();
                         }
                     }
+
+                    gs_clipboard.clear();
+                    gs_clipboard.refreshView();
                 }
             }
 
