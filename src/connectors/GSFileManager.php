@@ -253,64 +253,57 @@ class GSFileManager {
         return $response;
     }
 
-    public function unZipItems($args){
+    public function unZipItems($args) {
+        if (!isset($args['filename'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
+        }
         $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            $newFileName = 'unzipped_' . $filename;
-            if (isset($args['newfilename'])) {
-                $newFileName = $args['newfilename'];
-            }
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                if (!$this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
-                    $archive = new ZipArchive();
-                    if ($archive->open($root . $dir . $filename)){
-                        $archive->extractTo($root . $dir . basename($newFileName));
-                        $archive->close();
-                        return '{result: \'1\'}';
-                    } else {
-                        return '{result: \'0\'}';
-                    }
-                } else {
-                    throw new Exception('IllegalArgumentException: Destination already exists', 8);
-                }
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
-            }
-
+        $filename = $args['filename'];
+        $dir = $args['dir'];
+        $newFileName = 'unzipped_' . $filename;
+        if (isset($args['newfilename'])) {
+            $newFileName = $args['newfilename'];
+        }
+        if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
+            throw new Exception('IllegalArgumentException: Source does not exists ' . $dir . $filename, 7);
+        }
+        if ($this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
+            throw new Exception('IllegalArgumentException: Destination already exists', 8);
+        }
+        $archive = new ZipArchive();
+        if ($archive->open($root . $dir . $filename)){
+            $archive->extractTo($root . $dir . basename($newFileName));
+            $archive->close();
+            return '{result: \'1\'}';
         } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+            return '{result: \'0\'}';
         }
     }
 
     public function zipItems($args) {
-        $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            $newFileName = $filename . '.zip';
-            if (isset($args['newfilename'])) {
-                $newFileName = $args['newfilename'];
-            }
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                if (!$this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
-                    $archive = new ZipArchive();
-                    $archive->open($root . $dir . $newFileName, ZIPARCHIVE::CREATE);
-                    $this->addFolderToZip($dir . $filename, $archive, $root, $filename);
-                    if ($archive->close()) {
-                        return '{result: \'1\'}';
-                    }
-                    return '{result: \'0\'}';
-                } else {
-                    throw new Exception('IllegalArgumentException: Destination already exists', 8);
-                }
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
-            }
-        } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+        if (!isset($args['filename'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
+        $root = $this->getOptionValue(self::$root_param);
+        $filename = $args['filename'];
+        $dir = $args['dir'];
+        $newFileName = $filename . '.zip';
+        if (isset($args['newfilename'])) {
+            $newFileName = $args['newfilename'];
+        }
+        if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
+            throw new Exception('IllegalArgumentException: Source does not exists ' . $dir . $filename, 7);
+        }
+        if ($this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
+            throw new Exception('IllegalArgumentException: Destination already exists', 8);
+        }
+        $archive = new ZipArchive();
+        $archive->open($root . $dir . $newFileName, ZIPARCHIVE::CREATE);
+        $this->addFolderToZip($dir . $filename, $archive, $root, $filename);
+        if ($archive->close()) {
+            return '{result: \'1\'}';
+        }
+        return '{result: \'0\'}';
     }
 
     private function addFolderToZip($dir, $zipArchive, $root, $base){
@@ -328,7 +321,7 @@ class GSFileManager {
                 }
             }
         } else {
-           $zipArchive->addFile($root . $dir, basename($dir));
+            $zipArchive->addFile($root . $dir, basename($dir));
         }
     }
 
