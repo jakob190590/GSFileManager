@@ -111,9 +111,8 @@ function GsClipboard() {
         var div = jQuery('#gsclipboardContent');
         var divHtml = '';
         for (var i = 0; i < this.items.length; i++) {
-            var itemData = this.items[i].itemData;
-            // TODO icon wird nicht mehr angezeigt. was muss nochmal die div class sein???
-            divHtml += '<div class="' + itemData.extension + '">&nbsp;&nbsp;&nbsp;' + itemData.path + '</div>';
+            var item = this.items[i];
+            divHtml += '<div class="' + (item.isDirectory() ? 'directory' : 'file') + '" ext_' + item.itemData.extension + '">&nbsp;&nbsp;&nbsp;' + item.itemData.path + '</div>';
         }
         div.html(divHtml);
         div.dialog({
@@ -1126,7 +1125,7 @@ if (jQuery) (function() {
             jQuery(this).each(function() {
                 var el = jQuery(this);
                 var offset = el.offset(); // absolute position
-                menu.addClass('contextMenu'); // TODO why? for visibility?
+                menu.addClass('contextMenu');
 
                 // Auf Rechtsklick reagieren:
                 // $(document).click(...) geht
