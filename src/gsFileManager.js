@@ -131,14 +131,14 @@ function GsClipboard() {
 
 function noAction() { return false; }
 
-function updateCoords(c){
+function updateCoords(c) {
     jQuery('#gs_jcrop_x').val(c.x);
     jQuery('#gs_jcrop_y').val(c.y);
     jQuery('#gs_jcrop_w').val(c.w);
     jQuery('#gs_jcrop_h').val(c.h);
 }
 
-function gs_get_cur_item(id){
+function gs_get_cur_item(id) {
     var result = null;
     if (typeof(gs_cur_items[id]) != 'undefined') {
         result = gs_cur_items[id];
@@ -279,7 +279,7 @@ gs_filemanager_languages['de'][43] = 'UnZip-Dateiname';
 gs_filemanager_languages['de'][44] = 'Größe verriegeln';
 gs_filemanager_languages['de'][45] = 'Ordner';
 
-function gs_getTranslation(lg, code){
+function gs_getTranslation(lg, code) {
     var result = '';
     if (typeof gs_filemanager_languages[lg] != 'undefined' &&
         typeof gs_filemanager_languages[lg][code] != 'undefined') {
@@ -379,7 +379,7 @@ if (jQuery) (function(jQuery) {
                 contexMenus += '     <li class="notepad"><a href="#ckeditor" rel="18">' + gs_getTranslation(o.language, 21)+ '</a></li>';
             }
             contexMenus += '     <li class="picture separator"><a href="#imageviewer" rel="15">' + gs_getTranslation(o.language, 13)+ '</a></li>';
-            if(jQuery().Jcrop){
+            if(jQuery().Jcrop) {
                 contexMenus += '     <li class="picture"><a href="#jcrop" rel="16">' + gs_getTranslation(o.language, 22)+ '</a></li>';
             }
             contexMenus += '   </ul>';
@@ -444,37 +444,37 @@ if (jQuery) (function(jQuery) {
                     jQuery(el).doGSAction({action: action, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_uploadbutton').click(function(e){
+            jQuery('#gs_uploadbutton').click(function(e) {
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 14, script:  o.script, type: 'file', lg: o.language});
             });
 
-            jQuery('#gs_newfilebutton').click(function(e){
+            jQuery('#gs_newfilebutton').click(function(e) {
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 2, script: o.script, type: 'file', lg: o.language});
             });
 
-            jQuery('#gs_newdirbutton').click(function(e){
+            jQuery('#gs_newdirbutton').click(function(e) {
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 3, script: o.script, type: 'dir', lg: o.language});
             });
 
-            jQuery('#gs_pastebutton').click(function(e){
+            jQuery('#gs_pastebutton').click(function(e) {
                 e.stopPropagation();
                 jQuery(this).doGSAction({script: o.script, action: 9, lg: o.language});
             });
 
-            jQuery('#gs_selectallbutton').click(function(e){
+            jQuery('#gs_selectallbutton').click(function(e) {
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 20, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_deselectbutton').click(function(e){
+            jQuery('#gs_deselectbutton').click(function(e) {
                 e.stopPropagation();
                 jQuery(this).doGSAction({action: 21, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_invertselectbutton').click(function(e){
+            jQuery('#gs_invertselectbutton').click(function(e) {
                 e.stopPropagation();
                 return jQuery(this).doGSAction({action: 22, script: o.script, type: 'context', lg: o.language});
             });
@@ -490,7 +490,7 @@ if (jQuery) (function(jQuery) {
                     var dira = escape(jQuery('#gs_jcrop_dir').val());
                     var imageSrc = gs_makeUrl(o.script, "opt=15&filename=" + filenamea +"&dir=" + dira + "&time="+ new Date().getTime());
                     jQuery('#gs_jcrop_div_container').html('<img src="'+ imageSrc + '" id="gsjcrop_target"/>');
-                    jQuery('#gsjcrop_target').load(function(){
+                    jQuery('#gsjcrop_target').load(function() {
                         jQuery('#gsjcrop_target').Jcrop({onSelect: updateCoords});
                     });
 
@@ -510,7 +510,7 @@ if (jQuery) (function(jQuery) {
                     dataType: 'script'
             });
 
-            function gsmanageImgSizes(direction){
+            function gsmanageImgSizes(direction) {
                 var Xelement = jQuery('#gs_image_x');
                 var Yelement = jQuery('#gs_image_y');
                 if (direction == 'x') {
@@ -567,7 +567,7 @@ if (jQuery) (function(jQuery) {
                 return fileshtml;
             }
 
-            function manageGsMenu(srcElement, menu){
+            function manageGsMenu(srcElement, menu) {
                 if (srcElement.attr('rel') == 'up') {
                     return false;
                 }
@@ -831,7 +831,7 @@ if (jQuery) (function(jQuery) {
                 return;
             }
 
-            function showCKEditor(o, curDir, gsitem){
+            function showCKEditor(o, curDir, gsitem) {
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
                 jQuery('#gsckeditor').dialog({title: 'CKEditor ' + gsitem.itemData.name, modal: true, width: width, height: height,
@@ -870,7 +870,7 @@ if (jQuery) (function(jQuery) {
                   });
             }
 
-            function showNotePad(o, curDir, gsitem){
+            function showNotePad(o, curDir, gsitem) {
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
                 var rows = parseInt(height / 30);
@@ -903,7 +903,7 @@ if (jQuery) (function(jQuery) {
                   });
             }
 
-            function showImageViewer(o, curDir, gsitem){
+            function showImageViewer(o, curDir, gsitem) {
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
                 jQuery('#gsimageviewer').dialog({title: 'Image viewer ' + gsitem.itemData.name, modal: true, width: width, height: height,
@@ -928,7 +928,7 @@ if (jQuery) (function(jQuery) {
                 jQuery('#gs_image_x').val('');
                 jQuery('#gs_image_y').val('');
                 jQuery('#gsimageviewer_content').html('<img id="gs_imageviewer_image"/>');
-                jQuery('#gs_imageviewer_image').load(function(){
+                jQuery('#gs_imageviewer_image').load(function() {
                     var tImageelement = jQuery(this);
                     jQuery('#gs_image_x').val(tImageelement.width());
                     jQuery('#gs_image_y').val(tImageelement.height());
@@ -938,7 +938,7 @@ if (jQuery) (function(jQuery) {
                 jQuery('#gs_imageviewer_image').attr('src', imageSrc);
             }
 
-            function showJcrop(o, curDir, gsitem){
+            function showJcrop(o, curDir, gsitem) {
                 var gs_jcrop_div = jQuery('#gs_jcrop_div');
                 var height = parseInt(jQuery(window).height()) - 100;
                 var width = parseInt(jQuery(window).width()) - 100;
@@ -958,7 +958,7 @@ if (jQuery) (function(jQuery) {
                 dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
                 var imageSrc = gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime());
                 jQuery('#gs_jcrop_div_container').html('<img src="'+ imageSrc + '" id="gsjcrop_target"/>');
-                jQuery('#gsjcrop_target').load(function(){
+                jQuery('#gsjcrop_target').load(function() {
                     jQuery('#gsjcrop_target').Jcrop({onSelect: updateCoords});
                 });
                 jQuery("#gs_jcrop_dir").val(curDir);
@@ -991,7 +991,7 @@ if (jQuery) (function(jQuery) {
                 }
             }
 
-            function copyAs(o, curDir, gsitem){
+            function copyAs(o, curDir, gsitem) {
                 var oldName = gsitem.itemData.name;
                 var newName = makeNewFilenameForCopy(oldName);
                 newName = window.prompt(gs_getTranslation(o.lg, 34) + ': ', newName);
@@ -1006,7 +1006,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function unZipItems(o, curDir, gsitem){
+            function unZipItems(o, curDir, gsitem) {
                 var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + gsitem.itemData.name);
                 if (newName == null) {
                     return;
@@ -1015,7 +1015,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function zipItems(o, curDir, gsitem){
+            function zipItems(o, curDir, gsitem) {
                 var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', gsitem.itemData.name + '.zip');
                 if (newName == null) {
                     return;
@@ -1024,7 +1024,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function renameItem(o, curDir, gsitem){
+            function renameItem(o, curDir, gsitem) {
                 var newName = window.prompt(gs_getTranslation(o.lg, 35) + ': ', gsitem.itemData.name);
                 if (newName == null) {
                     return;
@@ -1033,7 +1033,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function newFile(o, curDir, gsitem){
+            function newFile(o, curDir, gsitem) {
                 var newName = window.prompt(gs_getTranslation(o.lg, 36) + ': ');
                 if (newName == null || newName.length < 1) {
                     return;
@@ -1042,7 +1042,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function newDir(o, curDir, gsitem){
+            function newDir(o, curDir, gsitem) {
                 var newName = window.prompt(gs_getTranslation(o.lg, 37) + ': ');
                 if (newName == null || newName.length < 1) {
                     return;
@@ -1051,7 +1051,7 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function deleteItems(o, curDir, gsitem){
+            function deleteItems(o, curDir, gsitem) {
                 var selectedFiles = gsGetSelectedItems();
                 if (selectedFiles.length == 0 || !window.confirm(gs_getTranslation(o.lg, 38))) {
                     return;
@@ -1207,7 +1207,7 @@ if (jQuery) (function() {
                     // When items are selected
                     menu.find('a').off('click');
                     menu.find('a').on('click', function() {
-                        if (jQuery(this).parent().hasClass('disabled')){
+                        if (jQuery(this).parent().hasClass('disabled')) {
                            return false;
                         }
                         jQuery(".contextMenu").hide();
