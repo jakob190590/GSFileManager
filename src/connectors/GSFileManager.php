@@ -295,10 +295,10 @@ class GSFileManager {
         }
         $archive = new ZipArchive();
         if ($archive->open($root . $dir . $newFilename, ZIPARCHIVE::CREATE)) {
-            if ($this->fileStorage->is_dir($root . $dir)) {
-                $this->ZipArchive_addDirectory($dir . $filename, $archive, $root, $filename);
+            if ($this->fileStorage->is_dir($root . $dir . $filename)) {
+                $this->ZipArchive_addDirectory($archive, rtrim($root . $dir . $filename, '/\\'));
             } else {
-                $zipArchive->addFile($root . $dir, $dir);
+                $zipArchive->addFile($root . $dir . $filename, $dir);
             }
             $archive->close();
             return '{result: \'1\'}';
@@ -307,9 +307,13 @@ class GSFileManager {
         }
     }
 
+    // $dirname: VerzeichnisNAME also OHNE trailing DIR_SEP! $localname dito.
     private function ZipArchive_addDirectory($zipArchive, $dirname, $localname = null) {
-        if ($localname === null)
+        if ($localname === null) {
             $localname = basename($dirname);
+        }
+        $dirname   .= '/';
+        $localname .= '/';
 
         $zipArchive->addEmptyDir($localname);
         $files = $this->fileStorage->scandir($dirname);
@@ -317,10 +321,12 @@ class GSFileManager {
             if (GSFileManager::isNoRealFileOrFolder($file)) {
                 continue;
             }
-            if ($this->fileStorage->is_dir($root . $dirname . '/' . $file)) {
-                $this->ZipArchive_addDirectory($dirname . '/' . $file, $zipArchive, $root, $base . '/' . $file);
+            $source = $dirname . $file;
+            $dest = $localname . $file;
+            if ($this->fileStorage->is_dir($source)) {
+                $this->ZipArchive_addDirectory($zipArchive, $source, $dest);
             } else {
-                $zipArchive->addFile($root . $dirname . '/' . $file, $base . '/' . $file);
+                $zipArchive->addFile($source, $dest);
             }
         }
     }
