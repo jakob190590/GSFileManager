@@ -258,21 +258,19 @@ class GSFileManager {
             throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
         $root = $this->getOptionValue(self::$root_param);
-        $filename = $args['filename'];
         $dir = $args['dir'];
-        $newFileName = 'unzipped_' . $filename;
-        if (isset($args['newfilename'])) {
-            $newFileName = $args['newfilename'];
-        }
+        $filename = $args['filename'];
+        $newFilename = $args['newfilename'];
+
         if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
             throw new Exception('IllegalArgumentException: Source does not exists ' . $dir . $filename, 7);
         }
-        if ($this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
+        if ($this->fileStorage->file_exists($root . $dir . $newFilename)) {
             throw new Exception('IllegalArgumentException: Destination already exists', 8);
         }
         $archive = new ZipArchive();
         if ($archive->open($root . $dir . $filename)){
-            $archive->extractTo($root . $dir . basename($newFileName));
+            $archive->extractTo($root . $dir . basename($newFilename));
             $archive->close();
             return '{result: \'1\'}';
         } else {
@@ -285,43 +283,51 @@ class GSFileManager {
             throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
         $root = $this->getOptionValue(self::$root_param);
-        $filename = $args['filename'];
         $dir = $args['dir'];
-        $newFileName = $filename . '.zip';
-        if (isset($args['newfilename'])) {
-            $newFileName = $args['newfilename'];
-        }
+        $filename = $args['filename'];
+        $newFilename = $args['newfilename'];
+
         if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
             throw new Exception('IllegalArgumentException: Source does not exists ' . $dir . $filename, 7);
         }
-        if ($this->fileStorage->file_exists($root . $dir . basename($newFileName))) {
+        if ($this->fileStorage->file_exists($root . $dir . $newFilename)) {
             throw new Exception('IllegalArgumentException: Destination already exists', 8);
         }
         $archive = new ZipArchive();
-        $archive->open($root . $dir . $newFileName, ZIPARCHIVE::CREATE);
-        $this->addFolderToZip($dir . $filename, $archive, $root, $filename);
-        if ($archive->close()) {
+        if ($archive->open($root . $dir . $newFilename, ZIPARCHIVE::CREATE)) {
+            if ($this->fileStorage->is_dir($root . $dir . $filename)) {
+                $this->ZipArchive_addDirectory($archive, rtrim($root . $dir . $filename, '/\\'));
+            } else {
+                $zipArchive->addFile($root . $dir . $filename, $dir);
+            }
+            $archive->close();
             return '{result: \'1\'}';
+        } else {
+            return '{result: \'0\'}';
         }
-        return '{result: \'0\'}';
     }
 
-    private function addFolderToZip($dir, $zipArchive, $root, $base){
-        if ($this->fileStorage->is_dir($root . $dir)) {
-            //$zipArchive->addEmptyDir(basename($root . $dir));
-            $files = $this->fileStorage->scandir($root . $dir);
-            foreach ($files as $file) {
-                if (GSFileManager::isNoRealFileOrFolder($file)) {
-                    continue;
-                }
-                if ($this->fileStorage->is_dir($root . $dir . '/' . $file)) {
-                    $this->addFolderToZip($dir . '/' . $file, $zipArchive, $root, $base . '/' . $file);
-                } else {
-                    $zipArchive->addFile($root . $dir . '/' . $file, $base . '/' . $file);
-                }
+    // $dirname: VerzeichnisNAME also OHNE trailing DIR_SEP! $localname dito.
+    private function ZipArchive_addDirectory($zipArchive, $dirname, $localname = null) {
+        if ($localname === null) {
+            $localname = basename($dirname);
+        }
+        $dirname   .= '/';
+        $localname .= '/';
+
+        $zipArchive->addEmptyDir($localname);
+        $files = $this->fileStorage->scandir($dirname);
+        foreach ($files as $file) {
+            if (GSFileManager::isNoRealFileOrFolder($file)) {
+                continue;
             }
-        } else {
-            $zipArchive->addFile($root . $dir, basename($dir));
+            $source = $dirname . $file;
+            $dest = $localname . $file;
+            if ($this->fileStorage->is_dir($source)) {
+                $this->ZipArchive_addDirectory($zipArchive, $source, $dest);
+            } else {
+                $zipArchive->addFile($source, $dest);
+            }
         }
     }
 
