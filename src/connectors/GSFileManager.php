@@ -295,7 +295,11 @@ class GSFileManager {
         }
         $archive = new ZipArchive();
         if ($archive->open($root . $dir . $newFilename, ZIPARCHIVE::CREATE)) {
-            $this->addFolderToZip($dir . $filename, $archive, $root, $filename);
+            if ($this->fileStorage->is_dir($root . $dir)) {
+                $this->ZipArchive_addDirectory($dir . $filename, $archive, $root, $filename);
+            } else {
+                $zipArchive->addFile($root . $dir, $dir);
+            }
             $archive->close();
             return '{result: \'1\'}';
         } else {
@@ -303,22 +307,21 @@ class GSFileManager {
         }
     }
 
-    private function addFolderToZip($dir, $zipArchive, $root, $base){
-        if ($this->fileStorage->is_dir($root . $dir)) {
-            //$zipArchive->addEmptyDir(basename($root . $dir));
-            $files = $this->fileStorage->scandir($root . $dir);
-            foreach ($files as $file) {
-                if (GSFileManager::isNoRealFileOrFolder($file)) {
-                    continue;
-                }
-                if ($this->fileStorage->is_dir($root . $dir . '/' . $file)) {
-                    $this->addFolderToZip($dir . '/' . $file, $zipArchive, $root, $base . '/' . $file);
-                } else {
-                    $zipArchive->addFile($root . $dir . '/' . $file, $base . '/' . $file);
-                }
+    private function ZipArchive_addDirectory($zipArchive, $dirname, $localname = null) {
+        if ($localname === null)
+            $localname = basename($dirname);
+
+        $zipArchive->addEmptyDir($localname);
+        $files = $this->fileStorage->scandir($dirname);
+        foreach ($files as $file) {
+            if (GSFileManager::isNoRealFileOrFolder($file)) {
+                continue;
             }
-        } else {
-            $zipArchive->addFile($root . $dir, basename($dir));
+            if ($this->fileStorage->is_dir($root . $dirname . '/' . $file)) {
+                $this->ZipArchive_addDirectory($dirname . '/' . $file, $zipArchive, $root, $base . '/' . $file);
+            } else {
+                $zipArchive->addFile($root . $dirname . '/' . $file, $base . '/' . $file);
+            }
         }
     }
 
