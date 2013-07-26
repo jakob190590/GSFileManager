@@ -1006,8 +1006,9 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function unZipItems(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 43) + ': ', 'unzipped_' + gsitem.itemData.name);
+            function unZipItems(o, curDir, gsitem) {
+                var itemName = gsitem.itemData.name;
+                var newName  = window.prompt(gs_getTranslation(o.lg, 43), itemName.substr(0, itemName.lastIndexOf('.')));
                 if (newName == null) {
                     return;
                 }
@@ -1015,8 +1016,8 @@ if (jQuery) (function(jQuery) {
                 sendAndRefresh(o, dataForSend, true);
             }
 
-            function zipItems(o, curDir, gsitem){
-                var newName = window.prompt(gs_getTranslation(o.lg, 41) + ': ', gsitem.itemData.name + '.zip');
+            function zipItems(o, curDir, gsitem) {
+                var newName = window.prompt(gs_getTranslation(o.lg, 41), gsitem.itemData.name + '.zip');
                 if (newName == null) {
                     return;
                 }
