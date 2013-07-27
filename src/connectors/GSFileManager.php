@@ -725,7 +725,7 @@ class GSFileManager {
     }
 
     public function checkPathname($pathname) {
-        if ($pathname == '..' ||
+        if ($pathname === '..' ||
             GSFileManager::stringStartsWith($pathname, '../') ||
             GSFileManager::stringEndsWith  ($pathname, '/..') ||
             strpos($pathname, '/../') !== false
