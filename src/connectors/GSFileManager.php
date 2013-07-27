@@ -232,13 +232,6 @@ class GSFileManager {
         if (!isset($args['dir']) || empty($args['dir'])) {
             throw new Exception('IllegalArgumentException: dir can NOT be null', 4);
         }
-        $this->checkPathName($args['dir']);
-        if (isset($args['filename'])) {
-            $this->checkFileName($args['filename']);
-        }
-        if (isset($args['newfilename'])) {
-            $this->checkFileName($args['newfilename']);
-        }
         $response = '';
         $functionName = $this->getRequestFunction($args[$this->opt_param]);
         if ($functionName != null) {
