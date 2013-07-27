@@ -464,20 +464,18 @@ class GSFileManager {
         $this->checkParemter_newfilename($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
-        if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
-            $newFilename = $args['newfilename'];
-            if (!$this->fileStorage->file_exists($root . $dir . $newFilename)) {
-                $content = $this->fileStorage->readFile($root . $dir . $args['filename']);
-                if ($this->fileStorage->writeFile($root . $dir . $newFilename, $content) !== false){
-                    return '{result: \'1\'}';
-                }
-                return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $newFilename) . '\'}';
-            }else {
-                throw new Exception('IllegalArgumentException: Destination already exists ' . $dir . $newFilename, 8);
-            }
-        } else {
-            throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
+        if (!$this->fileStorage->file_exists($root . $dir . $args['filename'])) {
+            throw new Exception('IllegalArgumentException: Source does not exists', 7);
         }
+        $newFilename = $args['newfilename'];
+        if ($this->fileStorage->file_exists($root . $dir . $newFilename)) {
+            throw new Exception('IllegalArgumentException: Destination already exists ' . $dir . $newFilename, 8);
+        }
+        $content = $this->fileStorage->readFile($root . $dir . $args['filename']);
+        if ($this->fileStorage->writeFile($root . $dir . $newFilename, $content) !== false){
+            return '{result: \'1\'}';
+        }
+        return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $newFilename) . '\'}';
     }
 
     public function writeFile($args) {
