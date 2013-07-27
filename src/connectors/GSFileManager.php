@@ -450,7 +450,7 @@ class GSFileManager {
                 if ($maxSize > 0 && $maxSize < intval($file['size']) / 1000) {
                     throw new Exception('IllegalArgumentException: File to large ' . $file['name'], 14);
                 }
-                $this->checkFileName($file['name']);
+                $this->checkFilename($file['name']);
                 if ($this->fileStorage->move_uploaded_file($file['tmp_name'], $root . $dir . $file['name'])){
                     $response = '{result: \'1\'}';
                 }
@@ -604,7 +604,7 @@ class GSFileManager {
         $files = $args['files'];
         foreach ($files as $filename) {
             $success = false;
-            $this->checkFileName($filename);
+            $this->checkFilename($filename);
             $oldFilename = $root . $filename;
             $newFilename = $root . $dir . basename($filename);
             if (!$this->fileStorage->file_exists($oldFilename)) {
@@ -635,7 +635,7 @@ class GSFileManager {
         foreach ($files as $filename) {
             $success = false;
             $filename = $dir . $filename;
-            $this->checkFileName($filename);
+            $this->checkFilename($filename);
             $fullFilename = $root . $filename;
             if (!$this->fileStorage->file_exists($fullFilename)) {
                 throw new Exception('IllegalArgumentException: Source does not exist: ' . $filename, 7);
@@ -723,11 +723,11 @@ class GSFileManager {
         }
     }
 
-    public function checkFileName($filename) {
-        $this->checkPathName($filename); // filename koennte ja auch als "teilpfad/filename" missbraucht werden
+    public function checkFilename($filename) {
+        $this->checkPathname($filename); // filename koennte ja auch als "teilpfad/filename" missbraucht werden
     }
 
-    public function checkPathName($pathname) {
+    public function checkPathname($pathname) {
         if ($pathname == '..' ||
             GSFileManager::stringStartsWith($pathname, '../') ||
             GSFileManager::stringEndsWith  ($pathname, '/..') ||
