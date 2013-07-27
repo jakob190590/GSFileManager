@@ -247,9 +247,8 @@ class GSFileManager {
     }
 
     public function unZipItems($args) {
-        if (!isset($args['filename'])) {
-            throw new Exception('IllegalArgumentException: Illegal request', 5);
-        }
+        $this->checkParemter_filename($args);
+        $this->checkParemter_newfilename($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
         $filename = $args['filename'];
@@ -272,9 +271,8 @@ class GSFileManager {
     }
 
     public function zipItems($args) {
-        if (!isset($args['filename'])) {
-            throw new Exception('IllegalArgumentException: Illegal request', 5);
-        }
+        $this->checkParemter_filename($args);
+        $this->checkParemter_newfilename($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
         $filename = $args['filename'];
@@ -461,95 +459,81 @@ class GSFileManager {
         return $response;
     }
 
-    public function copyAsFile($args){
-        if (isset($args['filename'])) {
-            $root = $this->getOptionValue(self::$root_param);
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
-                $newFilename = 'copy of ' . $args['filename'];
-                if (isset($args['newfilename']) && strlen($args['newfilename']) > 0 ) {
-                    $newFilename = $args['newfilename'];
+    public function copyAsFile($args) {
+        $this->checkParemter_filename($args);
+        $this->checkParemter_newfilename($args);
+        $root = $this->getOptionValue(self::$root_param);
+        $dir = $args['dir'];
+        if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
+            $newFilename = $args['newfilename'];
+            if (!$this->fileStorage->file_exists($root . $dir . $newFilename)) {
+                $content = $this->fileStorage->readFile($root . $dir . $args['filename']);
+                if ($this->fileStorage->writeFile($root . $dir . $newFilename, $content) !== false){
+                    return '{result: \'1\'}';
                 }
-                if (!$this->fileStorage->file_exists($root . $dir . $newFilename)) {
-                    $content = $this->fileStorage->readFile($root . $dir . $args['filename']);
-                    if ($this->fileStorage->writeFile($root . $dir . $newFilename, $content) !== false){
-                        return '{result: \'1\'}';
-                    }
-                    return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $newFilename) . '\'}';
-                }else {
-                    throw new Exception('IllegalArgumentException: Destination already exists ' . $dir . $newFilename, 8);
-                }
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
+                return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $newFilename) . '\'}';
+            }else {
+                throw new Exception('IllegalArgumentException: Destination already exists ' . $dir . $newFilename, 8);
             }
         } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
         }
     }
 
     public function writeFile($args) {
+        $this->checkParemter_filename($args);
         $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['filename'])) {
-            $content = '';
-            if (isset($args['filenContent'])) {
-                $content = $args['filenContent'];
+        $content = '';
+        if (isset($args['filenContent'])) {
+            $content = $args['filenContent'];
+        }
+        $filename = $args['filename'];
+        $dir = $args['dir'];
+        if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+            if($this->fileStorage->writeFile($root . $dir . $filename, $content) !== false){
+                return '{result: \'1\'}';
             }
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                if($this->fileStorage->writeFile($root . $dir . $filename, $content) !== false){
-                    return '{result: \'1\'}';
-                }
-                return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $filename) . '\'}';
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
-            }
+            return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $filename) . '\'}';
         } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
         }
     }
 
     public function readFile($args) {
+        $this->checkParemter_filename($args);
         $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                $content = $this->fileStorage->readFile($root . $dir . $filename);
-                if (isset($args['base64_encode']) && $args['base64_encode'] == 1) {
-                    $content = base64_encode($content);
-                }
-                return $content;
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
+        $filename = $args['filename'];
+        $dir = $args['dir'];
+        if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+            $content = $this->fileStorage->readFile($root . $dir . $filename);
+            if (isset($args['base64_encode']) && $args['base64_encode'] == 1) {
+                $content = base64_encode($content);
             }
+            return $content;
         } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
         }
     }
 
     public function downloadItem($args) {
+        $this->checkParemter_filename($args);
         $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                $content = $this->fileStorage->readFile($root . $dir . $filename);
-                header('Content-Description: Download File: ' . $filename);
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename="' . $filename . '"');
-                header('Content-Transfer-Encoding: binary');
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                header('Pragma: public');
-                header('Content-Length: ' . strlen($content));
-                echo $content;
-                exit;
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
-            }
+        $filename = $args['filename'];
+        $dir = $args['dir'];
+        if ($this->fileStorage->file_exists($root . $dir . $filename)) {
+            $content = $this->fileStorage->readFile($root . $dir . $filename);
+            header('Content-Description: Download File: ' . $filename);
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            header('Content-Length: ' . strlen($content));
+            echo $content;
+            exit;
         } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
+            throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
         }
     }
 
@@ -576,6 +560,8 @@ class GSFileManager {
     }
 
     public function renameItem($args) {
+        $this->checkParemter_filename($args);
+        $this->checkParemter_newfilename($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
         $filename = $args['filename'];
@@ -650,13 +636,10 @@ class GSFileManager {
     }
 
     public function makeFile($args) {
+        $this->checkParemter_filename($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-        } else {
-            $filename = 'newfile_' . time() . '.txt';
-        }
+        $filename = $args['filename'];
         if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
             if ($this->fileStorage->makeFile($root . $dir . $filename)) {
                 return '{result: \'1\'}';
@@ -669,13 +652,10 @@ class GSFileManager {
     }
 
     public function makeDirectory($args) {
+        $this->checkParemter_filename($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir = $args['dir'];
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-        } else {
-            $filename = 'new folder_' . time();
-        }
+        $filename = $args['filename'];
         if ($this->fileStorage->file_exists($root . $dir . $filename) || $this->fileStorage->makeDirectory($root . $dir . $filename)) {
             return '{result: \'1\'}';
         }
@@ -736,6 +716,18 @@ class GSFileManager {
 
     public function checkParameter_files($args) {
         if (!isset($args['files']) || !is_array($args['files'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
+        }
+    }
+
+    public function checkParemter_filename($args) {
+        if (!isset($args['filename'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
+        }
+    }
+
+    public function checkParemter_newfilename($args) {
+        if (!isset($args['newfilename'])) {
             throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
     }
