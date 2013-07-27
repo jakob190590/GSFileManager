@@ -555,56 +555,43 @@ class GSFileManager {
 
     public function moveItems($args) {
         $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['files'])) {
-            $dir   = $args['dir'];
-            $files = $args['files'];
-            $response = '{result: \'0\'}';
-            foreach ($files as $filename) {
-                if (strpos($filename, '..') !== false) { // TODO sollte doch grundsätzlich ausgeschlossen werden mit checkFileName, oder?
-                    throw new Exception('IllegalArgumentException: dir can NOT go up', 13);
-                }
-                $this->checkFileName($filename);
-                if ($this->fileStorage->file_exists($root . $filename)) {
-                    if (!$this->fileStorage->file_exists($root . $dir . basename($filename))) {
-                        if ($this->fileStorage->renameItem($root . $filename, $root . $dir . basename($filename))) {
-                            $response = '{result: \'1\'}';
-                        }
-                    } else {
-                        throw new Exception('IllegalArgumentException: Destination already exists ' . $filename, 8);
-                    }
-                } else {
-                    throw new Exception('IllegalArgumentException: Source does NOT exists ' . $filename, 7);
-                }
+        $dir   = $args['dir'];
+        $files = $args['files'];
+        foreach ($files as $filename) {
+            $src  = $root . $filename;
+            $dest = $root . $dir . basename($filename);
+            if (!$this->fileStorage->file_exists($src)) {
+                throw new Exception('IllegalArgumentException: Source does not exists ' . $filename, 7);
             }
-            return $response;
-        } else {
-            throw new Exception('IllegalArgumentException: files can NOT be null', 5);
+            if ($this->fileStorage->file_exists($dest)) {
+                throw new Exception('IllegalArgumentException: Destination already exists ' . $filename, 8);
+            }
+            $success = $this->fileStorage->renameItem($src, $dest);
+            if (!$success) {
+                return '{result: \'0\'}';
+            }
         }
+        return '{result: \'1\'}';
     }
 
     public function renameItem($args) {
         $root = $this->getOptionValue(self::$root_param);
-        if (isset($args['filename'])) {
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            $newFileName = $filename;
-            if (isset($args['newfilename'])) {
-                $newFileName = $args['newfilename'];
-            }
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                if (!$this->fileStorage->file_exists($root . $dir . $newFileName)) {
-                    if ($this->fileStorage->renameItem($root . $dir . $filename, $root . $dir . $newFileName)) {
-                        return '{result: \'1\'}';
-                    }
-                    return '{result: \'0\' , gserror: \'can not rename item ' . addslashes($dir . $filename) . ' to ' . addslashes($dir . $newFileName) . '\'}';
-                } else {
-                    throw new Exception('IllegalArgumentException: Destination already exists', 8);
-                }
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists ' . $dir . $filename, 7);
-            }
+        $dir = $args['dir'];
+        $filename = $args['filename'];
+        $newFilename = $args['newfilename'];
+        $src  = $root . $dir . basename($filename);
+        $dest = $root . $dir . basename($newFilename);
+        if (!$this->fileStorage->file_exists($src)) {
+            throw new Exception('IllegalArgumentException: Source does not exists' . $src, 7);
+        }
+        if ($this->fileStorage->file_exists($dest)) {
+            throw new Exception('IllegalArgumentException: Destination already exists', 8);
+        }
+        $success = $this->fileStorage->renameItem($src, $dest);
+        if ($success) {
+            return '{result: \'1\'}';
         } else {
-            throw new Exception('IllegalArgumentException: files can NOT be null', 5);
+            return '{result: \'0\' , gserror: \'can not rename item ' . addslashes($dir . $filename) . ' to ' . addslashes($dir . $newFilename) . '\'}';
         }
     }
 
