@@ -554,6 +554,7 @@ class GSFileManager {
     }
 
     public function moveItems($args) {
+        $this->checkParameter_files($args);
         $root = $this->getOptionValue(self::$root_param);
         $dir   = $args['dir'];
         $files = $args['files'];
@@ -596,9 +597,7 @@ class GSFileManager {
     }
 
     public function copyItems($args) {
-        if (!isset($args['files'])) {
-            throw new Exception('IllegalArgumentException: Illegal request', 5);
-        }
+        $this->checkParameter_files($args);
         $root  = $this->getOptionValue(self::$root_param);
         $dir   = $args['dir'];
         $files = $args['files'];
@@ -626,9 +625,7 @@ class GSFileManager {
     }
 
     public function deleteItems($args) {
-        if (!isset($args['files'])) {
-            throw new Exception('IllegalArgumentException: Illegal request', 5);
-        }
+        $this->checkParameter_files($args);
         $root  = $this->getOptionValue(self::$root_param);
         $dir   = $args['dir'];
         $files = $args['files'];
@@ -734,6 +731,12 @@ class GSFileManager {
             strpos($pathname, '/../') !== false
         ) {
             throw new Exception('IllegalArgumentException: Relative paths are not allowed . ');
+        }
+    }
+
+    public function checkParameter_files($args) {
+        if (!isset($args['files']) || !is_array($args['files'])) {
+            throw new Exception('IllegalArgumentException: Illegal request', 5);
         }
     }
 
