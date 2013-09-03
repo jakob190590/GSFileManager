@@ -241,7 +241,7 @@ class GSFileManager {
 
         }
         if ($this->setUtf8Header) {
-            header ("Content-Type: application/json; charset=UTF-8");
+            header ('Content-Type: application/json; charset=UTF-8');
         }
         return $response;
     }
