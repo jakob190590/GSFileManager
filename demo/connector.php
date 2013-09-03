@@ -11,8 +11,13 @@ $options['max_upload_filesize'] = '2000'; //(the size in Kbytes)
 $options[GSFileManager::ROOT_PARAM] = array(array('name' => 'Ablage', 'path' => 'C:/temp'));
 $manager = new GSFileManager(new GSFileSystemFileStorage(), $options);
 try {
-    $result = $manager->process($_REQUEST);
+    $result_json = $manager->process($_REQUEST);
 } catch (Exception $e) {
-    $result = '{result: \'0\', gserror: \''.addslashes($e->getMessage()).'\', code: \''.$e->getCode().'\'}';
+    $result = array(
+        'result'  => 0,
+        'gserror' => $e->getMessage(),
+        'code'    => $e->getCode()
+    );
+    $result_json = json_encode($result);
 }
-echo $result;
+echo $result_json;
