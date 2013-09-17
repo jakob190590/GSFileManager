@@ -963,14 +963,8 @@ if (jQuery) (function() {
                 });
 
                 // Disable text selection
-                // TODO jQuery Browserweiche ansehen und ueber Loeschung entscheiden
-//                if (jQuery.browser.mozilla) {
-//                    menu.each(function() { jQuery(this).css({ 'MozUserSelect' : 'none' }); });
-//                } else if (jQuery.browser.msie) {
-//                    menu.each(function() { jQuery(this).on('selectstart.disableTextSelect', function() { return false; }); });
-//                } else {
-                    menu.on('mousedown.disableTextSelect', noAction);
-//                }
+                menu.on('mousedown.disableTextSelect', noAction); // Works in FF, IE 10 (and ...?)
+
                 // Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
                 jQuery(el).add(jQuery('ul.contextMenu')).on('contextmenu', noAction);
 
