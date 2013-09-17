@@ -131,13 +131,6 @@ function GsClipboard() {
 
 function noAction() { return false; }
 
-function updateCoords(c) {
-    jQuery('#gs_jcrop_x').val(c.x);
-    jQuery('#gs_jcrop_y').val(c.y);
-    jQuery('#gs_jcrop_w').val(c.w);
-    jQuery('#gs_jcrop_h').val(c.h);
-}
-
 function gs_get_cur_item(id) {
     var result = null;
     if (typeof(gs_cur_items[id]) != 'undefined') {
@@ -197,8 +190,6 @@ gs_filemanager_languages['en'][8] = 'Type';
 gs_filemanager_languages['en'][9] = 'Size';
 gs_filemanager_languages['en'][10] = 'Last Modified';
 gs_filemanager_languages['en'][11] = 'Open with';
-gs_filemanager_languages['en'][12] = 'Notepad';
-gs_filemanager_languages['en'][13] = 'ImageViewer';
 gs_filemanager_languages['en'][14] = 'Copy';
 gs_filemanager_languages['en'][15] = 'Cut';
 gs_filemanager_languages['en'][16] = 'Rename';
@@ -206,8 +197,6 @@ gs_filemanager_languages['en'][17] = 'Copy As';
 gs_filemanager_languages['en'][18] = 'Download';
 gs_filemanager_languages['en'][19] = 'Delete';
 gs_filemanager_languages['en'][20] = 'Open';
-gs_filemanager_languages['en'][21] = 'CKeditor';
-gs_filemanager_languages['en'][22] = 'JCrop';
 gs_filemanager_languages['en'][23] = 'Select all';
 gs_filemanager_languages['en'][24] = 'Deselect all';
 gs_filemanager_languages['en'][25] = 'Invert selection';
@@ -217,8 +206,6 @@ gs_filemanager_languages['en'][28] = 'Cancel';
 gs_filemanager_languages['en'][29] = 'Upload File';
 gs_filemanager_languages['en'][30] = 'Items';
 gs_filemanager_languages['en'][31] = 'Save';
-gs_filemanager_languages['en'][32] = 'Resize';
-gs_filemanager_languages['en'][33] = 'Crop';
 gs_filemanager_languages['en'][34] = 'As name';
 gs_filemanager_languages['en'][35] = 'New name';
 gs_filemanager_languages['en'][36] = 'File name';
@@ -244,8 +231,6 @@ gs_filemanager_languages['de'][8] = 'Typ';
 gs_filemanager_languages['de'][9] = 'Größe';
 gs_filemanager_languages['de'][10] = 'Geändert';
 gs_filemanager_languages['de'][11] = 'Öffnen mit';
-gs_filemanager_languages['de'][12] = 'Notepad';
-gs_filemanager_languages['de'][13] = 'ImageViewer';
 gs_filemanager_languages['de'][14] = 'Kopieren';
 gs_filemanager_languages['de'][15] = 'Ausschneiden';
 gs_filemanager_languages['de'][16] = 'Umbenennen';
@@ -253,8 +238,6 @@ gs_filemanager_languages['de'][17] = 'Kopieren als';
 gs_filemanager_languages['de'][18] = 'Herunterladen';
 gs_filemanager_languages['de'][19] = 'Löschen';
 gs_filemanager_languages['de'][20] = 'Öffnen';
-gs_filemanager_languages['de'][21] = 'CKeditor'; // TODO check, dieser und f. sollte nicht im kontextmenue erscheinen
-gs_filemanager_languages['de'][22] = 'JCrop';
 gs_filemanager_languages['de'][23] = 'Alle auswählen';
 gs_filemanager_languages['de'][24] = 'Keine auswählen';
 gs_filemanager_languages['de'][25] = 'Auswahl umkehren';
@@ -264,8 +247,6 @@ gs_filemanager_languages['de'][28] = 'Abbrechen';
 gs_filemanager_languages['de'][29] = 'Datei hochladen';
 gs_filemanager_languages['de'][30] = 'Einträge';
 gs_filemanager_languages['de'][31] = 'Speichern';
-gs_filemanager_languages['de'][32] = 'Größe verändern';
-gs_filemanager_languages['de'][33] = 'Zurechtschneiden';
 gs_filemanager_languages['de'][34] = 'Als Name';
 gs_filemanager_languages['de'][35] = 'Neuer Name';
 gs_filemanager_languages['de'][36] = 'Dateiname';
@@ -372,18 +353,7 @@ if (jQuery) (function(jQuery) {
             wrapperHtml    += '</div></div>';
 
             var contexMenus = '<ul id="gsFileMenu" class="contextMenu">';
-            contexMenus += '<li class="edit"><a href="#edit">' + gs_getTranslation(o.language, 11)+ '</a>';
-            contexMenus += '   <ul class="contextMenu subContextMenu">';
-            contexMenus += '     <li class="notepad"><a href="#notepad" rel="12">' + gs_getTranslation(o.language, 12)+ '</a></li>';
-            if (typeof(CKEDITOR) != 'undefined') {
-                contexMenus += '     <li class="notepad"><a href="#ckeditor" rel="18">' + gs_getTranslation(o.language, 21)+ '</a></li>';
-            }
-            contexMenus += '     <li class="picture separator"><a href="#imageviewer" rel="15">' + gs_getTranslation(o.language, 13)+ '</a></li>';
-            if(jQuery().Jcrop) {
-                contexMenus += '     <li class="picture"><a href="#jcrop" rel="16">' + gs_getTranslation(o.language, 22)+ '</a></li>';
-            }
-            contexMenus += '   </ul>';
-            contexMenus += '</li>';
+            contexMenus += '<li class="edit"><a href="#edit">' + gs_getTranslation(o.language, 11)+ '</a></li>';
             contexMenus += '<li class="copy separator"><a href="#Copy" rel="7">' + gs_getTranslation(o.language, 14)+ '</a></li>';
             contexMenus += '<li class="cut"><a href="#Cut" rel="8">' + gs_getTranslation(o.language, 15)+ '</a></li>';
             contexMenus += '<li class="rename"><a href="#Rename" rel="10">' + gs_getTranslation(o.language, 16)+ '</a></li>';
@@ -417,24 +387,12 @@ if (jQuery) (function(jQuery) {
             wrapperHtml    += contexMenus;
 
             var hiddenElements = '<div id="gsclipboardContent" style="display: none"></div>';
-            hiddenElements += '<div id="gsnotepadedit" style="display: none"></div>';
-            hiddenElements += '<div id="gsckeditor" style="display: none"><div id="gs_ckeditor_content"></div></div>';
-            hiddenElements += '<div id="gsimageviewer" style="display: none"><div id="gsimageviewer_content"></div>' + gs_getTranslation(o.language, 26)+ ':&nbsp;&nbsp;<input type="text" name="gs_image_x" id="gs_image_x" value="" size="5" rel="0">px<br/>' + gs_getTranslation(o.language, 27)+ ': <input type="text" name="gs_image_y" id="gs_image_y" value="" size="5" rel="0">px'
-                                  + '<br/>' + gs_getTranslation(o.language, 44) + ': <input type="checkbox" name="lock_sizes" id="lock_sizes" checked=true></div>';
             hiddenElements += '<div id="gsuploadfiles" style="display: none; position: relative;">';
-            hiddenElements += '<form action="' + o.script +'" id="gsUploadForm" enctype="multipart/form-data"><input type="hidden" name="opt" value="11"><input type="hidden" name="dir" value="">';
+            hiddenElements +=  '<form action="' + o.script +'" id="gsUploadForm" enctype="multipart/form-data"><input type="hidden" name="opt" value="11"><input type="hidden" name="dir" value="">';
             hiddenElements +=  '<div class="fileinputs"><input type="file" name="filename" size="30" id="gsUploadButton"></div></form>';
-            hiddenElements += '</div>';
-            hiddenElements += '<div id="gs_jcrop_div" style="display: none">';
-            hiddenElements += '<form action="' + o.script +'" id="gs_jcrop_form" method="POST">';
-            hiddenElements += '  <input type="hidden" name="gs_jcrop_x" id="gs_jcrop_x" value=""/><input type="hidden" name="opt" value="12"/><input type="hidden" name="dir" value="" id="gs_jcrop_dir"/><input type="hidden" name="filename" value="" id="gs_jcrop_filename"/><input type="hidden" name="gs_jcrop_y" id="gs_jcrop_y" value=""/><input type="hidden" name="gs_jcrop_w" id="gs_jcrop_w" value=""/><input type="hidden" name="gs_jcrop_h" id="gs_jcrop_h" value=""/>';
-            hiddenElements += '</form><div id="gs_jcrop_div_container"></div>';
             hiddenElements += '</div>';
             wrapperHtml += hiddenElements;
             jQuery(this).html(wrapperHtml);
-
-            jQuery('#gs_image_x').on('blur', function() { gsmanageImgSizes('x'); });
-            jQuery('#gs_image_y').on('blur', function() { gsmanageImgSizes('y'); });
 
             jQuery('#gs_dir_content').contextMenu({
                 menu: 'gsContentMenu',
@@ -479,25 +437,6 @@ if (jQuery) (function(jQuery) {
                 return jQuery(this).doGSAction({action: 22, script: o.script, type: 'context', lg: o.language});
             });
 
-            jQuery('#gs_jcrop_form').ajaxForm({
-                beforeSubmit: function() {
-                    jQuery('#gsimagecropzoom').append('<div class="loadingDiv">&nbsp;</div>');
-                },
-
-                success: function(responseText, statusText, xhr, form) {
-                    gsCheckResponse(responseText);
-                    var filenamea = jQuery('#gs_jcrop_filename').val();
-                    var dira = escape(jQuery('#gs_jcrop_dir').val());
-                    var imageSrc = gs_makeUrl(o.script, "opt=15&filename=" + filenamea +"&dir=" + dira + "&time="+ new Date().getTime());
-                    jQuery('#gs_jcrop_div_container').html('<img src="'+ imageSrc + '" id="gsjcrop_target"/>');
-                    jQuery('#gsjcrop_target').load(function() {
-                        jQuery('#gsjcrop_target').Jcrop({onSelect: updateCoords});
-                    });
-
-                },
-                dataType: 'text'
-             });
-
             jQuery('#gsUploadForm').ajaxForm({
                     beforeSubmit: function() {
                         jQuery('#gsuploadfiles').append('<div class="loadingDiv">&nbsp;</div>');
@@ -509,53 +448,6 @@ if (jQuery) (function(jQuery) {
                     },
                     dataType: 'script'
             });
-
-            function gsmanageImgSizes(direction) {
-                var Xelement = jQuery('#gs_image_x');
-                var Yelement = jQuery('#gs_image_y');
-                if (direction == 'x') {
-                    var oldVal = parseInt(Xelement.attr('rel'));
-                    if (isNaN(oldVal) || oldVal <= 0) {
-                        return;
-                    }
-                    var curVal = parseInt(Xelement.val());
-                    Xelement.attr('rel', curVal);
-
-                    if (jQuery('#lock_sizes:checked').length < 1) {
-                        return;
-                    }
-
-                    var radio = curVal / oldVal;
-                    if (radio == 1) {
-                        return;
-                    }
-                    var newValue = parseInt(parseInt(Yelement.val()) * radio);
-
-                    Yelement.attr('rel', newValue);
-                    Yelement.val(newValue);
-                }
-                if (direction == 'y') {
-                    var oldVal = parseInt(Yelement.attr('rel'));
-                    if (isNaN(oldVal) || oldVal <= 0) {
-                        return;
-                    }
-                    var curVal = parseInt(Yelement.val());
-                    Yelement.attr('rel', curVal);
-
-                    if (jQuery('#lock_sizes:checked').length < 1) {
-                        return;
-                    }
-
-                    var radio = curVal / oldVal;
-                    if (radio == 0) {
-                        return;
-                    }
-                    var newValue = parseInt(parseInt(Xelement.val()) * radio);
-
-                    Xelement.attr('rel', newValue);
-                    Xelement.val(newValue);
-                }
-            }
 
             function showFiles(gsfiless) {
                 var fileshtml = '';
@@ -746,17 +638,10 @@ if (jQuery) (function(jQuery) {
                 unZipItems(o, curDir, gsitem);
                 return;
             }
-
-            if (o.action == '12') { // show notepad
-                showNotePad(o, curDir, gsitem);
-                return;
-            }
-
             if (o.action == '13') { // copy as
                 copyAs(o, curDir, gsitem);
                 return;
             }
-
             if (o.action == '14') { // show upload
                 jQuery('#gsuploadfiles').dialog({title: gs_getTranslation(o.lg, 29), modal: true, width: 460, height: 460,
                     buttons: [ {text: gs_getTranslation(o.lg, 28),
@@ -772,19 +657,6 @@ if (jQuery) (function(jQuery) {
                                        }
                              }]
                 });
-                return;
-            }
-
-            if (o.action == '15') { // show image viewer
-                showImageViewer(o, curDir, gsitem);
-                return;
-            }
-            if (o.action == '16') { // show crop zoom image
-                showJcrop(o, curDir, gsitem);
-                return;
-            }
-            if (o.action == '18') { // ckeditor
-                showCKEditor(o, curDir, gsitem);
                 return;
             }
             if (o.action == '19') { // zip
@@ -829,140 +701,6 @@ if (jQuery) (function(jQuery) {
             if (o.action == '5') { // open dir
                 jQuery('#' + gsitem.itemData.id).trigger('click');
                 return;
-            }
-
-            function showCKEditor(o, curDir, gsitem) {
-                var height = parseInt(jQuery(window).height()) - 100;
-                var width = parseInt(jQuery(window).width()) - 100;
-                jQuery('#gsckeditor').dialog({title: 'CKEditor ' + gsitem.itemData.name, modal: true, width: width, height: height,
-                    buttons: [ {
-                                   click: function() { jQuery(this).dialog("close"); jQuery('#gs_ckeditor_content').html(''); },
-                                   text: gs_getTranslation(o.lg, 28)
-                                },
-                                {
-                                   text: gs_getTranslation(o.lg, 31),
-                                   click: function() {
-                                       jQuery('#gs_ckeditor_content').hide();
-                                       jQuery(this).append('<div class="loadingDiv">&nbsp;</div>');
-                                       //jQuery(this).doGSAction({action: 13, type: 'file', script: o.script});
-                                       texta = jQuery('#gsckeditor').find('textarea');
-                                       targetFile = texta.attr('rel');
-                                       content = CKEDITOR.instances.gsFileContent.getData();
-                                       dataForSend = {opt: 10, filename: targetFile, dir: curDir, filenContent: content};
-                                       sendAndRefresh(o, dataForSend, true, function(data) {
-                                              jQuery('#gs_ckeditor_content').find('div.loadingDiv').remove();
-                                              jQuery('#gs_ckeditor_content').show();
-                                       });
-                               }
-                           }]
-                });
-                jQuery('#gs_ckeditor_content').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 9, filename: gsitem.itemData.name, dir: curDir};
-                sendAndRefresh(o, dataForSend, false, function(data) {
-                               jQuery('#gs_ckeditor_content').html('<textarea id="gsFileContent" name="gsFileContent" rel="' + gsitem.itemData.name +'">' + data + '</textarea>');
-
-                               if (typeof(CKEDITOR.instances.gsFileContent) != 'undefined') {
-                                   CKEDITOR.remove(CKEDITOR.instances['gsFileContent']);
-                               }
-
-                               CKEDITOR.replace('gsFileContent', {language: o.lg});
-
-                  });
-            }
-
-            function showNotePad(o, curDir, gsitem) {
-                var height = parseInt(jQuery(window).height()) - 100;
-                var width = parseInt(jQuery(window).width()) - 100;
-                var rows = parseInt(height / 30);
-                var cols = parseInt(width / 10);
-                jQuery('#gsnotepadedit').dialog({title: 'Edit ' + gsitem.itemData.name, modal: true, width: width, height: height,
-                    buttons: [ {
-                                 click: function() { jQuery(this).dialog("close"); },
-                                 text: gs_getTranslation(o.lg, 28)
-                                },
-                                {
-                                   text: gs_getTranslation(o.lg, 31),
-                                   click: function() {
-                                           jQuery(this).find('textarea').hide();
-                                           jQuery(this).append('<div class="loadingDiv">&nbsp;</div>');
-                                           var texta = jQuery('#gsnotepadedit').find('textarea');
-                                           var targetFile = texta.attr('rel');
-                                           var content = texta.val();
-                                           dataForSend = {opt: 10, filename: targetFile, dir: curDir, filenContent: content};
-                                           sendAndRefresh(o, dataForSend, true, function(data) {
-                                                  jQuery('#gsnotepadedit').find('div.loadingDiv').remove();
-                                                  jQuery('#gsnotepadedit').find('textarea').show();
-                                           });
-                                 }
-                             }]
-                });
-                jQuery('#gsnotepadedit').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 9, filename: gsitem.itemData.name, dir: curDir};
-                sendAndRefresh(o, dataForSend, false, function(data) {
-                               jQuery('#gsnotepadedit').html('<textarea name="gsFileContent" rows="' + rows + '" cols="' + cols + '" rel="' + gsitem.itemData.name +'">' + data + '</textarea>');
-                  });
-            }
-
-            function showImageViewer(o, curDir, gsitem) {
-                var height = parseInt(jQuery(window).height()) - 100;
-                var width = parseInt(jQuery(window).width()) - 100;
-                jQuery('#gsimageviewer').dialog({title: 'Image viewer ' + gsitem.itemData.name, modal: true, width: width, height: height,
-                    buttons: [{
-                                click: function() { jQuery(this).dialog("close"); jQuery('#gsimageviewer_content').html(''); },
-                                text: gs_getTranslation(o.lg, 28)
-                               },
-                               {
-                               text: gs_getTranslation(o.lg, 32),
-                               click: function() {
-                                   jQuery('#gsimageviewer_content').html('<div class="loadingDiv">&nbsp;</div>');
-                                   dataForSend = {opt: 13, filename: gsitem.itemData.name, dir: curDir, new_x: jQuery('#gs_image_x').val(), new_y: jQuery('#gs_image_y').val()};
-                                   sendAndRefresh(o, dataForSend, true, function(data) {
-                                        dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
-                                        jQuery('#gsimageviewer_content').html('<img src="'+ gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime())+'" id="gs_imageviewer_image"/>');
-                                   });
-                           }
-                     }]
-                });
-                dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
-                var imageSrc = gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime());
-                jQuery('#gs_image_x').val('');
-                jQuery('#gs_image_y').val('');
-                jQuery('#gsimageviewer_content').html('<img id="gs_imageviewer_image"/>');
-                jQuery('#gs_imageviewer_image').load(function() {
-                    var tImageelement = jQuery(this);
-                    jQuery('#gs_image_x').val(tImageelement.width());
-                    jQuery('#gs_image_y').val(tImageelement.height());
-                    jQuery('#gs_image_x').attr('rel', tImageelement.width());
-                    jQuery('#gs_image_y').attr('rel', tImageelement.height());
-                });
-                jQuery('#gs_imageviewer_image').attr('src', imageSrc);
-            }
-
-            function showJcrop(o, curDir, gsitem) {
-                var gs_jcrop_div = jQuery('#gs_jcrop_div');
-                var height = parseInt(jQuery(window).height()) - 100;
-                var width = parseInt(jQuery(window).width()) - 100;
-                gs_jcrop_div.dialog({title: 'JCrop ' + gsitem.itemData.name, width: width, height: height, modal: true,
-                    buttons: [{
-                               click: function() { jQuery(this).dialog("close");},
-                               text: gs_getTranslation(o.lg, 28)
-                              },{
-                               text: gs_getTranslation(o.lg, 33),
-                               click: function() {
-                                  jQuery('#gs_jcrop_div_container').html('<div class="loadingDiv">&nbsp;</div>');
-                                  jQuery('#gs_jcrop_form').submit();
-                                }
-                             }]
-                });
-                jQuery('#gs_jcrop_div_container').html('<div class="loadingDiv">&nbsp;</div>');
-                dataForSend = {opt: 15, filename: gsitem.itemData.name, dir: curDir};
-                var imageSrc = gs_makeUrl(o.script, jQuery.param(dataForSend) +'&time='+ new Date().getTime());
-                jQuery('#gs_jcrop_div_container').html('<img src="'+ imageSrc + '" id="gsjcrop_target"/>');
-                jQuery('#gsjcrop_target').load(function() {
-                    jQuery('#gsjcrop_target').Jcrop({onSelect: updateCoords});
-                });
-                jQuery("#gs_jcrop_dir").val(curDir);
-                jQuery("#gs_jcrop_filename").val(gsitem.itemData.name);
             }
 
             function pasteItems(o, curDir, gsitem) {
