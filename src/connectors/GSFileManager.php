@@ -197,10 +197,7 @@ class GSFileManager {
         $this->functions[9] = 'readFile';
         $this->functions[10] = 'writeFile';
         $this->functions[11] = 'uploadFile';
-        $this->functions[12] = 'jCropImage';
-        $this->functions[13] = 'imageResize';
         $this->functions[14] = 'copyAsFile';
-        $this->functions[15] = 'serveImage';
         $this->functions[16] = 'zipItems';
         $this->functions[17] = 'unZipItems';
     }
@@ -320,119 +317,6 @@ class GSFileManager {
                 $zipArchive->addFile($source, $dest);
             }
         }
-    }
-
-    public function serveImage($args) {
-        if (isset($args['filename'])) {
-            $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
-            $filename = $args['filename'];
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $filename)) {
-                $src = $root . $dir . $filename;
-                $content = $this->fileStorage->readFile($root . $dir . $filename);
-                $ext = strtolower(end(explode('.', $src)));
-                $this->setUtf8Header = false;
-                header('Content-Type: image/' . $ext);
-                return $content;
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
-            }
-        } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
-        }
-    }
-
-    public function imageResize($args) {
-        if (!extension_loaded('gd')) {
-            throw new Exception('ServerException: extention NOT loaded ', 12);
-        }
-        if (isset($args['filename'])) {
-            $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
-                $src = $root . $dir . $args['filename'];
-                $image_info = getimagesize($src);
-                $ext = strtolower(end(explode('.', $src)));
-                $new_w = $args['new_x'];
-                $new_h = $args['new_y'];
-                $jpeg_quality = 90;
-                $function = $this->returnCorrectFunction($ext);
-                if (empty($function)) {
-                    throw new Exception('IllegalArgumentException: Image can not be recognized', 15);
-                }
-                $img_r = $this->fileStorage->$function($src);
-                $new_image = imagecreatetruecolor($new_w, $new_h);
-                imagecopyresampled($new_image, $img_r, 0, 0, 0, 0, $new_w, $new_h, $image_info[0], $image_info[1]);
-                $result = $this->fileStorage->parseImage($ext, $new_image, $src);
-                imagedestroy($new_image);
-                if ($result) {
-                    return '{result: \'1\'}';
-                } else {
-                    return '{result: \'0\'}';
-                }
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
-            }
-        } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
-        }
-    }
-    public function jCropImage($args) {
-        if (!extension_loaded('gd')) {
-            throw new Exception('ServerException: extention NOT loaded ', 12);
-        }
-        if (isset($args['filename'])) {
-            $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
-            $dir = $args['dir'];
-            if ($this->fileStorage->file_exists($root . $dir . $args['filename'])) {
-                $src = $root . $dir . $args['filename'];
-                $ext = strToLower(end(explode('.', $src)));
-
-                $targ_w = $args['gs_jcrop_w'];
-                $targ_h = $args['gs_jcrop_h'];
-
-                $function = $this->returnCorrectFunction($ext);
-                if (empty($function)) {
-                    throw new Exception('IllegalArgumentException: Image can not be recognized', 15);
-                }
-                $img_r = $this->fileStorage->$function($src);
-                $dst_r = imagecreatetruecolor( $targ_w, $targ_h );
-
-                imagecopyresampled($dst_r,$img_r, 0, 0,$args['gs_jcrop_x'],$args['gs_jcrop_y'],
-                $targ_w, $targ_h, $args['gs_jcrop_w'],$args['gs_jcrop_h']);
-
-                $result = $this->fileStorage->parseImage($ext,$dst_r, $src);
-                imagedestroy($dst_r);
-                if ($result) {
-                    return '{result: \'1\'}';
-                } else {
-                    return '{result: \'0\'}';
-                }
-            } else {
-                throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
-            }
-        } else {
-            throw new Exception('IllegalArgumentException: filename can NOT be null', 5);
-        }
-    }
-
-    public function returnCorrectFunction($ext){
-        $function = '';
-        switch($ext){
-            case 'png':
-                $function = 'imagecreatefrompng';
-                break;
-            case 'jpeg':
-                $function = 'imagecreatefromjpeg';
-                break;
-            case 'jpg':
-                $function = 'imagecreatefromjpeg';
-                break;
-            case 'gif':
-                $function = 'imagecreatefromgif';
-                break;
-        }
-        return $function;
     }
 
     public function uploadFile($args) {
