@@ -182,6 +182,16 @@ class GSFileManager {
     private $setUtf8Header = true;
     private $functions;
 
+    static private $simpleSuccessAnswer = '{"result":"1"}';
+    static private $simpleFailureAnswer = '{"result":"0"}';
+    static private function makeFailureAnswer($errorMessage) {
+        $answer = array(
+            'result'  => '0',
+            'gserror' => $errorMessage
+        );
+        return json_encode($answer);
+    }
+
     public function __construct($fileStorage, $options){
         $this->fileStorage = $fileStorage;
         $this->options = $options;
@@ -235,7 +245,6 @@ class GSFileManager {
             $response = $this->$functionName($args);
         } else {
             throw new Exception('IllegalArgumentException: Uknown action ' . $args[$this->opt_param], 6);
-
         }
         if ($this->setUtf8Header) {
             header ('Content-Type: application/json; charset=UTF-8');
@@ -261,9 +270,9 @@ class GSFileManager {
         if ($archive->open($root . $dir . $filename)){
             $archive->extractTo($root . $dir . basename($newFilename));
             $archive->close();
-            return '{result: \'1\'}';
+            return self::simpleSuccessAnswer;
         } else {
-            return '{result: \'0\'}';
+            return self::simpleFailureAnswer;
         }
     }
 
@@ -289,9 +298,9 @@ class GSFileManager {
                 $zipArchive->addFile($root . $dir . $filename, $dir);
             }
             $archive->close();
-            return '{result: \'1\'}';
+            return self::simpleSuccessAnswer;
         } else {
-            return '{result: \'0\'}';
+            return self::simpleFailureAnswer;
         }
     }
 
@@ -326,7 +335,7 @@ class GSFileManager {
             throw new Exception('IllegalArgumentException: no files for upload', 11);
         }
         $maxSize = $this->getOptionValue('max_upload_filesize', 0);
-        $response = '{result: \'0\'}';
+        $response = self::simpleFailureAnswer;
         foreach ($_FILES as $file) {
             if (!$this->fileStorage->file_exists($root . $dir . $file['name'])) {
                 if ($maxSize > 0 && $maxSize < intval($file['size']) / 1000) {
@@ -334,7 +343,7 @@ class GSFileManager {
                 }
                 $this->checkFilename($file['name']);
                 if ($this->fileStorage->move_uploaded_file($file['tmp_name'], $root . $dir . $file['name'])){
-                    $response = '{result: \'1\'}';
+                    $response = self::simpleSuccessAnswer;
                 }
             } else {
                 throw new Exception('IllegalArgumentException: Destination already exists ' . $file['name'], 8);
@@ -359,9 +368,9 @@ class GSFileManager {
             throw new Exception('IllegalArgumentException: Destination already exists ' . $dir . $newFilename, 8);
         }
         if ($this->fileStorage->copyFile($src, $dest)) {
-            return '{result: \'1\'}';
+            return self::simpleSuccessAnswer;
         } else {
-            return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $newFilename) . '\'}';
+            return self::makeFailureAnswer('Can not copy ' . $dir . $newFilename);
         }
     }
 
@@ -376,9 +385,9 @@ class GSFileManager {
         $dir = $args['dir'];
         if ($this->fileStorage->file_exists($root . $dir . $filename)) {
             if($this->fileStorage->writeFile($root . $dir . $filename, $content) !== false){
-                return '{result: \'1\'}';
+                return self::simpleSuccessAnswer;
             }
-            return '{result: \'0\', gserror: \'Can NOT copy ' . addslashes($dir . $filename) . '\'}';
+            return self::makeFailureAnswer('Can not copy ' . $dir . $newFilename);
         } else {
             throw new Exception('IllegalArgumentException: Source does NOT exists', 7);
         }
@@ -438,10 +447,10 @@ class GSFileManager {
             }
             $success = $this->fileStorage->renameItem($src, $dest);
             if (!$success) {
-                return '{result: \'0\'}';
+                return self::simpleFailureAnswer;
             }
         }
-        return '{result: \'1\'}';
+        return self::simpleSuccessAnswer;
     }
 
     public function renameItem($args) {
@@ -461,9 +470,9 @@ class GSFileManager {
         }
         $success = $this->fileStorage->renameItem($src, $dest);
         if ($success) {
-            return '{result: \'1\'}';
+            return self::simpleSuccessAnswer;
         } else {
-            return '{result: \'0\' , gserror: \'can not rename item ' . addslashes($dir . $filename) . ' to ' . addslashes($dir . $newFilename) . '\'}';
+            return self::makeFailureAnswer('Can not rename ' . $dir . $filename . ' to ' . $dir . $newFilename);
         }
     }
 
@@ -489,10 +498,10 @@ class GSFileManager {
                 $success = $this->fileStorage->copyFile($oldFilename, $newFilename);
             }
             if (!$success) {
-                return '{result: \'0\'}';
+                return self::simpleFailureAnswer;
             }
         }
-        return '{result: \'1\'}';
+        return self::simpleSuccessAnswer;
     }
 
     public function deleteItems($args) {
@@ -514,10 +523,10 @@ class GSFileManager {
                 $success = $this->fileStorage->deleteFile($fullFilename);
             }
             if (!$success) {
-                return '{result: \'0\'}';
+                return self::simpleFailureAnswer;
             }
         }
-        return '{result: \'1\'}';
+        return self::simpleSuccessAnswer;
     }
 
     public function makeFile($args) {
@@ -527,13 +536,13 @@ class GSFileManager {
         $filename = $args['filename'];
         if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
             if ($this->fileStorage->makeFile($root . $dir . $filename)) {
-                return '{result: \'1\'}';
+                return self::simpleSuccessAnswer;
             }
-            return '{result: \'0\' , gserror: \'can not create item ' . addslashes($dir . $filename) . '\'}';
+            return self::makeFailureAnswer('Can not create ' . $dir . $filename);
         } else {
             throw new Exception('IllegalArgumentException: Destination already exists', 8);
         }
-        return '{result: \'0\'}';
+        return self::simpleFailureAnswer;
     }
 
     public function makeDirectory($args) {
@@ -542,9 +551,9 @@ class GSFileManager {
         $dir = $args['dir'];
         $filename = $args['filename'];
         if ($this->fileStorage->file_exists($root . $dir . $filename) || $this->fileStorage->makeDirectory($root . $dir . $filename)) {
-            return '{result: \'1\'}';
+            return self::simpleSuccessAnswer;
         }
-        return '{result: \'0\'}';
+        return self::simpleFailureAnswer;
     }
 
     public function listDir($args) {
