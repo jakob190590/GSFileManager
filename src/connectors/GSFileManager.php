@@ -176,6 +176,7 @@ class GSFileSystemFileStorage {
 class GSFileManager {
 
     const ROOT_PARAM = 'rootDir';
+    const FIRST_ROOT_DIR = 0;
     private $options;
     private $opt_param = 'opt';
     private $fileStorage;
@@ -232,7 +233,7 @@ class GSFileManager {
         if (!isset($args[$this->opt_param])) {
             $args[$this->opt_param] = 1;
         }
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         if ($root == null) {
             throw new Exception('ConfigurationException: root can NOT be null', 1);
         }
@@ -255,7 +256,7 @@ class GSFileManager {
     public function unZipItems($args) {
         $this->checkParemter_filename($args);
         $this->checkParemter_newfilename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         $filename = $args['filename'];
         $newFilename = $args['newfilename'];
@@ -279,7 +280,7 @@ class GSFileManager {
     public function zipItems($args) {
         $this->checkParemter_filename($args);
         $this->checkParemter_newfilename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         $filename = $args['filename'];
         $newFilename = $args['newfilename'];
@@ -329,7 +330,7 @@ class GSFileManager {
     }
 
     public function uploadFile($args) {
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         if (empty($_FILES)) {
             throw new Exception('IllegalArgumentException: no files for upload', 11);
@@ -355,7 +356,7 @@ class GSFileManager {
     public function copyAsFile($args) {
         $this->checkParemter_filename($args);
         $this->checkParemter_newfilename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         $filename = $args['filename'];
         $newFilename = $args['newfilename'];
@@ -376,7 +377,7 @@ class GSFileManager {
 
     public function writeFile($args) {
         $this->checkParemter_filename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $content = '';
         if (isset($args['filenContent'])) {
             $content = $args['filenContent'];
@@ -395,7 +396,7 @@ class GSFileManager {
 
     public function readFile($args) {
         $this->checkParemter_filename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $filename = $args['filename'];
         $dir = $args['dir'];
         if ($this->fileStorage->file_exists($root . $dir . $filename)) {
@@ -411,7 +412,7 @@ class GSFileManager {
 
     public function downloadItem($args) {
         $this->checkParemter_filename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $filename = $args['filename'];
         $dir = $args['dir'];
         if ($this->fileStorage->file_exists($root . $dir . $filename)) {
@@ -433,7 +434,7 @@ class GSFileManager {
 
     public function moveItems($args) {
         $this->checkParameter_files($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir   = $args['dir'];
         $files = $args['files'];
         foreach ($files as $filename) {
@@ -456,7 +457,7 @@ class GSFileManager {
     public function renameItem($args) {
         $this->checkParemter_filename($args);
         $this->checkParemter_newfilename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         $filename = $args['filename'];
         $newFilename = $args['newfilename'];
@@ -478,7 +479,7 @@ class GSFileManager {
 
     public function copyItems($args) {
         $this->checkParameter_files($args);
-        $root  = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root  = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir   = $args['dir'];
         $files = $args['files'];
         foreach ($files as $filename) {
@@ -506,7 +507,7 @@ class GSFileManager {
 
     public function deleteItems($args) {
         $this->checkParameter_files($args);
-        $root  = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root  = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir   = $args['dir'];
         $files = $args['files'];
         foreach ($files as $filename) {
@@ -531,7 +532,7 @@ class GSFileManager {
 
     public function makeFile($args) {
         $this->checkParemter_filename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         $filename = $args['filename'];
         if (!$this->fileStorage->file_exists($root . $dir . $filename)) {
@@ -547,7 +548,7 @@ class GSFileManager {
 
     public function makeDirectory($args) {
         $this->checkParemter_filename($args);
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         $filename = $args['filename'];
         if ($this->fileStorage->file_exists($root . $dir . $filename) || $this->fileStorage->makeDirectory($root . $dir . $filename)) {
@@ -557,7 +558,7 @@ class GSFileManager {
     }
 
     public function listDir($args) {
-        $root = $this->getOptionValue(self::ROOT_PARAM)[0]['path'];
+        $root = $this->getOptionValue(self::ROOT_PARAM)[self::FIRST_ROOT_DIR]['path'];
         $dir = $args['dir'];
         if ($this->fileStorage->file_exists($root . $dir)) {
             $files = $this->fileStorage->scandir($root . $dir);
